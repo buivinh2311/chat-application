@@ -25,3 +25,4 @@ dependencyResolutionManagement {
 rootProject.name = "ChatApplication"
 include(":app")
 include(":core-resource")
+include(":core-ui")

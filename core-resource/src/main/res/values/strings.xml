@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">core-resource</string>
+    <string name="title_chat">Đoạn chat</string>
+    <string name="title_everybody">Mọi người</string>
+    <string name="title_menu">Menu</string>
 </resources>
