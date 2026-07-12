@@ -29,7 +29,7 @@ fun AppIconButton(
             contentDescription = null,
             tint = color,
             modifier = Modifier
-                .size(AppDimens.Icon.Lg)
+                .size(AppDimens.Icon.Md)
                 .clickable(
                     indication = ripple(
                         bounded = false,

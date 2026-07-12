@@ -100,9 +100,9 @@ fun appBottomBarItems(): List<AppBottomBarItem> {
             action = AppBottomBarAction.EVERYBODY
         ),
         AppBottomBarItem(
-            title = stringResource(R.string.title_menu),
+            title = stringResource(R.string.title_settings),
             icon = AppIcons.Settings,
-            action = AppBottomBarAction.MENU
+            action = AppBottomBarAction.SETTINGS
         )
     )
 }
