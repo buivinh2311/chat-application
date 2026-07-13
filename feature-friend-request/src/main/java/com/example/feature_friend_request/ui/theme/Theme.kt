@@ -1,4 +1,4 @@
-package com.example.feature_chat.ui.theme
+package com.example.feature_friend_request.ui.theme
 
 import android.app.Activity
 import android.os.Build

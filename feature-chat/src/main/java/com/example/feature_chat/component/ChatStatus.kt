@@ -37,7 +37,7 @@ fun ChatStatus(
                 error = painterResource(R.drawable.account),
                 modifier = Modifier
                     .fillMaxHeight()
-                    .size(AppDimens.Layout.ChatStatusSize)
+                    .size(AppDimens.ImageSize.Xl)
                     .clip(shape = CircleShape),
                 contentScale = ContentScale.Crop
             )

@@ -6,4 +6,6 @@
     <string name="add_friend">Thêm bạn bè</string>
     <string name="title_settings">Cài đặt</string>
     <string name="hint_message">Nhắn tin</string>
+    <string name="label_delete">Xóa</string>
+    <string name="label_confirm">Xác nhận</string>
 </resources>

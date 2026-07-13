@@ -17,6 +17,7 @@ object AppDimens {
         val Sm = 48.dp
         val Md = 56.dp
         val Lg = 64.dp
+        val Xl = 72.dp
     }
 
     object Radius {
@@ -37,7 +38,6 @@ object AppDimens {
         val TopBarHeight = 56.dp
         val BottomBarHeight = 56.dp
         val ChatItemHeight = 80.dp
-        val ChatStatusSize = 72.dp
     }
 
     object Icon {
