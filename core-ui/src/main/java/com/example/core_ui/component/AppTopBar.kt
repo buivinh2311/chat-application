@@ -25,6 +25,7 @@ fun AppTopBar(
             .fillMaxWidth()
             .statusBarsPadding()
             .padding(
+                start = AppDimens.Space.Lg,
                 end = AppDimens.Space.Lg,
                 top = AppDimens.Space.Md,
                 bottom = AppDimens.Space.Sm

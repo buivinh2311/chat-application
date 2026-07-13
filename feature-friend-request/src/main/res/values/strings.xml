@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">feature-friend-request</string>
+    <string name="title_friend_request">Lời mời kết bạn</string>
 </resources>

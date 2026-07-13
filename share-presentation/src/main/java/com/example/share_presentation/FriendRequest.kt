@@ -41,6 +41,7 @@ fun FriendRequest(
     ) {
         Row(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(
                     vertical = AppDimens.Space.Sm,
                     horizontal = AppDimens.Space.Lg
@@ -63,7 +64,7 @@ fun FriendRequest(
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .size(14.dp)
+                        .size(AppDimens.Icon.Xs)
                         .clip(shape = CircleShape)
                         .background(color = Color(0xFF31A24C))
                         .border(
@@ -91,18 +92,20 @@ fun FriendRequest(
                 )
 
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Sm)
                 ) {
                     AppButton(
+                        modifier = Modifier.weight(1f),
                         label = stringResource(R.string.label_confirm),
                         color = MaterialTheme.colorScheme.primary,
                         onClick = { }
                     )
-                    Spacer(modifier = Modifier.width(AppDimens.Space.Md))
 
                     AppButton(
+                        modifier = Modifier.weight(1f),
                         label = stringResource(R.string.label_delete),
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
                         onClick = { }
                     )
                 }

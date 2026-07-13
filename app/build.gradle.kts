@@ -42,6 +42,11 @@ android {
 }
 
 dependencies {
+    implementation(project(":core-resource"))
+    implementation(project(":core-ui"))
+    implementation(project(":feature-friend-request"))
+    implementation(project(":share-presentation"))
+
     implementation(libs.navigation)
     implementation(libs.androidx.core.splashscreen)
 
