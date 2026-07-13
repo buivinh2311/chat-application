@@ -8,4 +8,7 @@
     <string name="hint_message">Nhắn tin</string>
     <string name="label_delete">Xóa</string>
     <string name="label_confirm">Xác nhận</string>
+    <string name="title_friend_request">Lời mời kết bạn</string>
+    <string name="title_friend_suggetion">Những người bạn có thể biết</string>
+    <string name="label_remove">Gỡ</string>
 </resources>

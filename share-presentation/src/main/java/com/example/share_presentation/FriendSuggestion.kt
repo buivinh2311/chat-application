@@ -62,8 +62,12 @@ fun FriendSuggestion(
 
                 Box(
                     modifier = Modifier
+                        .padding(
+                            end = AppDimens.Space.Xs,
+                            bottom = AppDimens.Space.Xs
+                        )
                         .align(Alignment.BottomEnd)
-                        .size(14.dp)
+                        .size(16.dp)
                         .clip(shape = CircleShape)
                         .background(color = Color(0xFF31A24C))
                         .border(
@@ -91,18 +95,20 @@ fun FriendSuggestion(
                 )
 
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Md)
                 ) {
                     AppButton(
+                        modifier = Modifier.weight(1f),
                         label = stringResource(R.string.add_friend),
                         color = MaterialTheme.colorScheme.primary,
                         onClick = { }
                     )
-                    Spacer(modifier = Modifier.width(AppDimens.Space.Md))
 
                     AppButton(
-                        label = stringResource(R.string.label_delete),
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+                        modifier = Modifier.weight(1f),
+                        label = stringResource(R.string.label_remove),
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
                         onClick = { }
                     )
                 }

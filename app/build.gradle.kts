@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":core-resource"))
     implementation(project(":core-ui"))
     implementation(project(":feature-friend-request"))
+    implementation(project(":feature-friend-suggestion"))
     implementation(project(":share-presentation"))
 
     implementation(libs.navigation)

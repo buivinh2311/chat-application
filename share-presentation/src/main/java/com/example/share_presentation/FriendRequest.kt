@@ -63,6 +63,10 @@ fun FriendRequest(
 
                 Box(
                     modifier = Modifier
+                        .padding(
+                            end = AppDimens.Space.Xs,
+                            bottom = AppDimens.Space.Xs
+                        )
                         .align(Alignment.BottomEnd)
                         .size(AppDimens.Icon.Xs)
                         .clip(shape = CircleShape)
