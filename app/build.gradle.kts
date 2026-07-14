@@ -44,6 +44,7 @@ android {
 dependencies {
     implementation(project(":core-resource"))
     implementation(project(":core-ui"))
+    implementation(project(":feature-chat"))
     implementation(project(":feature-friend-request"))
     implementation(project(":feature-friend-suggestion"))
     implementation(project(":feature-settings"))

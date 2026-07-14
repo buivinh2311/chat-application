@@ -56,15 +56,16 @@ fun ChatItem(
                     error = painterResource(R.drawable.account),
                     modifier = Modifier
                         .fillMaxHeight()
-                        .size(AppDimens.ImageSize.Lg)
+                        .size(AppDimens.ImageSize.Md)
                         .clip(shape = CircleShape),
                     contentScale = ContentScale.Crop
                 )
 
                 Box(
                     modifier = Modifier
+
                         .align(Alignment.BottomEnd)
-                        .size(14.dp)
+                        .size(AppDimens.Icon.Xs)
                         .clip(shape = CircleShape)
                         .background(color = Color(0xFF31A24C))
                         .border(
@@ -84,7 +85,6 @@ fun ChatItem(
                     text = "person/group name",
                     style = MaterialTheme.typography.titleMedium
                 )
-                Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
 
                 Text(
                     text = "last message",

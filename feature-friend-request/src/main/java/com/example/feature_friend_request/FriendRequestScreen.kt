@@ -16,19 +16,20 @@ import com.example.share_presentation.FriendRequest
 
 @Composable
 fun FriendRequestScreen(
-
+    onBackClick: () -> Unit,
+    onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     Scaffold(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.title_friend_request),
-                onBackClick = { }
+                onBackClick = onBackClick
             )
         },
         bottomBar = {
             AppBottomBar(
                 selectedAction = AppBottomBarAction.EVERYBODY,
-                onBottomActionClick = { }
+                onBottomActionClick = onBottomActionClick
             )
         }
     ) { innerPadding ->

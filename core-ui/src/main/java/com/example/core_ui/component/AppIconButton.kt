@@ -29,12 +29,12 @@ fun AppIconButton(
             contentDescription = null,
             tint = color,
             modifier = Modifier
-                .size(AppDimens.Icon.Md)
+                .size(AppDimens.Icon.Sm)
                 .clickable(
                     indication = ripple(
                         bounded = false,
                         radius = AppDimens.Ripple.Sm,
-                        color = MaterialTheme.colorScheme.background.copy(alpha = 0.2f)
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
                     ),
                     interactionSource = remember {
                         MutableInteractionSource()

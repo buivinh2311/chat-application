@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,9 +27,11 @@ import com.example.feature_chat.component.ChatStatus
 
 @Composable
 fun ChatScreen(
-    onChatItemClick: () -> Unit
+    onChatItemClick: (String) -> Unit,
+    onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.title_chat)
@@ -36,7 +40,7 @@ fun ChatScreen(
         bottomBar = {
             AppBottomBar(
                 selectedAction = AppBottomBarAction.CHAT,
-                onBottomActionClick = { }
+                onBottomActionClick = onBottomActionClick
             )
         }
     ) { innerPadding ->
@@ -49,9 +53,11 @@ fun ChatScreen(
         ) {
             item {
                 LazyRow(
-                    modifier = Modifier
-                        .padding(start = AppDimens.Space.Lg),
-                    horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Lg)
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Lg),
+                    contentPadding = PaddingValues(
+                        horizontal = AppDimens.Space.Lg
+                    )
                 ) {
                     items(
                         count = 12
@@ -66,7 +72,9 @@ fun ChatScreen(
                 count = 10
             ) {
                 ChatItem(
-                    onClick = onChatItemClick
+                    onClick = {
+                        onChatItemClick("")
+                    }
                 )
             }
         }

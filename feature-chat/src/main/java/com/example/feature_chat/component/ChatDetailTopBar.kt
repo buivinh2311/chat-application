@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +37,7 @@ fun ChatDetailTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .statusBarsPadding()
             .padding(
                 vertical = AppDimens.Space.Sm,
                 horizontal = AppDimens.Space.Md,
@@ -56,7 +58,9 @@ fun ChatDetailTopBar(
                 contentDescription = null,
                 placeholder = painterResource(R.drawable.account),
                 error = painterResource(R.drawable.account),
-                modifier = Modifier.size(AppDimens.ImageSize.Sm),
+                modifier = Modifier
+                    .size(AppDimens.ImageSize.Sm)
+                    .clip(shape = CircleShape),
                 contentScale = ContentScale.Crop
             )
 

@@ -37,13 +37,13 @@ fun AppTopBar(
                 color = MaterialTheme.colorScheme.onBackground,
                 onClick = onBackClick
             )
+            Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
         }
-        Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
 
         Text(
             text = title,
-            style = if(onBackClick != null) MaterialTheme.typography.titleLarge
-            else MaterialTheme.typography.headlineSmall,
+            style = if(onBackClick != null) MaterialTheme.typography.titleMedium
+            else MaterialTheme.typography.headlineMedium,
         )
 
         if(onSearchClick != null) {

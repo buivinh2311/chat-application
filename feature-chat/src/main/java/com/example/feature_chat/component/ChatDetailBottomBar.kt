@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,6 +42,7 @@ fun ChatDetailBottomBar(
 
     Row(
         modifier = modifier
+            .navigationBarsPadding()
             .padding(
                 horizontal = AppDimens.Space.Md
             )
@@ -71,11 +73,12 @@ fun ChatDetailBottomBar(
         Row(
             modifier = Modifier
                 .weight(1f)
+                .padding(vertical = AppDimens.Space.Xs)
                 .clip(RoundedCornerShape(AppDimens.Radius.Xl))
                 .background(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f))
                 .padding(
-                    vertical = AppDimens.Space.Sm,
-                    horizontal = AppDimens.Space.Md
+                    vertical = AppDimens.Space.Xs,
+                    horizontal = AppDimens.Space.Sm
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {

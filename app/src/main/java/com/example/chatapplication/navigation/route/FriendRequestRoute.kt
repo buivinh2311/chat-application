@@ -1,0 +1,16 @@
+package com.example.chatapplication.navigation.route
+
+import androidx.compose.runtime.Composable
+import com.example.core_ui.menu.AppBottomBarAction
+import com.example.feature_friend_request.FriendRequestScreen
+
+@Composable
+fun FriendRequestRoute(
+    onBackClick: () -> Unit,
+    onBottomActionClick: (AppBottomBarAction) -> Unit
+) {
+    FriendRequestScreen(
+        onBackClick = onBackClick,
+        onBottomActionClick = onBottomActionClick
+    )
+}

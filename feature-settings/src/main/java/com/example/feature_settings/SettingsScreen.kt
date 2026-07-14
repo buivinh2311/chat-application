@@ -26,7 +26,7 @@ import com.example.core_ui.menu.AppBottomBarAction
 
 @Composable
 fun SettingsScreen(
-
+    onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -37,7 +37,7 @@ fun SettingsScreen(
         bottomBar = {
             AppBottomBar(
                 selectedAction = AppBottomBarAction.SETTINGS,
-                onBottomActionClick = { }
+                onBottomActionClick = onBottomActionClick
             )
         }
     ) { innerPadding ->
@@ -64,13 +64,13 @@ fun SettingsScreen(
                         Icon(
                             painter = item.icon,
                             contentDescription = null,
-                            modifier = Modifier.size(AppDimens.Icon.Sm)
+                            modifier = Modifier.size(AppDimens.Icon.Md)
                         )
                         Spacer(modifier = Modifier.width(AppDimens.Space.Md))
 
                         Text(
                             text = item.title,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.titleLarge
                         )
                     }
                 }

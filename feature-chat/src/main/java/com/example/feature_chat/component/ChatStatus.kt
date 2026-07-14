@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +29,7 @@ fun ChatStatus(
     modifier: Modifier = Modifier
 ) {
     Column(
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box {
@@ -44,11 +47,19 @@ fun ChatStatus(
 
             Box(
                 modifier = Modifier
+                    .padding(
+                        end = AppDimens.Space.Xs,
+                        bottom = AppDimens.Space.Xs
+                    )
                     .align(Alignment.BottomEnd)
-                    .size(14.dp)
+                    .size(AppDimens.Icon.Xs)
                     .clip(shape = CircleShape)
                     .background(color = Color(0xFF31A24C))
-                    .border(2.dp, Color.Black, CircleShape)
+                    .border(
+                        width = AppDimens.Border.Thick,
+                        color = MaterialTheme.colorScheme.background,
+                        shape = CircleShape
+                    )
             )
         }
         Spacer(modifier = Modifier.height(AppDimens.Space.Xs))

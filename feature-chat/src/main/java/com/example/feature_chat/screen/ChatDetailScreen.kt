@@ -17,6 +17,7 @@ fun ChatDetailScreen(
     onBackClick: () -> Unit
 ) {
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             ChatDetailTopBar(
                 onBackClick = onBackClick
@@ -27,12 +28,10 @@ fun ChatDetailScreen(
         }
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            modifier = Modifier.padding(innerPadding)
         ) {
             items(
-                count = 12
+                count = 30
             ) { index ->
                 if(index % 2 == 0) {
                     Message(
