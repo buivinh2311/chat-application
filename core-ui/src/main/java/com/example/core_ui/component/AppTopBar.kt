@@ -44,7 +44,6 @@ fun AppTopBar(
             text = title,
             style = if(onBackClick != null) MaterialTheme.typography.titleLarge
             else MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.weight(1f)
         )
 
         if(onSearchClick != null) {

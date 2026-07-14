@@ -4,6 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 
 object AppIcons {
+    val Account
+        @Composable
+        get() = painterResource(R.drawable.ic_account)
+
     val Back
     @Composable
     get() = painterResource(R.drawable.ic_back)
@@ -23,6 +27,10 @@ object AppIcons {
     val Chat
         @Composable
         get() = painterResource(R.drawable.ic_chat)
+
+    val DarkMode
+        @Composable
+        get() = painterResource(R.drawable.ic_dark_mode)
 
     val Delete
         @Composable
@@ -48,9 +56,17 @@ object AppIcons {
         @Composable
         get() = painterResource(R.drawable.ic_info)
 
+    val Language
+        @Composable
+        get() = painterResource(R.drawable.ic_language)
+
     val Like
         @Composable
         get() = painterResource(R.drawable.ic_like)
+
+    val Logout
+        @Composable
+        get() = painterResource(R.drawable.ic_log_out)
 
     val Menu
         @Composable
@@ -63,6 +79,10 @@ object AppIcons {
     val Notification
         @Composable
         get() = painterResource(R.drawable.ic_notification)
+
+    val Password
+        @Composable
+        get() = painterResource(R.drawable.ic_password)
 
     val Search
         @Composable
@@ -80,7 +100,4 @@ object AppIcons {
         @Composable
         get() = painterResource(R.drawable.ic_videocam)
 
-//    val Back
-//        @Composable
-//        get() = painterResource(R.drawable.ic_back)
 }

@@ -11,4 +11,9 @@
     <string name="title_friend_request">Lời mời kết bạn</string>
     <string name="title_friend_suggetion">Những người bạn có thể biết</string>
     <string name="label_remove">Gỡ</string>
+    <string name="title_profile">Hồ sơ</string>
+    <string name="title_password">Mật khẩu</string>
+    <string name="title_dark_mode">Chế độ tối</string>
+    <string name="title_language">Ngôn ngữ</string>
+    <string name="title_logout">Đăng xuất</string>
 </resources>

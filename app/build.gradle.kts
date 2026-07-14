@@ -46,6 +46,7 @@ dependencies {
     implementation(project(":core-ui"))
     implementation(project(":feature-friend-request"))
     implementation(project(":feature-friend-suggestion"))
+    implementation(project(":feature-settings"))
     implementation(project(":share-presentation"))
 
     implementation(libs.navigation)

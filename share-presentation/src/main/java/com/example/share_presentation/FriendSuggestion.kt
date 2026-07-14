@@ -42,7 +42,7 @@ fun FriendSuggestion(
         Row(
             modifier = Modifier
                 .padding(
-                    vertical = AppDimens.Space.Sm,
+                    vertical = AppDimens.Space.Xs,
                     horizontal = AppDimens.Space.Lg
                 ),
             verticalAlignment = Alignment.CenterVertically

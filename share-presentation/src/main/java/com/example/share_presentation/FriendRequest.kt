@@ -94,6 +94,7 @@ fun FriendRequest(
                     text = "ban chung",
                     style = MaterialTheme.typography.bodySmall
                 )
+                Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),

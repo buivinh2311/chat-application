@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.chatapplication.ui.theme.ChatApplicationTheme
 import com.example.feature_friend_request.FriendRequestScreen
 import com.example.feature_friend_suggestion.FriendSuggestionScreen
+import com.example.feature_settings.SettingsScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +45,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     ChatApplicationTheme {
-        FriendSuggestionScreen()
+        SettingsScreen()
     }
 }
