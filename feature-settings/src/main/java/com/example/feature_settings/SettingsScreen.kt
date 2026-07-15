@@ -70,7 +70,7 @@ fun SettingsScreen(
 
                         Text(
                             text = item.title,
-                            style = MaterialTheme.typography.titleLarge
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     }
                 }

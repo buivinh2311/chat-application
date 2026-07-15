@@ -16,4 +16,6 @@
     <string name="title_dark_mode">Chế độ tối</string>
     <string name="title_language">Ngôn ngữ</string>
     <string name="title_logout">Đăng xuất</string>
+    <string name="label_view_all">Xem tất cả</string>
+    <string name="label_view_more">Xem thêm</string>
 </resources>

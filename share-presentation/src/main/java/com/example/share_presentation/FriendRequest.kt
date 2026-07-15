@@ -78,7 +78,7 @@ fun FriendRequest(
                         )
                 )
             }
-            Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+            Spacer(modifier = Modifier.width(AppDimens.Space.Md))
 
             Column(
                 modifier = Modifier.weight(1f),

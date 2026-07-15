@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/core-resource" />
             <option value="$PROJECT_DIR$/core-ui" />
             <option value="$PROJECT_DIR$/feature-chat" />
+            <option value="$PROJECT_DIR$/feature-everybody" />
             <option value="$PROJECT_DIR$/feature-friend-request" />
             <option value="$PROJECT_DIR$/feature-friend-suggestion" />
             <option value="$PROJECT_DIR$/feature-settings" />
