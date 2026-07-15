@@ -1,5 +1,6 @@
 package com.example.feature_everybody
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +27,8 @@ import com.example.share_presentation.FriendSuggestion
 
 @Composable
 fun EverybodyScreen(
+    onViewAllClick: () -> Unit,
+    onViewMoreClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     Scaffold(
@@ -44,7 +47,10 @@ fun EverybodyScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding),
+            contentPadding = PaddingValues(
+                vertical = AppDimens.Space.Lg
+            )
         ) {
             item {
                 Row(
@@ -62,7 +68,7 @@ fun EverybodyScreen(
                     )
 
                     TextButton(
-                        onClick = { }
+                        onClick = onViewAllClick
                     ) {
                         Text(
                             text = stringResource(R.string.label_view_all),
@@ -98,7 +104,7 @@ fun EverybodyScreen(
                     )
 
                     TextButton(
-                        onClick = { }
+                        onClick = onViewMoreClick
                     ) {
                         Text(
                             text = stringResource(R.string.label_view_more),

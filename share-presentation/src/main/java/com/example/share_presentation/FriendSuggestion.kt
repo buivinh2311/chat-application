@@ -42,7 +42,7 @@ fun FriendSuggestion(
         Row(
             modifier = Modifier
                 .padding(
-                    vertical = AppDimens.Space.Xs,
+                    vertical = AppDimens.Space.Sm,
                     horizontal = AppDimens.Space.Lg
                 ),
             verticalAlignment = Alignment.CenterVertically
@@ -87,12 +87,12 @@ fun FriendSuggestion(
                     text = "person/group name",
                     style = MaterialTheme.typography.titleMedium
                 )
-                Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
 
                 Text(
                     text = "ban chung",
                     style = MaterialTheme.typography.bodySmall
                 )
+                Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),

@@ -26,6 +26,7 @@ import com.example.core_ui.menu.AppBottomBarAction
 
 @Composable
 fun SettingsScreen(
+    onSettingOptionClick: (SettingOptionAction) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     Scaffold(
@@ -53,7 +54,7 @@ fun SettingsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-
+                                onSettingOptionClick(item.action)
                             }
                             .padding(
                                 vertical = AppDimens.Space.Md,

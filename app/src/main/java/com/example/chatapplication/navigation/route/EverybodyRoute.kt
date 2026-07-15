@@ -6,9 +6,13 @@ import com.example.feature_everybody.EverybodyScreen
 
 @Composable
 fun EverybodyRoute(
+    onViewAllClick: () -> Unit,
+    onViewMoreClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     EverybodyScreen(
+        onViewAllClick = onViewAllClick,
+        onViewMoreClick = onViewMoreClick,
         onBottomActionClick = onBottomActionClick
     )
 }

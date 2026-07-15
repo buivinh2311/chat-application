@@ -14,6 +14,7 @@ import com.example.chatapplication.navigation.AppNavHost
 import com.example.core_resource.ui.theme.ChatApplicationTheme
 import com.example.feature_chat.screen.ChatDetailScreen
 import com.example.feature_everybody.EverybodyScreen
+import com.example.feature_login.LoginScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +42,7 @@ fun GreetingPreview() {
 //            onBottomActionClick = {}
 //        )
 //        ChatDetailScreen {  }
-        EverybodyScreen {  }
+//        EverybodyScreen {  }
+        LoginScreen()
     }
 }

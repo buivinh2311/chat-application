@@ -88,7 +88,6 @@ fun FriendRequest(
                     text = "person/group name",
                     style = MaterialTheme.typography.titleMedium
                 )
-                Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
 
                 Text(
                     text = "ban chung",

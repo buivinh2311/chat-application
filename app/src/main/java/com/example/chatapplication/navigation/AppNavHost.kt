@@ -9,7 +9,10 @@ import com.example.chatapplication.navigation.route.ChatRoute
 import com.example.chatapplication.navigation.route.EverybodyRoute
 import com.example.chatapplication.navigation.route.FriendRequestRoute
 import com.example.chatapplication.navigation.route.FriendSuggestionRoute
+import com.example.chatapplication.navigation.route.LoginRoute
+import com.example.chatapplication.navigation.route.SettingsRoute
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.feature_settings.SettingOptionAction
 import com.example.feature_settings.SettingsScreen
 
 @Composable
@@ -18,6 +21,14 @@ fun AppNavHost() {
 
     val onChatItemClick: (String) -> Unit = { chatId ->
         navController.navigate("${AppRoute.CHAT_DETAIL}/$chatId")
+    }
+
+    val onViewAllClick: () -> Unit = {
+        navController.navigate(AppRoute.FRIEND_REQUEST)
+    }
+
+    val onViewMoreClick: () -> Unit = {
+        navController.navigate(AppRoute.FRIEND_SUGGESTION)
     }
 
     val onBackClick: () -> Unit = {
@@ -40,6 +51,30 @@ fun AppNavHost() {
         }
     }
 
+    val onSettingOptionClick: (SettingOptionAction) -> Unit = { action ->
+        when(action) {
+            SettingOptionAction.PROFILE -> {
+
+            }
+
+            SettingOptionAction.PASSWORD -> {
+
+            }
+
+            SettingOptionAction.DARK_MODE -> {
+
+            }
+
+            SettingOptionAction.LANGUAGE -> {
+
+            }
+
+            SettingOptionAction.LOGOUT -> {
+                navController.navigate(AppRoute.LOGIN)
+            }
+        }
+    }
+
     NavHost(navController = navController, startDestination = AppRoute.CHAT) {
         composable(route = AppRoute.CHAT) {
             ChatRoute(
@@ -56,6 +91,8 @@ fun AppNavHost() {
 
         composable(route = AppRoute.EVERYBODY) {
             EverybodyRoute(
+                onViewAllClick = onViewAllClick,
+                onViewMoreClick = onViewMoreClick,
                 onBottomActionClick = onBottomActionClick
             )
         }
@@ -75,9 +112,14 @@ fun AppNavHost() {
         }
 
         composable(route = AppRoute.SETTINGS) {
-            SettingsScreen(
+            SettingsRoute(
+                onSettingOptionClick = onSettingOptionClick,
                 onBottomActionClick = onBottomActionClick
             )
+        }
+
+        composable(route = AppRoute.LOGIN) {
+            LoginRoute()
         }
     }
 }
