@@ -32,4 +32,6 @@
     <string name="title_default">Mặc định</string>
     <string name="title_on">Bật</string>
     <string name="text_dark_mode_default">Nếu bạn chọn hệ thống, ứng dụng sẽ tự động điều chỉnh giao diện theo các cài đặt hệ thống trên thiết bị.</string>
+    <string name="title_english">English</string>
+    <string name="title_vietnamese">Tiếng Việt</string>
 </resources>

@@ -17,6 +17,7 @@ import com.example.feature_everybody.EverybodyScreen
 import com.example.feature_login.LoginScreen
 import com.example.feature_register.RegisterScreen
 import com.example.feature_settings.screen.DarkModeScreen
+import com.example.feature_settings.screen.LanguageScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,9 +50,13 @@ fun GreetingPreview() {
 //        RegisterScreen(
 //            onHasAccountClick = {}
 //        )
-        DarkModeScreen(
-            onBackClick = {},
-            onBottomActionClick = { }
+//        DarkModeScreen(
+//            onBackClick = {},
+//            onBottomActionClick = { }
+//        )
+        LanguageScreen(
+            onBottomActionClick = {},
+            onBackClick = {}
         )
     }
 }

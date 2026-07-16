@@ -10,6 +10,7 @@ import com.example.chatapplication.navigation.route.DarkModeRoute
 import com.example.chatapplication.navigation.route.EverybodyRoute
 import com.example.chatapplication.navigation.route.FriendRequestRoute
 import com.example.chatapplication.navigation.route.FriendSuggestionRoute
+import com.example.chatapplication.navigation.route.LanguageRoute
 import com.example.chatapplication.navigation.route.LoginRoute
 import com.example.chatapplication.navigation.route.RegisterRoute
 import com.example.chatapplication.navigation.route.SettingsRoute
@@ -75,7 +76,7 @@ fun AppNavHost() {
             }
 
             SettingOptionAction.LANGUAGE -> {
-
+                navController.navigate(AppRoute.LANGUAGE)
             }
 
             SettingOptionAction.LOGOUT -> {
@@ -129,6 +130,13 @@ fun AppNavHost() {
 
         composable(route = AppRoute.DARK_MODE) {
             DarkModeRoute(
+                onBackClick = onBackClick,
+                onBottomActionClick = onBottomActionClick
+            )
+        }
+
+        composable(route = AppRoute.LANGUAGE) {
+            LanguageRoute(
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
             )
