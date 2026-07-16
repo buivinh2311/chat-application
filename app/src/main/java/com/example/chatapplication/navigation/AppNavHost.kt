@@ -10,6 +10,7 @@ import com.example.chatapplication.navigation.route.EverybodyRoute
 import com.example.chatapplication.navigation.route.FriendRequestRoute
 import com.example.chatapplication.navigation.route.FriendSuggestionRoute
 import com.example.chatapplication.navigation.route.LoginRoute
+import com.example.chatapplication.navigation.route.RegisterRoute
 import com.example.chatapplication.navigation.route.SettingsRoute
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_settings.SettingOptionAction
@@ -29,6 +30,14 @@ fun AppNavHost() {
 
     val onViewMoreClick: () -> Unit = {
         navController.navigate(AppRoute.FRIEND_SUGGESTION)
+    }
+
+    val onCreateNewAccountClick: () -> Unit = {
+        navController.navigate(AppRoute.REGISTER)
+    }
+
+    val onHasAccountClick: () -> Unit = {
+        navController.navigate(AppRoute.LOGIN)
     }
 
     val onBackClick: () -> Unit = {
@@ -119,7 +128,15 @@ fun AppNavHost() {
         }
 
         composable(route = AppRoute.LOGIN) {
-            LoginRoute()
+            LoginRoute(
+                onCreateNewAccountClick = onCreateNewAccountClick
+            )
+        }
+
+        composable(route = AppRoute.REGISTER) {
+            RegisterRoute(
+                onHasAccountClick = onHasAccountClick
+            )
         }
     }
 }

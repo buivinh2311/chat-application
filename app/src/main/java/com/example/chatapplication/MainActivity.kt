@@ -15,6 +15,7 @@ import com.example.core_resource.ui.theme.ChatApplicationTheme
 import com.example.feature_chat.screen.ChatDetailScreen
 import com.example.feature_everybody.EverybodyScreen
 import com.example.feature_login.LoginScreen
+import com.example.feature_register.RegisterScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +44,9 @@ fun GreetingPreview() {
 //        )
 //        ChatDetailScreen {  }
 //        EverybodyScreen {  }
-        LoginScreen()
+//        LoginScreen()
+        RegisterScreen(
+            onHasAccountClick = {}
+        )
     }
 }

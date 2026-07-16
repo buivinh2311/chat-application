@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/feature-friend-request" />
             <option value="$PROJECT_DIR$/feature-friend-suggestion" />
             <option value="$PROJECT_DIR$/feature-login" />
+            <option value="$PROJECT_DIR$/feature-register" />
             <option value="$PROJECT_DIR$/feature-settings" />
             <option value="$PROJECT_DIR$/share-presentation" />
           </set>

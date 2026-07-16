@@ -21,7 +21,11 @@
     <string name="title_login">Đăng nhập</string>
     <string name="hint_email">Nhập email</string>
     <string name="label_login">Đăng nhập</string>
-    <string name="label_register">Tạo tài khoản mới</string>
+    <string name="label_create_new_register">Tạo tài khoản mới</string>
     <string name="label_forget">Quên mật khẩu?</string>
     <string name="hint_password">Nhập mật khẩu</string>
+    <string name="label_had_account">Bạn đã có tài khoản?</string>
+    <string name="label_register">Đăng ký</string>
+    <string name="title_register">Đăng ký</string>
+    <string name="hint_repeat_password">Nhập lại mật khẩu</string>
 </resources>

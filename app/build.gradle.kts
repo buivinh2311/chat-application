@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":feature-friend-request"))
     implementation(project(":feature-friend-suggestion"))
     implementation(project(":feature-login"))
+    implementation(project(":feature-register"))
     implementation(project(":feature-settings"))
     implementation(project(":share-presentation"))
 

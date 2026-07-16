@@ -49,7 +49,7 @@ import com.example.core_ui.component.AppButton
 
 @Composable
 fun LoginScreen(
-
+    onCreateNewAccountClick: () -> Unit
 ) {
     var email by remember {
         mutableStateOf("")
@@ -166,7 +166,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
 
         Button(
-            onClick = { },
+            onClick = onCreateNewAccountClick,
             shape = RoundedCornerShape(AppDimens.Radius.Sm),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF31A24C)
@@ -176,7 +176,7 @@ fun LoginScreen(
                 .height(56.dp)
         ) {
             Text(
-                text = stringResource(R.string.label_register),
+                text = stringResource(R.string.label_create_new_register),
                 style = MaterialTheme.typography.titleMedium
             )
         }
