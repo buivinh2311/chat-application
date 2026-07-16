@@ -1,4 +1,4 @@
-package com.example.feature_settings
+package com.example.feature_settings.menu
 
 import androidx.compose.ui.graphics.painter.Painter
 

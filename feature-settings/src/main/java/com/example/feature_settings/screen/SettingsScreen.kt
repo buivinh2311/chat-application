@@ -1,4 +1,4 @@
-package com.example.feature_settings
+package com.example.feature_settings.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,6 +23,8 @@ import com.example.core_resource.R
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.feature_settings.menu.SettingOptionAction
+import com.example.feature_settings.menu.SettingOptionItem
 
 @Composable
 fun SettingsScreen(

@@ -28,4 +28,8 @@
     <string name="label_register">Đăng ký</string>
     <string name="title_register">Đăng ký</string>
     <string name="hint_repeat_password">Nhập lại mật khẩu</string>
+    <string name="title_off">Tắt</string>
+    <string name="title_default">Mặc định</string>
+    <string name="title_on">Bật</string>
+    <string name="text_dark_mode_default">Nếu bạn chọn hệ thống, ứng dụng sẽ tự động điều chỉnh giao diện theo các cài đặt hệ thống trên thiết bị.</string>
 </resources>

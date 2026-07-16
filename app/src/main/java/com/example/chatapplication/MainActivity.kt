@@ -16,6 +16,7 @@ import com.example.feature_chat.screen.ChatDetailScreen
 import com.example.feature_everybody.EverybodyScreen
 import com.example.feature_login.LoginScreen
 import com.example.feature_register.RegisterScreen
+import com.example.feature_settings.screen.DarkModeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,8 +46,12 @@ fun GreetingPreview() {
 //        ChatDetailScreen {  }
 //        EverybodyScreen {  }
 //        LoginScreen()
-        RegisterScreen(
-            onHasAccountClick = {}
+//        RegisterScreen(
+//            onHasAccountClick = {}
+//        )
+        DarkModeScreen(
+            onBackClick = {},
+            onBottomActionClick = { }
         )
     }
 }

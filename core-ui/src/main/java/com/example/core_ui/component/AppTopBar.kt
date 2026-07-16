@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
@@ -29,7 +30,8 @@ fun AppTopBar(
                 end = AppDimens.Space.Lg,
                 top = AppDimens.Space.Md,
                 bottom = AppDimens.Space.Sm
-            )
+            ),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         if(onBackClick != null) {
             AppIconButton(
@@ -42,7 +44,7 @@ fun AppTopBar(
 
         Text(
             text = title,
-            style = if(onBackClick != null) MaterialTheme.typography.titleMedium
+            style = if(onBackClick != null) MaterialTheme.typography.titleLarge
             else MaterialTheme.typography.headlineMedium,
         )
 

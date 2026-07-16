@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.chatapplication.navigation.route.ChatDetailRoute
 import com.example.chatapplication.navigation.route.ChatRoute
+import com.example.chatapplication.navigation.route.DarkModeRoute
 import com.example.chatapplication.navigation.route.EverybodyRoute
 import com.example.chatapplication.navigation.route.FriendRequestRoute
 import com.example.chatapplication.navigation.route.FriendSuggestionRoute
@@ -13,8 +14,7 @@ import com.example.chatapplication.navigation.route.LoginRoute
 import com.example.chatapplication.navigation.route.RegisterRoute
 import com.example.chatapplication.navigation.route.SettingsRoute
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_settings.SettingOptionAction
-import com.example.feature_settings.SettingsScreen
+import com.example.feature_settings.menu.SettingOptionAction
 
 @Composable
 fun AppNavHost() {
@@ -71,7 +71,7 @@ fun AppNavHost() {
             }
 
             SettingOptionAction.DARK_MODE -> {
-
+                navController.navigate(AppRoute.DARK_MODE)
             }
 
             SettingOptionAction.LANGUAGE -> {
@@ -123,6 +123,13 @@ fun AppNavHost() {
         composable(route = AppRoute.SETTINGS) {
             SettingsRoute(
                 onSettingOptionClick = onSettingOptionClick,
+                onBottomActionClick = onBottomActionClick
+            )
+        }
+
+        composable(route = AppRoute.DARK_MODE) {
+            DarkModeRoute(
+                onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
             )
         }
