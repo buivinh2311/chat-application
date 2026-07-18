@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.core_resource.R
 import com.example.core_resource.AppDimens
+import com.example.core_resource.AppIcons
 import com.example.core_ui.component.AppButton
 
 @Composable
@@ -73,7 +74,7 @@ fun LoginScreen(
                 horizontal = AppDimens.Space.Lg
             )
         ,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painterResource(R.drawable.account),
@@ -135,9 +136,9 @@ fun LoginScreen(
                 ) {
                     Icon(
                         painter = if(isShowPassword) {
-                            painterResource(R.drawable.ic_hide_password)
+                            AppIcons.HidePassword
                         } else {
-                            painterResource(R.drawable.ic_show_password)
+                            AppIcons.ShowPassword
                         },
                         contentDescription = null,
                         modifier = Modifier.size(AppDimens.Icon.Sm)

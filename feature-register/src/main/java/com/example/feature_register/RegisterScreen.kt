@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.core_resource.AppDimens
+import com.example.core_resource.AppIcons
 import com.example.core_resource.R
 
 @Composable
@@ -136,9 +137,9 @@ fun RegisterScreen(
                 ) {
                     Icon(
                         painter = if(isShowPassword) {
-                            painterResource(R.drawable.ic_hide_password)
+                            AppIcons.HidePassword
                         } else {
-                            painterResource(R.drawable.ic_show_password)
+                            AppIcons.ShowPassword
                         },
                         contentDescription = null,
                         modifier = Modifier.size(AppDimens.Icon.Sm)
@@ -177,9 +178,9 @@ fun RegisterScreen(
                 ) {
                     Icon(
                         painter = if(isShowRepeatPassword) {
-                            painterResource(R.drawable.ic_hide_password)
+                            AppIcons.HidePassword
                         } else {
-                            painterResource(R.drawable.ic_show_password)
+                            AppIcons.ShowPassword
                         },
                         contentDescription = null,
                         modifier = Modifier.size(AppDimens.Icon.Sm)

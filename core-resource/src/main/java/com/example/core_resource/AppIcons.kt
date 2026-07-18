@@ -2,6 +2,7 @@ package com.example.core_resource
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
+import java.util.Calendar
 
 object AppIcons {
     val Account
@@ -15,6 +16,10 @@ object AppIcons {
     val Block
         @Composable
         get() = painterResource(R.drawable.ic_block)
+
+    val Calendar
+        @Composable
+        get() = painterResource(R.drawable.ic_calendar)
 
     val Call
         @Composable
@@ -47,6 +52,10 @@ object AppIcons {
     val File
         @Composable
         get() = painterResource(R.drawable.ic_file)
+
+    val HidePassword
+        @Composable
+        get() = painterResource(R.drawable.ic_hide_password)
 
     val Image
         @Composable
@@ -95,6 +104,10 @@ object AppIcons {
     val Settings
         @Composable
         get() = painterResource(R.drawable.ic_settings)
+
+    val ShowPassword
+        @Composable
+        get() = painterResource(R.drawable.ic_show_password)
 
     val Videocam
         @Composable

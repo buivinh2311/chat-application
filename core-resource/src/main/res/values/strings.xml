@@ -34,4 +34,15 @@
     <string name="text_dark_mode_default">Nếu bạn chọn hệ thống, ứng dụng sẽ tự động điều chỉnh giao diện theo các cài đặt hệ thống trên thiết bị.</string>
     <string name="title_english">English</string>
     <string name="title_vietnamese">Tiếng Việt</string>
+    <string name="hint_first_name">Tên</string>
+    <string name="text_date_of_birth">Ngày sinh</string>
+    <string name="hint_date_of_birth">Ngày sinh</string>
+    <string name="label_cancel">Hủy bỏ</string>
+    <string name="text_male">Nam</string>
+    <string name="text_female">Nữ</string>
+    <string name="text_other">Khác</string>
+    <string name="hint_gender">Giới tính</string>
+    <string name="label_update">Cập nhật</string>
+    <string name="hint_last_name">Họ</string>
+    <string name="hint_address">Địa chỉ</string>
 </resources>

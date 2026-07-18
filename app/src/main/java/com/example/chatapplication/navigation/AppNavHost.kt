@@ -16,6 +16,7 @@ import com.example.chatapplication.navigation.route.RegisterRoute
 import com.example.chatapplication.navigation.route.SettingsRoute
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_settings.menu.SettingOptionAction
+import com.example.feature_settings.screen.ProfileScreen
 
 @Composable
 fun AppNavHost() {
@@ -64,7 +65,7 @@ fun AppNavHost() {
     val onSettingOptionClick: (SettingOptionAction) -> Unit = { action ->
         when(action) {
             SettingOptionAction.PROFILE -> {
-
+                navController.navigate(AppRoute.PROFILE)
             }
 
             SettingOptionAction.PASSWORD -> {
@@ -124,6 +125,13 @@ fun AppNavHost() {
         composable(route = AppRoute.SETTINGS) {
             SettingsRoute(
                 onSettingOptionClick = onSettingOptionClick,
+                onBottomActionClick = onBottomActionClick
+            )
+        }
+
+        composable(route = AppRoute.PROFILE) {
+            ProfileScreen(
+                onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
             )
         }
