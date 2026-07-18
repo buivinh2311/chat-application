@@ -16,6 +16,7 @@ import com.example.feature_chat.screen.ChatDetailScreen
 import com.example.feature_everybody.EverybodyScreen
 import com.example.feature_login.LoginScreen
 import com.example.feature_register.RegisterScreen
+import com.example.feature_settings.screen.ChangePasswordScreen
 import com.example.feature_settings.screen.DarkModeScreen
 import com.example.feature_settings.screen.LanguageScreen
 import com.example.feature_settings.screen.ProfileScreen
@@ -46,7 +47,11 @@ fun GreetingPreview() {
 //            onBottomActionClick = {}
 //        )
 //        ChatDetailScreen {  }
-//        EverybodyScreen {  }
+        EverybodyScreen(
+            onBottomActionClick = {},
+            onViewAllClick = {},
+            onViewMoreClick = { }
+        )
 //        LoginScreen()
 //        RegisterScreen(
 //            onHasAccountClick = {}
@@ -59,9 +64,12 @@ fun GreetingPreview() {
 //            onBottomActionClick = {},
 //            onBackClick = {}
 //        )
-        ProfileScreen(
-            onBackClick = {},
-            onBottomActionClick = {}
-        )
+//        ProfileScreen(
+//            onBackClick = {},
+//            onBottomActionClick = {}
+//        )
+//        ChangePasswordScreen(
+//            onBackClick = {}
+//        ) { }
     }
 }

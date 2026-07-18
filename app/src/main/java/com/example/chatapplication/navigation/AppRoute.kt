@@ -11,7 +11,7 @@ object AppRoute {
     const val FRIEND_SUGGESTION = "friendSuggestion"
     const val SETTINGS = "settings"
     const val PROFILE = "profile"
-    const val PASSWORD = "password"
+    const val CHANGE_PASSWORD = "changePassword"
     const val DARK_MODE = "darkMode"
     const val LANGUAGE = "language"
     const val LOGOUT = "logout"

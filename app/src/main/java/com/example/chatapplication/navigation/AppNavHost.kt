@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.chatapplication.navigation.route.ChangePasswordRoute
 import com.example.chatapplication.navigation.route.ChatDetailRoute
 import com.example.chatapplication.navigation.route.ChatRoute
 import com.example.chatapplication.navigation.route.DarkModeRoute
@@ -12,10 +13,12 @@ import com.example.chatapplication.navigation.route.FriendRequestRoute
 import com.example.chatapplication.navigation.route.FriendSuggestionRoute
 import com.example.chatapplication.navigation.route.LanguageRoute
 import com.example.chatapplication.navigation.route.LoginRoute
+import com.example.chatapplication.navigation.route.ProfileRoute
 import com.example.chatapplication.navigation.route.RegisterRoute
 import com.example.chatapplication.navigation.route.SettingsRoute
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_settings.menu.SettingOptionAction
+import com.example.feature_settings.screen.ChangePasswordScreen
 import com.example.feature_settings.screen.ProfileScreen
 
 @Composable
@@ -69,7 +72,7 @@ fun AppNavHost() {
             }
 
             SettingOptionAction.PASSWORD -> {
-
+                navController.navigate(AppRoute.CHANGE_PASSWORD)
             }
 
             SettingOptionAction.DARK_MODE -> {
@@ -130,7 +133,14 @@ fun AppNavHost() {
         }
 
         composable(route = AppRoute.PROFILE) {
-            ProfileScreen(
+            ProfileRoute(
+                onBackClick = onBackClick,
+                onBottomActionClick = onBottomActionClick
+            )
+        }
+
+        composable(route = AppRoute.CHANGE_PASSWORD) {
+            ChangePasswordRoute (
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
             )
