@@ -9,6 +9,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.example.core_model.DarkModeState
 import com.example.core_resources.ui.theme.AppTypography
 
 private val lightScheme = lightColorScheme(
@@ -89,17 +90,21 @@ private val darkScheme = darkColorScheme(
 
 @Composable
 fun ChatApplicationTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
+    themeState: DarkModeState = DarkModeState.DEFAULT,
     dynamicColor: Boolean = false,
     content: @Composable() () -> Unit
 ) {
+    val darkTheme = when(themeState) {
+        DarkModeState.OFF -> false
+        DarkModeState.ON -> true
+        DarkModeState.DEFAULT -> isSystemInDarkTheme()
+    }
+
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> darkScheme
         else -> lightScheme
     }

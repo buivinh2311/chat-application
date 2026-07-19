@@ -2,7 +2,7 @@ package com.example.chatapplication.navigation.route
 
 import androidx.compose.runtime.Composable
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_settings.screen.LanguageScreen
+import com.example.feature_settings.presentation.screen.LanguageScreen
 
 @Composable
 fun LanguageRoute(

@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core-model"))
     implementation(project(":core-resource"))
     implementation(project(":core-ui"))
     implementation(project(":feature-chat"))
@@ -51,6 +52,7 @@ dependencies {
     implementation(project(":feature-login"))
     implementation(project(":feature-register"))
     implementation(project(":feature-settings"))
+    implementation(project(":infrastructure"))
     implementation(project(":share-presentation"))
 
     implementation(libs.navigation)

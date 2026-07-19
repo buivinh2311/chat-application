@@ -17,9 +17,7 @@ import com.example.chatapplication.navigation.route.ProfileRoute
 import com.example.chatapplication.navigation.route.RegisterRoute
 import com.example.chatapplication.navigation.route.SettingsRoute
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_settings.menu.SettingOptionAction
-import com.example.feature_settings.screen.ChangePasswordScreen
-import com.example.feature_settings.screen.ProfileScreen
+import com.example.feature_settings.presentation.menu.SettingOptionAction
 
 @Composable
 fun AppNavHost() {
