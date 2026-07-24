@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -43,20 +44,26 @@ android {
 
 dependencies {
     implementation(project(":core-model"))
+    implementation(project(":core-network"))
     implementation(project(":core-resource"))
     implementation(project(":core-ui"))
     implementation(project(":feature-chat"))
     implementation(project(":feature-everybody"))
     implementation(project(":feature-friend-request"))
     implementation(project(":feature-friend-suggestion"))
-    implementation(project(":feature-login"))
-    implementation(project(":feature-register"))
+    implementation(project(":feature-auth"))
     implementation(project(":feature-settings"))
     implementation(project(":infrastructure"))
     implementation(project(":share-presentation"))
 
     implementation(libs.navigation)
     implementation(libs.androidx.core.splashscreen)
+
+    //firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
 
     //hilt
     implementation(libs.hilt.android)

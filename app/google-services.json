@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "845738135838",
+    "project_id": "zyra-728b7",
+    "storage_bucket": "zyra-728b7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:845738135838:android:f8f949bd1b8ec58b34f90f",
+        "android_client_info": {
+          "package_name": "com.example.chatapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVzG2LDR8l-UXuUe6I4xt1jeApGXbsSn0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

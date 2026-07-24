@@ -49,6 +49,11 @@ object AppIcons {
         @Composable
         get() = painterResource(R.drawable.ic_everybody)
 
+    val Failure
+        @Composable
+        get() = painterResource(R.drawable.ic_failure)
+
+
     val File
         @Composable
         get() = painterResource(R.drawable.ic_file)
@@ -108,6 +113,11 @@ object AppIcons {
     val ShowPassword
         @Composable
         get() = painterResource(R.drawable.ic_show_password)
+
+    val Success
+        @Composable
+        get() = painterResource(R.drawable.ic_success)
+
 
     val Videocam
         @Composable

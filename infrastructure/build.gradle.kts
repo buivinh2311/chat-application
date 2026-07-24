@@ -42,11 +42,18 @@ android {
 
 dependencies {
     implementation(project(":core-model"))
+    implementation(project(":core-network"))
     implementation(project(":core-domain"))
 
     implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.window)
+
+    //firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
 
     //retrofit
     implementation(libs.retrofit)

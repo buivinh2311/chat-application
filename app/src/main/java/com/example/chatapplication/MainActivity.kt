@@ -1,6 +1,9 @@
 package com.example.chatapplication
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -15,17 +18,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.example.chatapplication.navigation.AppNavHost
 import com.example.core_resource.ui.theme.ChatApplicationTheme
 import com.example.core_ui.state.UiState
 import com.example.feature_everybody.EverybodyScreen
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                100
+            )
+        }
+        lifecycleScope.launch {
+            delay(3000)
+
+            FirebaseMessaging.getInstance().token
+                .addOnSuccessListener {
+                    Log.e("TOKEN_FCM", it)
+                }
+                .addOnFailureListener {
+                    Log.e("TOKEN_FCM", it.message ?: "error")
+                }
+        }
         enableEdgeToEdge()
         setContent {
             val mainViewModel: MainViewModel = hiltViewModel()

@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">ChatApplication</string>
+    <string name="app_name">Zyra</string>
+    <string name="default_notification_channel_id">MESSENGER_ID_DEFAULT</string>
+    <string name="message_denied">You was not allow this app showing notification.</string>
+    <string name="mesg_permission_prompt">You need accept this permission to see notification showing.</string>
+    <string name="msg_permission_denied">You was not allow this app showing notification.</string>
 </resources>

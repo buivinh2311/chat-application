@@ -35,6 +35,8 @@ media3Session = "1.10.1"
 media3Exoplayer = "1.10.1"
 datastoreCore = "1.2.1"
 uiTextGoogleFontsVersion = "1.11.4"
+firebase-bom = "34.2.0"
+google-services = "4.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -57,6 +59,12 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 viewModel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "viewModel" }
 paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
 navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+
+#firebase
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 
 #Image
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
@@ -103,5 +111,6 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 room = { id = "androidx.room", version.ref = "room" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 
 

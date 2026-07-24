@@ -1,7 +1,7 @@
 package com.example.infrastructure.di.theme
 
 import com.example.core_domain.repository.ThemeRepository
-import com.example.infrastructure.repository.theme.ThemeRepositoryImpl
+import com.example.infrastructure.repository.ThemeRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

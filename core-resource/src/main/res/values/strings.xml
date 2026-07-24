@@ -19,11 +19,11 @@
     <string name="label_view_all">Xem tất cả</string>
     <string name="label_view_more">Xem thêm</string>
     <string name="title_login">Đăng nhập</string>
-    <string name="hint_email">Nhập email</string>
+    <string name="hint_email">Email</string>
     <string name="label_login">Đăng nhập</string>
     <string name="label_create_new_register">Tạo tài khoản mới</string>
     <string name="label_forget">Quên mật khẩu?</string>
-    <string name="hint_password">Nhập mật khẩu</string>
+    <string name="hint_password">Mật khẩu</string>
     <string name="label_had_account">Bạn đã có tài khoản?</string>
     <string name="label_register">Đăng ký</string>
     <string name="title_register">Đăng ký</string>
@@ -45,6 +45,18 @@
     <string name="label_update">Cập nhật</string>
     <string name="hint_last_name">Họ</string>
     <string name="hint_address">Địa chỉ</string>
-    <string name="hint_old_password">Nhập mật khẩu cũ</string>
-    <string name="hint_new_password">Nhập mật khẩu mới</string>
+    <string name="hint_old_password">Mật khẩu cũ</string>
+    <string name="hint_new_password">Mật khẩu mới</string>
+    <string name="text_first_name_blank">Tên không được trống</string>
+    <string name="text_last_name_blank">Họ không được trống</string>
+    <string name="text_email_type_error">Sai định dạng email</string>
+    <string name="text_password_blank">Mật khẩu không được trống</string>
+    <string name="text_email_blank">Email không được trống</string>
+    <string name="text_not_strong_password">Mật khẩu cần ít nhất 8 ký tự bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt</string>
+    <string name="text_repeat_password_blank">Mật khẩu nhập lại không được trống</string>
+    <string name="text_repeat_password_error">Mật khẩu nhập lại không đúng</string>
+    <string name="text_email_already_exists">Email đã tồn tại</string>
+    <string name="text_invalid_email">Sai định dạng email</string>
+    <string name="text_network_error">Không có kết nối internet</string>
+    <string name="text_unknown_error">Có lỗi xảy ra. Vui lòng thử lại sau</string>
 </resources>

@@ -54,7 +54,7 @@ import com.example.core_resource.R
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_settings.presentation.menu.Gender
+import com.example.core_model.Gender
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date

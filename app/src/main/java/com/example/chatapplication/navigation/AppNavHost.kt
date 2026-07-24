@@ -166,6 +166,9 @@ fun AppNavHost() {
 
         composable(route = AppRoute.REGISTER) {
             RegisterRoute(
+                onNavigateToLogin = {
+                    navController.navigate(AppRoute.LOGIN)
+                },
                 onHasAccountClick = onHasAccountClick
             )
         }
