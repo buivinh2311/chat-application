@@ -63,12 +63,6 @@ class RegisterViewModel @Inject constructor(
                 }
                 when(val result = registerUseCase(email, password)) {
                     RegisterResult.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                isRegisterSuccess = true
-                            )
-                        }
                         sendEmailVerificationUseCase()
                         _event.emit(RegisterEvent.NavigateToLogin)
                     }
@@ -77,7 +71,6 @@ class RegisterViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                isRegisterSuccess = false,
                                 error = result
                             )
                         }

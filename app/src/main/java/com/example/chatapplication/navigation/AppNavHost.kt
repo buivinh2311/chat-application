@@ -18,6 +18,7 @@ import com.example.chatapplication.navigation.route.RegisterRoute
 import com.example.chatapplication.navigation.route.SettingsRoute
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_settings.presentation.menu.SettingOptionAction
+import kotlin.text.get
 
 @Composable
 fun AppNavHost() {
@@ -158,8 +159,14 @@ fun AppNavHost() {
             )
         }
 
-        composable(route = AppRoute.LOGIN) {
+        composable(route = AppRoute.LOGIN) { backStackEntry ->
+            val showDialog = backStackEntry.arguments
+                ?.getString("showDialog")?.toBoolean() ?: false
             LoginRoute(
+                showDialog = showDialog,
+                onNavigateToHome = {
+                    navController.navigate(AppRoute.CHAT)
+                },
                 onCreateNewAccountClick = onCreateNewAccountClick
             )
         }
@@ -167,7 +174,7 @@ fun AppNavHost() {
         composable(route = AppRoute.REGISTER) {
             RegisterRoute(
                 onNavigateToLogin = {
-                    navController.navigate(AppRoute.LOGIN)
+                    navController.navigate("login?showDialog=true")
                 },
                 onHasAccountClick = onHasAccountClick
             )

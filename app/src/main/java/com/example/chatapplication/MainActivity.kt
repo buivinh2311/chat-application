@@ -22,6 +22,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.chatapplication.navigation.AppNavHost
 import com.example.core_resource.ui.theme.ChatApplicationTheme
 import com.example.core_ui.state.UiState
+import com.example.feature_auth.presentation.screen.LoginScreen
 import com.example.feature_everybody.EverybodyScreen
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.EntryPoint
@@ -38,17 +39,6 @@ class MainActivity : ComponentActivity() {
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                 100
             )
-        }
-        lifecycleScope.launch {
-            delay(3000)
-
-            FirebaseMessaging.getInstance().token
-                .addOnSuccessListener {
-                    Log.e("TOKEN_FCM", it)
-                }
-                .addOnFailureListener {
-                    Log.e("TOKEN_FCM", it.message ?: "error")
-                }
         }
         enableEdgeToEdge()
         setContent {
@@ -76,5 +66,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun SimpleComposablePreview() {
+    ChatApplicationTheme {
+        LoginScreen(
+            showDialog = true,
+            onNavigateToHome = { },
+            onCreateNewAccountClick = { }
+        )
     }
 }

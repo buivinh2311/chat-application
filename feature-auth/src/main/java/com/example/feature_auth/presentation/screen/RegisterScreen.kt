@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -112,6 +113,7 @@ fun RegisterScreen(
             modifier = Modifier
                 .statusBarsPadding()
                 .navigationBarsPadding()
+                .imePadding()
                 .fillMaxSize()
                 .padding(
                     vertical = AppDimens.Space.Xl,
@@ -459,6 +461,14 @@ fun RegisterScreen(
 
                     RegisterResult.Failure.InvalidEmail -> {
                         stringResource(R.string.text_invalid_email)
+                    }
+
+                    RegisterResult.Failure.WeakPassword -> {
+                        stringResource(R.string.text_weak_password)
+                    }
+
+                    RegisterResult.Failure.TooManyRequests -> {
+                        stringResource(R.string.text_too_many_requests)
                     }
 
                     RegisterResult.Failure.Network -> {

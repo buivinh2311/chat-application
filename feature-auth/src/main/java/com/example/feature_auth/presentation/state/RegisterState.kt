@@ -4,7 +4,6 @@ import com.example.core_model.result.RegisterResult
 
 data class RegisterState(
     val isLoading: Boolean = false,
-    val isRegisterSuccess: Boolean = false,
     val error: RegisterResult.Failure? = null,
     val isFirstNameBlank: Boolean = false,
     val isLastNameBlank: Boolean = false,

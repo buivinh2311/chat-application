@@ -1,0 +1,97 @@
+package com.example.feature_auth.presentation.viewmodel
+
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.core_model.result.LoginResult
+import com.example.core_model.result.ResendResult
+import com.example.feature_auth.presentation.event.LoginEvent
+import com.example.feature_auth.presentation.state.LoginState
+import com.example.feature_auth.usecase.LoginUseCase
+import com.example.feature_auth.usecase.SendEmailVerificationUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val loginUseCase: LoginUseCase,
+    private val sendEmailVerificationUseCase: SendEmailVerificationUseCase
+): ViewModel() {
+    private val _uiState = MutableStateFlow(LoginState())
+    val uiState = _uiState.asStateFlow()
+
+    private val _event = MutableSharedFlow<LoginEvent>()
+    val event = _event.asSharedFlow()
+
+    fun login(email: String, password: String) {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isEmailBlank = email.isBlank(),
+                    isPasswordBlank = password.isBlank(),
+                    resendResult = null
+                )
+            }
+            val isInvalid = uiState.value.isEmailBlank || uiState.value.isPasswordBlank
+            if(!isInvalid) {
+                _uiState.update {
+                    it.copy(
+                        isLoading = true
+                    )
+                }
+                when(val result = loginUseCase(email, password)) {
+                    LoginResult.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                loginResult = LoginResult.Success
+                            )
+                        }
+                        _event.emit(LoginEvent.navigateToHome)
+                    }
+
+                    is LoginResult.Failure -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                loginResult = result
+                            )
+                        }
+                        _event.emit(LoginEvent.showBanner)
+                    }
+                }
+            }
+        }
+    }
+
+    fun resendEmailVerification() {
+        viewModelScope.launch {
+            when(val result = sendEmailVerificationUseCase()) {
+                ResendResult.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            resendResult = ResendResult.Success,
+                            loginResult = null
+                        )
+                    }
+                    _event.emit(LoginEvent.showBanner)
+                }
+
+                is ResendResult.Failure -> {
+                    _uiState.update {
+                        it.copy(
+                            resendResult = result,
+                            loginResult = null
+                        )
+                    }
+                    _event.emit(LoginEvent.showBanner)
+                }
+            }
+        }
+    }
+}

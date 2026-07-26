@@ -19,12 +19,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.core_model.BannerType
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
 
 @Composable
 fun AppTopBanner(
-    title: String
+    title: String,
+    type: BannerType = BannerType.FAILURE
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -41,7 +43,15 @@ fun AppTopBanner(
                     .fillMaxWidth(0.95f),
                 shape = RoundedCornerShape(AppDimens.Radius.Sm),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer
+                    containerColor = when(type) {
+                        BannerType.SUCCESS -> {
+                            MaterialTheme.colorScheme.primaryContainer
+                        }
+
+                        BannerType.FAILURE -> {
+                            MaterialTheme.colorScheme.errorContainer
+                        }
+                    }
                 )
             ) {
                 Row(
@@ -49,9 +59,25 @@ fun AppTopBanner(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = AppIcons.Failure,
+                        painter = when(type) {
+                            BannerType.SUCCESS -> {
+                                AppIcons.Success
+                            }
+
+                            BannerType.FAILURE -> {
+                                AppIcons.Failure
+                            }
+                        },
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onErrorContainer,
+                        tint = when(type) {
+                            BannerType.SUCCESS -> {
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            }
+
+                            BannerType.FAILURE -> {
+                                MaterialTheme.colorScheme.onErrorContainer
+                            }
+                        },
                         modifier = Modifier.size(AppDimens.Icon.Md)
                     )
                     Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
@@ -59,7 +85,15 @@ fun AppTopBanner(
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onErrorContainer
+                        color = when(type) {
+                            BannerType.SUCCESS -> {
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            }
+
+                            BannerType.FAILURE -> {
+                                MaterialTheme.colorScheme.onErrorContainer
+                            }
+                        }
                     )
                 }
             }

@@ -59,4 +59,14 @@
     <string name="text_invalid_email">Sai định dạng email</string>
     <string name="text_network_error">Không có kết nối internet</string>
     <string name="text_unknown_error">Có lỗi xảy ra. Vui lòng thử lại sau</string>
+    <string name="text_weak_password">Mật khẩu quá yếu. Hãy thử với mật khẩu mạnh hơn</string>
+    <string name="text_too_many_requests">Bạn đã yêu cầu quá nhiều lần. Vui lòng thử lại sau</string>
+    <string name="text_email_not_verifierd">Tài khoản chưa được kích hoạt</string>
+    <string name="text_invalid_credential">Sai email hoặc mật khẩu</string>
+    <string name="text_user_disabled">Tài khoản này đã bị khóa</string>
+    <string name="label_ok">OK</string>
+    <string name="label_close">Đóng</string>
+    <string name="label_resend">Gửi lại</string>
+    <string name="title_verify_email">Xác thực email</string>
+    <string name="text_verity_email">Chúng tôi đã gửi email xác thực đến hộp thư của bạn. Vui lòng kiểm tra hộp thư đến để kích hoạt tài khoản</string>
 </resources>
