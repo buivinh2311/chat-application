@@ -21,7 +21,9 @@ import com.example.feature_settings.presentation.menu.SettingOptionAction
 import kotlin.text.get
 
 @Composable
-fun AppNavHost() {
+fun AppNavHost(
+    startDestination: String
+) {
     val navController = rememberNavController()
 
     val onChatItemClick: (String) -> Unit = { chatId ->
@@ -88,7 +90,7 @@ fun AppNavHost() {
         }
     }
 
-    NavHost(navController = navController, startDestination = AppRoute.CHAT) {
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(route = AppRoute.CHAT) {
             ChatRoute(
                 onChatItemClick = onChatItemClick,

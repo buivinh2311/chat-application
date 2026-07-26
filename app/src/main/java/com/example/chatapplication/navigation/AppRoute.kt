@@ -1,6 +1,7 @@
 package com.example.chatapplication.navigation
 
 object AppRoute {
+    const val SPLASH = "splash"
     const val LOGIN = "login?showDialog={showDialog}"
     const val REGISTER = "register"
     const val CHAT = "chat"

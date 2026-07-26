@@ -52,7 +52,7 @@ class LoginViewModel @Inject constructor(
                                 loginResult = LoginResult.Success
                             )
                         }
-                        _event.emit(LoginEvent.navigateToHome)
+                        _event.emit(LoginEvent.NavigateToHome)
                     }
 
                     is LoginResult.Failure -> {
@@ -62,7 +62,7 @@ class LoginViewModel @Inject constructor(
                                 loginResult = result
                             )
                         }
-                        _event.emit(LoginEvent.showBanner)
+                        _event.emit(LoginEvent.ShowBanner)
                     }
                 }
             }
@@ -79,7 +79,6 @@ class LoginViewModel @Inject constructor(
                             loginResult = null
                         )
                     }
-                    _event.emit(LoginEvent.showBanner)
                 }
 
                 is ResendResult.Failure -> {
@@ -89,7 +88,6 @@ class LoginViewModel @Inject constructor(
                             loginResult = null
                         )
                     }
-                    _event.emit(LoginEvent.showBanner)
                 }
             }
         }
