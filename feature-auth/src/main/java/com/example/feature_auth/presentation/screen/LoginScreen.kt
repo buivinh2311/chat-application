@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -68,7 +69,8 @@ import kotlinx.coroutines.delay
 fun LoginScreen(
     showDialog: Boolean = false,
     onCreateNewAccountClick: () -> Unit,
-    onNavigateToHome: () -> Unit
+    onNavigateToHome: () -> Unit,
+    onForgotPasswordClick: () -> Unit
 ) {
     var email by remember {
         mutableStateOf("")
@@ -128,20 +130,26 @@ fun LoginScreen(
                 .padding(
                     vertical = AppDimens.Space.Xl,
                     horizontal = AppDimens.Space.Lg
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally
+                )
         ) {
             item {
-                Image(
-                    painter = painterResource(R.drawable.account),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxWidth(0.5f)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.account),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxWidth(0.5f)
+                    )
+                }
                 Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
 
                 Text(
                     text = stringResource(R.string.title_login),
-                    style = MaterialTheme.typography.headlineMedium
+                    style = MaterialTheme.typography.headlineMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
 
@@ -243,7 +251,7 @@ fun LoginScreen(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
+                        .height(AppDimens.Layout.ButtonHeight)
                 ) {
                     Text(
                         text = stringResource(R.string.label_login),
@@ -260,7 +268,7 @@ fun LoginScreen(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
+                        .height(AppDimens.Layout.ButtonHeight)
                 ) {
                     Text(
                         text = stringResource(R.string.label_create_new_register),
@@ -269,14 +277,21 @@ fun LoginScreen(
                 }
                 Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
 
-                TextButton(
-                    onClick = { }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = stringResource(R.string.label_forget),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    TextButton(
+                        onClick = {
+                            onForgotPasswordClick()
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.label_forget),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
             }
         }
@@ -359,7 +374,7 @@ fun LoginScreen(
                             Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
                         } else if(remainingSeconds > 0) {
                             Text(
-                                text = "Gửi lại email sau ${remainingSeconds}s",
+                                text = stringResource(R.string.text_sent_verification_email, remainingSeconds),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

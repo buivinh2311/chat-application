@@ -69,4 +69,10 @@
     <string name="label_resend">Gửi lại</string>
     <string name="title_verify_email">Xác thực email</string>
     <string name="text_verity_email">Chúng tôi đã gửi email xác thực đến hộp thư của bạn. Vui lòng kiểm tra hộp thư đến để kích hoạt tài khoản</string>
+    <string name="title_forgot_password">Quên mật khẩu</string>
+    <string name="text_enter_email">Nhập địa chỉ email để nhận liên kết đặt lại mật khẩu</string>
+    <string name="text_sent_reset_password_email">Đã gửi email đặt lại mật khẩu. Có thể gửi lại sau %d s</string>
+    <string name="text_sent_verification_email">Có thể gửi lại sau %d s</string>
+    <string name="label_reset_password">Đặt lại mật khẩu</string>
+    <string name="label_back_to_login">Trở lại trang đăng nhập</string>
 </resources>

@@ -5,6 +5,7 @@ import com.example.core_model.User
 import com.example.core_model.result.LoginResult
 import com.example.core_model.result.RegisterResult
 import com.example.core_model.result.ResendResult
+import com.example.core_model.result.ResetPasswordResult
 import com.example.infrastructure.mapper.toUser
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
@@ -86,6 +87,25 @@ class AuthRepositoryImpl @Inject constructor(
             ResendResult.Failure.TooManyRequests
         } catch (_: Exception) {
             ResendResult.Failure.Unknown
+        }
+    }
+
+    override suspend fun sendPasswordResetEmail(
+        email: String
+    ): ResetPasswordResult {
+        return try {
+            firebaseAuth.sendPasswordResetEmail(email).await()
+            ResetPasswordResult.Success
+        } catch (_: FirebaseAuthInvalidUserException) {
+            ResetPasswordResult.Failure.UserNotFound
+        } catch (_: FirebaseAuthInvalidCredentialsException) {
+            ResetPasswordResult.Failure.InvalidEmail
+        } catch (_: FirebaseNetworkException) {
+            ResetPasswordResult.Failure.Network
+        } catch (_: FirebaseTooManyRequestsException) {
+            ResetPasswordResult.Failure.TooManyRequests
+        } catch (_: Exception) {
+            ResetPasswordResult.Failure.Unknown
         }
     }
 

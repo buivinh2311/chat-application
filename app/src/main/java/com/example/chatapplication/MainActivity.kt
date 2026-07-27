@@ -80,15 +80,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-@Preview
-@Composable
-fun SimpleComposablePreview() {
-    ChatApplicationTheme {
-        LoginScreen(
-            showDialog = true,
-            onNavigateToHome = { },
-            onCreateNewAccountClick = { }
-        )
-    }
-}

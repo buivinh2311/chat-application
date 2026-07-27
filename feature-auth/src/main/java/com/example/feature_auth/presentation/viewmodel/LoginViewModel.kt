@@ -31,14 +31,16 @@ class LoginViewModel @Inject constructor(
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
+            val isEmailBlank = email.isBlank()
+            val isPasswordBlank = password.isBlank()
             _uiState.update {
                 it.copy(
-                    isEmailBlank = email.isBlank(),
-                    isPasswordBlank = password.isBlank(),
+                    isEmailBlank = isEmailBlank,
+                    isPasswordBlank = isPasswordBlank,
                     resendResult = null
                 )
             }
-            val isInvalid = uiState.value.isEmailBlank || uiState.value.isPasswordBlank
+            val isInvalid = isEmailBlank || isPasswordBlank
             if(!isInvalid) {
                 _uiState.update {
                     it.copy(

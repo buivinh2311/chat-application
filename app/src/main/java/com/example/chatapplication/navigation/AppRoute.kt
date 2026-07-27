@@ -4,6 +4,7 @@ object AppRoute {
     const val SPLASH = "splash"
     const val LOGIN = "login?showDialog={showDialog}"
     const val REGISTER = "register"
+    const val FORGOT_PASSWORD = "forgotPassword"
     const val CHAT = "chat"
     const val CHAT_DETAIL = "chatDetail"
     const val CHAT_DETAIL_WITH_ARG = "chatDetail/{chatId}"

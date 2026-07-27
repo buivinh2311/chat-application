@@ -38,6 +38,7 @@ object AppDimens {
         val TopBarHeight = 56.dp
         val BottomBarHeight = 56.dp
         val ChatItemHeight = 72.dp
+        val ButtonHeight = 56.dp
     }
 
     object Icon {

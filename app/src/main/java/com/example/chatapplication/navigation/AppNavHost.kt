@@ -9,6 +9,7 @@ import com.example.chatapplication.navigation.route.ChatDetailRoute
 import com.example.chatapplication.navigation.route.ChatRoute
 import com.example.chatapplication.navigation.route.DarkModeRoute
 import com.example.chatapplication.navigation.route.EverybodyRoute
+import com.example.chatapplication.navigation.route.ForgotPasswordRoute
 import com.example.chatapplication.navigation.route.FriendRequestRoute
 import com.example.chatapplication.navigation.route.FriendSuggestionRoute
 import com.example.chatapplication.navigation.route.LanguageRoute
@@ -169,7 +170,10 @@ fun AppNavHost(
                 onNavigateToHome = {
                     navController.navigate(AppRoute.CHAT)
                 },
-                onCreateNewAccountClick = onCreateNewAccountClick
+                onCreateNewAccountClick = onCreateNewAccountClick,
+                onForgotPasswordClick = {
+                    navController.navigate(AppRoute.FORGOT_PASSWORD)
+                }
             )
         }
 
@@ -179,6 +183,14 @@ fun AppNavHost(
                     navController.navigate("login?showDialog=true")
                 },
                 onHasAccountClick = onHasAccountClick
+            )
+        }
+
+        composable(route = AppRoute.FORGOT_PASSWORD) {
+            ForgotPasswordRoute(
+                onNavigateToLogin = {
+                    navController.navigate("login?showDialog=false")
+                }
             )
         }
     }

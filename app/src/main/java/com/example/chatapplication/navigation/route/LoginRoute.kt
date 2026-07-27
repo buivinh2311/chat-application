@@ -7,11 +7,13 @@ import com.example.feature_auth.presentation.screen.LoginScreen
 fun LoginRoute(
     showDialog: Boolean = true,
     onNavigateToHome: () -> Unit,
-    onCreateNewAccountClick: () -> Unit
+    onCreateNewAccountClick: () -> Unit,
+    onForgotPasswordClick: () -> Unit
 ) {
     LoginScreen(
         showDialog = showDialog,
         onNavigateToHome = onNavigateToHome,
-        onCreateNewAccountClick = onCreateNewAccountClick
+        onCreateNewAccountClick = onCreateNewAccountClick,
+        onForgotPasswordClick = onForgotPasswordClick
     )
 }

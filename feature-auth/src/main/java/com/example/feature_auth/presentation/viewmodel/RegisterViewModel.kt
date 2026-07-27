@@ -37,23 +37,30 @@ class RegisterViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val passwordRegex = Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$")
+            val isFirstNameBlank = firstName.isBlank()
+            val isLastNameBlank = lastName.isBlank()
+            val isEmailBlank = email.isBlank()
+            val isPasswordBlank = password.isBlank()
+            val isRepeatPasswordBlank = repeatPassword.isBlank()
+            val isEmailTypeError = !Patterns.EMAIL_ADDRESS.matcher(email).matches()
+            val isNotStrongPassword = !passwordRegex.matches(password)
+            val isRepeatPasswordError = repeatPassword != password
             _uiState.update {
                 it.copy(
-                    isFirstNameBlank = firstName.isBlank(),
-                    isLastNameBlank = lastName.isBlank(),
-                    isEmailBlank = email.isBlank(),
-                    isPasswordBlank = password.isBlank(),
-                    isRepeatPasswordBlank = repeatPassword.isBlank(),
-                    isEmailTypeError = !Patterns.EMAIL_ADDRESS.matcher(email).matches(),
-                    isNotStrongPassword = !passwordRegex.matches(password),
-                    isRepeatPasswordError = repeatPassword != password
+                    isFirstNameBlank = isFirstNameBlank,
+                    isLastNameBlank = isLastNameBlank,
+                    isEmailBlank = isEmailBlank,
+                    isPasswordBlank = isPasswordBlank,
+                    isRepeatPasswordBlank = isRepeatPasswordBlank,
+                    isEmailTypeError = isEmailTypeError,
+                    isNotStrongPassword = isNotStrongPassword,
+                    isRepeatPasswordError = isRepeatPasswordError
                 )
             }
 
-            val state = uiState.value
-            val isInvalid = state.isFirstNameBlank || state.isLastNameBlank
-                    || state.isEmailBlank || state.isPasswordBlank || state.isRepeatPasswordBlank
-                    || state.isEmailTypeError || state.isNotStrongPassword || state.isRepeatPasswordError
+            val isInvalid = isFirstNameBlank || isLastNameBlank || isEmailBlank ||
+                    isPasswordBlank || isRepeatPasswordBlank || isEmailTypeError ||
+                    isNotStrongPassword || isRepeatPasswordError
 
             if(!isInvalid) {
                 _uiState.update {
