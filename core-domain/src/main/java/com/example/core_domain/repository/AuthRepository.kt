@@ -19,7 +19,7 @@ interface AuthRepository {
 
     suspend fun sendEmailVerification(): ResendResult
 
-    fun logout()
+    suspend fun logout()
 
     suspend fun getCurrentUser(): FirebaseUser?
 }

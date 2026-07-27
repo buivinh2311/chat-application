@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
 import com.example.core_resource.R
@@ -25,12 +26,14 @@ import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_settings.presentation.menu.SettingOptionAction
 import com.example.feature_settings.presentation.menu.SettingOptionItem
+import com.example.feature_settings.presentation.viewmodel.SettingsViewModel
 
 @Composable
 fun SettingsScreen(
     onSettingOptionClick: (SettingOptionAction) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
+    val settingsViewModel: SettingsViewModel = hiltViewModel()
     Scaffold(
         topBar = {
             AppTopBar(
@@ -56,6 +59,9 @@ fun SettingsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
+                                if(item.action == SettingOptionAction.LOGOUT) {
+                                    settingsViewModel.logout()
+                                }
                                 onSettingOptionClick(item.action)
                             }
                             .padding(
