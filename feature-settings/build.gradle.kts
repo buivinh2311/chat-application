@@ -41,6 +41,7 @@ dependencies {
     implementation(project(":core-model"))
     implementation(project(":core-resource"))
     implementation(project(":core-ui"))
+    implementation(project(":share-presentation"))
 
     implementation(libs.coil)
 
@@ -48,6 +49,10 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
+
+    //firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

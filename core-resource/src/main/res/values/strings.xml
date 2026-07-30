@@ -75,4 +75,6 @@
     <string name="text_sent_verification_email">Có thể gửi lại sau %d s</string>
     <string name="label_reset_password">Đặt lại mật khẩu</string>
     <string name="label_back_to_login">Trở lại trang đăng nhập</string>
+    <string name="text_update_success">Cập nhật thành công</string>
+    <string name="text_update_error">Cập nhật thất bại</string>
 </resources>

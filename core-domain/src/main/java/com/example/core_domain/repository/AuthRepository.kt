@@ -22,7 +22,11 @@ interface AuthRepository {
 
     suspend fun sendPasswordResetEmail(email: String): ResetPasswordResult
 
-    suspend fun logout()
+    fun isLoggedIn(): Boolean
 
-    suspend fun getCurrentUser(): FirebaseUser?
+    fun logout()
+
+    fun getCurrentUser(): FirebaseUser?
+
+    fun getCurrentUserId(): String?
 }

@@ -1,7 +1,9 @@
 package com.example.core_model.result
 
+import com.google.firebase.auth.FirebaseUser
+
 sealed interface RegisterResult {
-    data object Success : RegisterResult
+    data class Success(val user: FirebaseUser) : RegisterResult
 
     sealed interface Failure : RegisterResult {
         data object EmailAlreadyExists : Failure

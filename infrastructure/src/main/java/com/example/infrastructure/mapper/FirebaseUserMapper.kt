@@ -2,6 +2,7 @@ package com.example.infrastructure.mapper
 
 import com.example.core_model.User
 import com.example.core_model.UserStatus
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
 
 fun FirebaseUser.toUser(): User {
@@ -15,6 +16,6 @@ fun FirebaseUser.toUser(): User {
         dateOfBirth = null,
         gender = null,
         status = UserStatus.OFFLINE,
-        createdAt = System.currentTimeMillis()
+        createdAt = Timestamp.now()
     )
 }

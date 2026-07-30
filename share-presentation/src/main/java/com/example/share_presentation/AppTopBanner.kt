@@ -25,6 +25,7 @@ import com.example.core_resource.AppIcons
 
 @Composable
 fun AppTopBanner(
+    modifier: Modifier = Modifier,
     title: String,
     type: BannerType = BannerType.FAILURE
 ) {
@@ -33,10 +34,9 @@ fun AppTopBanner(
     ) {
         AnimatedVisibility(
             visible = true,
-            modifier = Modifier
+            modifier = modifier
                 .statusBarsPadding()
-                .align(Alignment.TopCenter)
-                .padding(top = AppDimens.Space.Sm)
+                .padding(top = AppDimens.Space.Lg)
         ) {
             Card(
                 modifier = Modifier
@@ -78,7 +78,7 @@ fun AppTopBanner(
                                 MaterialTheme.colorScheme.onErrorContainer
                             }
                         },
-                        modifier = Modifier.size(AppDimens.Icon.Md)
+                        modifier = Modifier.size(AppDimens.Icon.Lg)
                     )
                     Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 

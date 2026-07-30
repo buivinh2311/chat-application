@@ -68,8 +68,8 @@ class RegisterViewModel @Inject constructor(
                         isLoading = true
                     )
                 }
-                when(val result = registerUseCase(email, password)) {
-                    RegisterResult.Success -> {
+                when(val result = registerUseCase(firstName, lastName, email, password)) {
+                    is RegisterResult.Success -> {
                         sendEmailVerificationUseCase()
                         _event.emit(RegisterEvent.NavigateToLogin)
                     }

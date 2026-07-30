@@ -57,11 +57,14 @@ class AuthRepositoryImpl @Inject constructor(
         password: String
     ): RegisterResult {
         return try {
-            firebaseAuth.createUserWithEmailAndPassword(
-                email,
-                password
-            ).await()
-            RegisterResult.Success
+            val authResult = firebaseAuth
+                .createUserWithEmailAndPassword(email, password)
+                .await()
+
+            val firebaseUser = authResult.user
+                ?: return RegisterResult.Failure.Unknown
+
+            RegisterResult.Success(firebaseUser)
         } catch (_: FirebaseAuthUserCollisionException) {
             RegisterResult.Failure.EmailAlreadyExists
         } catch (_: FirebaseAuthWeakPasswordException) {
@@ -109,11 +112,19 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun logout() {
+    override fun isLoggedIn(): Boolean {
+        return firebaseAuth.currentUser != null
+    }
+
+    override fun logout() {
         firebaseAuth.signOut()
     }
 
-    override suspend fun getCurrentUser(): FirebaseUser? {
+    override fun getCurrentUser(): FirebaseUser? {
         return firebaseAuth.currentUser
+    }
+
+    override fun getCurrentUserId(): String? {
+        return firebaseAuth.currentUser?.uid
     }
 }

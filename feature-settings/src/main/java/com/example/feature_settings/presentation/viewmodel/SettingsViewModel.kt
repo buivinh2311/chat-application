@@ -12,8 +12,6 @@ class SettingsViewModel @Inject constructor(
     private val logoutUseCase: LogoutUseCase
 ): ViewModel() {
     fun logout() {
-        viewModelScope.launch {
-            logoutUseCase()
-        }
+        logoutUseCase()
     }
 }
