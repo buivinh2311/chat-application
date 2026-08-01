@@ -4,6 +4,7 @@ import com.example.core_domain.repository.AuthRepository
 import com.example.core_domain.repository.UserRepository
 import com.example.core_model.User
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import javax.inject.Inject
 
 class GetUserUseCase @Inject constructor(
@@ -12,6 +13,6 @@ class GetUserUseCase @Inject constructor(
 ) {
     operator fun invoke(): Flow<User?> {
         val uid = authRepository.getCurrentUserId() ?: ""
-        return userRepository.getUser(uid)
+        return userRepository.getUser(uid).catch { emit(null) }
     }
 }

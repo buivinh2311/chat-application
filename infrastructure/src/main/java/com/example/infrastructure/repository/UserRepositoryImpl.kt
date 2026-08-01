@@ -4,6 +4,9 @@ import com.example.core_domain.repository.UserRepository
 import com.example.core_model.Gender
 import com.example.core_model.User
 import com.example.core_model.UserStatus
+import com.example.core_network.dto.UserDto
+import com.example.infrastructure.mapper.remote.toDomain
+import com.example.infrastructure.mapper.remote.toDto
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,7 +27,7 @@ class UserRepositoryImpl @Inject constructor(
         firestore
             .collection(USERS)
             .document(user.id)
-            .set(user)
+            .set(user.toDto())
             .await()
     }
 
@@ -37,7 +40,11 @@ class UserRepositoryImpl @Inject constructor(
                     close(exception)
                     return@addSnapshotListener
                 }
-                trySend(snapshot?.toObject(User::class.java))
+                trySend(
+                    snapshot
+                        ?.toObject(UserDto::class.java)
+                        ?.toDomain()
+                )
             }
         awaitClose {
             listener.remove()

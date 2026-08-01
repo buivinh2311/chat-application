@@ -1,16 +1,13 @@
 package com.example.infrastructure.repository
 
 import com.example.core_domain.repository.AuthRepository
-import com.example.core_model.User
 import com.example.core_model.result.LoginResult
 import com.example.core_model.result.RegisterResult
 import com.example.core_model.result.ResendResult
 import com.example.core_model.result.ResetPasswordResult
-import com.example.infrastructure.mapper.toUser
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthEmailException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
