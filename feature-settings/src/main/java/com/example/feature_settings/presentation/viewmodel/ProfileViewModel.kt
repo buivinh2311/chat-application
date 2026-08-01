@@ -1,5 +1,6 @@
 package com.example.feature_settings.presentation.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_model.Gender
@@ -7,6 +8,7 @@ import com.example.feature_settings.presentation.event.ProfileEvent
 import com.example.feature_settings.presentation.state.ProfileUiState
 import com.example.feature_settings.usecase.GetUserUseCase
 import com.example.feature_settings.usecase.UpdateProfileUseCase
+import com.example.feature_settings.usecase.UploadAvatarUseCase
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,11 +17,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val updateProfileUseCase: UpdateProfileUseCase,
+    private val uploadAvatarUseCase: UploadAvatarUseCase,
     getUserUseCase: GetUserUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -30,9 +34,27 @@ class ProfileViewModel @Inject constructor(
 
     val currentUser = getUserUseCase()
 
+    fun uploadAvatar(
+        uid: String,
+        file: File
+    ) {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            uploadAvatarUseCase(uid, file)
+            _uiState.update {
+                it.copy(
+                    isLoading = false
+                )
+            }
+        }
+    }
+
     fun updateProfile(
         uid: String,
-        avatarUrl: String,
         firstName: String,
         lastName: String,
         address: String,
@@ -58,7 +80,6 @@ class ProfileViewModel @Inject constructor(
             }
             val result = updateProfileUseCase(
                 uid = uid,
-                avatarUrl = avatarUrl.ifBlank { null },
                 firstName = firstName,
                 lastName = lastName,
                 address = address.ifBlank{ null },

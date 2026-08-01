@@ -41,6 +41,7 @@ dependencies {
     implementation(project(":core-model"))
     implementation(project(":core-resource"))
     implementation(project(":core-ui"))
+    implementation(project(":core-utils"))
     implementation(project(":share-presentation"))
 
     implementation(libs.coil)
@@ -53,6 +54,7 @@ dependencies {
     //firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

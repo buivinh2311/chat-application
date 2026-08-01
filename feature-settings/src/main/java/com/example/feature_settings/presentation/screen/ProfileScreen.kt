@@ -1,5 +1,8 @@
 package com.example.feature_settings.presentation.screen
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,6 +52,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -66,6 +72,7 @@ import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_model.Gender
 import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.state.UiState
+import com.example.core_utils.uriToFile
 import com.example.feature_settings.presentation.event.ProfileEvent
 import com.example.feature_settings.presentation.viewmodel.ProfileViewModel
 import com.example.share_presentation.AppTopBanner
@@ -86,6 +93,7 @@ fun ProfileScreen(
     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
     val currentUser by profileViewModel.currentUser.collectAsStateWithLifecycle(null)
     val user = currentUser
+    val context = LocalContext.current
 
     var showBanner by remember {
         mutableStateOf(false)
@@ -165,6 +173,14 @@ fun ProfileScreen(
                 }
 
                 val genders = Gender.entries
+                val launcher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.PickVisualMedia()
+                ) { uri ->
+                    if(uri != null) {
+                        val file = uriToFile(context, uri)
+                        profileViewModel.uploadAvatar(user.id, file)
+                    }
+                }
                 LazyColumn(
                     modifier = Modifier
                         .padding(innerPadding)
@@ -186,10 +202,16 @@ fun ProfileScreen(
                                 error = painterResource(R.drawable.account),
                                 modifier = Modifier
                                     .fillMaxWidth(0.4f)
+                                    .aspectRatio(1f)
                                     .clip(shape = CircleShape)
                                     .clickable {
-
-                                    }
+                                        launcher.launch(
+                                            PickVisualMediaRequest(
+                                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                                            )
+                                        )
+                                    },
+                                contentScale = ContentScale.Crop
                             )
 
                             Box(
@@ -449,7 +471,6 @@ fun ProfileScreen(
                             onClick = {
                                 profileViewModel.updateProfile(
                                     uid = user.id,
-                                    avatarUrl = null.toString(),
                                     firstName = firstName,
                                     lastName = lastName,
                                     address = address,

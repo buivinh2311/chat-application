@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":core-model"))
     implementation(project(":core-network"))
     implementation(project(":core-domain"))
+    implementation(project(":core-utils"))
 
     implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.androidx.datastore.preferences)
@@ -52,6 +53,7 @@ dependencies {
     //firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.storage)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging)

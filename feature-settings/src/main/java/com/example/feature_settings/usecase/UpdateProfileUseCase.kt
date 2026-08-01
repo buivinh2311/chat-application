@@ -13,19 +13,22 @@ class UpdateProfileUseCase @Inject constructor(
         uid: String,
         firstName: String,
         lastName: String,
-        avatarUrl: String?,
         address: String?,
         dateOfBirth: Timestamp?,
         gender: Gender?
     ): Result<Unit> {
-        return repository.updateUser(
-            uid = uid,
-            firstName = firstName,
-            lastName = lastName,
-            avatarUrl = avatarUrl,
-            address = address,
-            dateOfBirth = dateOfBirth,
-            gender = gender
-        )
+        return try {
+            repository.updateUser(
+                uid = uid,
+                firstName = firstName,
+                lastName = lastName,
+                address = address,
+                dateOfBirth = dateOfBirth,
+                gender = gender
+            )
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

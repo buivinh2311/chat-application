@@ -1,4 +1,4 @@
-package com.example.infrastructure.di.auth
+package com.example.infrastructure.di.account
 
 import com.example.core_domain.repository.AuthRepository
 import com.example.infrastructure.repository.AuthRepositoryImpl

@@ -15,11 +15,15 @@ interface UserRepository {
         uid: String,
         firstName: String,
         lastName: String,
-        avatarUrl: String?,
         address: String?,
         dateOfBirth: Timestamp?,
         gender: Gender?
-    ): Result<Unit>
+    )
+
+    suspend fun uploadAvatar(
+        uid: String,
+        imageUrl: String
+    )
 
     suspend fun updateOnlineStatus(uid: String, status: UserStatus)
 

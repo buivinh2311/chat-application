@@ -37,6 +37,13 @@ android {
 dependencies {
     implementation(project(":core-model"))
 
+    //retrofit
+    implementation(libs.retrofit)
+    implementation(libs.gson)
+    implementation(libs.gson.converter)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+
     //firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)

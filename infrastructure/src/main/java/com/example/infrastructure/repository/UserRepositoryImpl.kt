@@ -48,30 +48,35 @@ class UserRepositoryImpl @Inject constructor(
         uid: String,
         firstName: String,
         lastName: String,
-        avatarUrl: String?,
         address: String?,
         dateOfBirth: Timestamp?,
         gender: Gender?
-    ): Result<Unit> {
-        return try {
-            firestore
-                .collection(USERS)
-                .document(uid)
-                .update(
-                    mapOf(
-                        "firstName" to firstName,
-                        "lastName" to lastName,
-                        "avatarUrl" to avatarUrl,
-                        "address" to address,
-                        "dateOfBirth" to dateOfBirth,
-                        "gender" to gender.toString()
-                    )
+    ) {
+        firestore
+            .collection(USERS)
+            .document(uid)
+            .update(
+                mapOf(
+                    "firstName" to firstName,
+                    "lastName" to lastName,
+                    "address" to address,
+                    "dateOfBirth" to dateOfBirth,
+                    "gender" to gender.toString()
                 )
-                .await()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+            )
+            .await()
+    }
+
+    override suspend fun uploadAvatar(
+        uid: String,
+        imageUrl: String
+    ) {
+        firestore
+            .collection(USERS)
+            .document(uid)
+            .update("avatarUrl", imageUrl)
+            .await()
+        Result.success(Unit)
     }
 
     override suspend fun updateOnlineStatus(
