@@ -27,6 +27,7 @@ import com.example.share_presentation.FriendSuggestion
 
 @Composable
 fun EverybodyScreen(
+    onSearchClick: () -> Unit,
     onViewAllClick: () -> Unit,
     onViewMoreClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
@@ -34,7 +35,8 @@ fun EverybodyScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                title = stringResource(R.string.title_everybody)
+                title = stringResource(R.string.title_everybody),
+                onSearchClick = onSearchClick
             )
         },
         bottomBar = {

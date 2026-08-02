@@ -1,8 +1,7 @@
 package com.example.feature_settings.usecase
 
 import com.example.core_domain.repository.UserRepository
-import com.example.core_model.Gender
-import com.example.core_model.User
+import com.example.core_model.enum.Gender
 import com.google.firebase.Timestamp
 import javax.inject.Inject
 

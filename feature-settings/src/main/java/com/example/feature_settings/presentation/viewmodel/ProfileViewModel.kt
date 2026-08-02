@@ -1,9 +1,8 @@
 package com.example.feature_settings.presentation.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core_model.Gender
+import com.example.core_model.enum.Gender
 import com.example.feature_settings.presentation.event.ProfileEvent
 import com.example.feature_settings.presentation.state.ProfileUiState
 import com.example.feature_settings.usecase.GetUserUseCase

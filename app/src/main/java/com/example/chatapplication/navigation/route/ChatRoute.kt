@@ -7,10 +7,12 @@ import com.example.feature_chat.screen.ChatScreen
 
 @Composable
 fun ChatRoute(
+    onSearchClick: () -> Unit,
     onChatItemClick: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     ChatScreen(
+        onSearchClick = onSearchClick,
         onChatItemClick = onChatItemClick,
         onBottomActionClick = onBottomActionClick
     )

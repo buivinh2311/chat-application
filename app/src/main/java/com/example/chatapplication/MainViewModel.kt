@@ -2,7 +2,7 @@ package com.example.chatapplication
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core_model.DarkModeState
+import com.example.core_model.enum.DarkModeState
 import com.example.core_ui.state.UiState
 import com.example.feature_settings.usecase.GetThemeModeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

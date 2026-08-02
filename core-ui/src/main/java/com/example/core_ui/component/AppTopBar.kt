@@ -46,12 +46,14 @@ fun AppTopBar(
             text = title,
             style = if(onBackClick != null) MaterialTheme.typography.titleLarge
             else MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.weight(1f)
         )
 
         if(onSearchClick != null) {
             AppIconButton(
                 icon = AppIcons.Search,
                 color = MaterialTheme.colorScheme.onBackground,
+                iconSize = AppDimens.Icon.Lg,
                 onClick = onSearchClick
             )
         }

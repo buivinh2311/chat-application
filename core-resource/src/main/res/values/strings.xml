@@ -77,4 +77,9 @@
     <string name="label_back_to_login">Trở lại trang đăng nhập</string>
     <string name="text_update_success">Cập nhật thành công</string>
     <string name="text_update_error">Cập nhật thất bại</string>
+    <string name="hint_query">Tìm kiếm</string>
+    <string name="delete_search_history_confirm">Bạn có chắc muốn xóa lịch sử tìm kiếm không?</string>
+    <string name="action_cancel">Hủy bỏ</string>
+    <string name="action_confirm">Xác nhận</string>
+    <string name="title_no_search">Không tìm thấy kết quả phù hợp</string>
 </resources>

@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$/feature-everybody" />
             <option value="$PROJECT_DIR$/feature-friend-request" />
             <option value="$PROJECT_DIR$/feature-friend-suggestion" />
+            <option value="$PROJECT_DIR$/feature-search" />
             <option value="$PROJECT_DIR$/feature-settings" />
             <option value="$PROJECT_DIR$/infrastructure" />
             <option value="$PROJECT_DIR$/share-presentation" />

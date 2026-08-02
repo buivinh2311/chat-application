@@ -1,6 +1,10 @@
 package com.example.chatapplication.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,6 +22,7 @@ import com.example.chatapplication.navigation.route.ProfileRoute
 import com.example.chatapplication.navigation.route.RegisterRoute
 import com.example.chatapplication.navigation.route.SettingsRoute
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.feature_search.presentation.SearchScreen
 import com.example.feature_settings.presentation.menu.SettingOptionAction
 import kotlin.text.get
 
@@ -26,6 +31,14 @@ fun AppNavHost(
     startDestination: String
 ) {
     val navController = rememberNavController()
+
+    var selectedAction: AppBottomBarAction by remember {
+        mutableStateOf(AppBottomBarAction.CHAT)
+    }
+
+    val onSearchClick: () -> Unit = {
+        navController.navigate(AppRoute.SEARCH)
+    }
 
     val onChatItemClick: (String) -> Unit = { chatId ->
         navController.navigate("${AppRoute.CHAT_DETAIL}/$chatId")
@@ -94,6 +107,7 @@ fun AppNavHost(
     NavHost(navController = navController, startDestination = startDestination) {
         composable(route = AppRoute.CHAT) {
             ChatRoute(
+                onSearchClick = onSearchClick,
                 onChatItemClick = onChatItemClick,
                 onBottomActionClick = onBottomActionClick
             )
@@ -105,8 +119,18 @@ fun AppNavHost(
             )
         }
 
+        composable(route = AppRoute.SEARCH) {
+            SearchScreen(
+                selectedAction = selectedAction,
+                onChatItemClick = onChatItemClick,
+                onBackClick = onBackClick,
+                onBottomActionClick = onBottomActionClick
+            )
+        }
+
         composable(route = AppRoute.EVERYBODY) {
             EverybodyRoute(
+                onSearchClick = onSearchClick,
                 onViewAllClick = onViewAllClick,
                 onViewMoreClick = onViewMoreClick,
                 onBottomActionClick = onBottomActionClick
@@ -129,6 +153,7 @@ fun AppNavHost(
 
         composable(route = AppRoute.SETTINGS) {
             SettingsRoute(
+                onSearchClick = onSearchClick,
                 onSettingOptionClick = onSettingOptionClick,
                 onBottomActionClick = onBottomActionClick
             )

@@ -3,7 +3,7 @@ package com.example.feature_auth.usecase
 import com.example.core_domain.repository.AuthRepository
 import com.example.core_domain.repository.UserRepository
 import com.example.core_model.User
-import com.example.core_model.UserStatus
+import com.example.core_model.enum.UserStatus
 import com.example.core_model.result.RegisterResult
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.Timestamp

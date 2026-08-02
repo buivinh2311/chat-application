@@ -13,12 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.unit.Dp
 import com.example.core_resource.AppDimens
 
 @Composable
 fun AppIconButton(
     icon: Painter,
     color: Color,
+    iconSize: Dp? = null,
     onClick: () -> Unit
 ) {
     Box(
@@ -29,7 +31,7 @@ fun AppIconButton(
             contentDescription = null,
             tint = color,
             modifier = Modifier
-                .size(AppDimens.Icon.Sm)
+                .size(iconSize ?: AppDimens.Icon.Sm)
                 .clickable(
                     indication = ripple(
                         bounded = false,

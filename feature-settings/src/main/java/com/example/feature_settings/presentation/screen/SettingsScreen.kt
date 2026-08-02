@@ -30,6 +30,7 @@ import com.example.feature_settings.presentation.viewmodel.SettingsViewModel
 
 @Composable
 fun SettingsScreen(
+    onSearchClick: () -> Unit,
     onSettingOptionClick: (SettingOptionAction) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
@@ -37,7 +38,8 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                title = stringResource(R.string.title_settings)
+                title = stringResource(R.string.title_settings),
+                onSearchClick = onSearchClick
             )
         },
         bottomBar = {

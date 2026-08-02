@@ -1,7 +1,7 @@
 package com.example.feature_settings.usecase
 
 import com.example.core_domain.repository.ThemeRepository
-import com.example.core_model.DarkModeState
+import com.example.core_model.enum.DarkModeState
 import javax.inject.Inject
 
 class SetThemeModeUseCase @Inject constructor(

@@ -1,8 +1,8 @@
 package com.example.core_domain.repository
 
-import com.example.core_model.Gender
+import com.example.core_model.enum.Gender
 import com.example.core_model.User
-import com.example.core_model.UserStatus
+import com.example.core_model.enum.UserStatus
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.Flow
 
@@ -24,6 +24,8 @@ interface UserRepository {
         uid: String,
         imageUrl: String
     )
+
+    suspend fun searchUser(keyword: String): List<User>
 
     suspend fun updateOnlineStatus(uid: String, status: UserStatus)
 

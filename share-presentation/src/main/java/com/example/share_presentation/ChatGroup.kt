@@ -1,4 +1,4 @@
-package com.example.feature_chat.component
+package com.example.share_presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,16 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 
 @Composable
-fun ChatItem(
+fun ChatGroup(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
@@ -52,7 +49,7 @@ fun ChatItem(
                 AsyncImage(
                     model = "",
                     contentDescription = null,
-                    placeholder = painterResource(R.drawable.account),
+                    placeholder = painterResource(com.example.core_resource.R.drawable.account),
                     error = painterResource(R.drawable.account),
                     modifier = Modifier
                         .fillMaxHeight()
@@ -63,7 +60,6 @@ fun ChatItem(
 
                 Box(
                     modifier = Modifier
-
                         .align(Alignment.BottomEnd)
                         .size(AppDimens.Icon.Xs)
                         .clip(shape = CircleShape)

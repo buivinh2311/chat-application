@@ -7,10 +7,12 @@ import com.example.feature_settings.presentation.screen.SettingsScreen
 
 @Composable
 fun SettingsRoute(
+    onSearchClick: () -> Unit,
     onSettingOptionClick: (SettingOptionAction) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     SettingsScreen(
+        onSearchClick = onSearchClick,
         onSettingOptionClick = onSettingOptionClick,
         onBottomActionClick = onBottomActionClick
     )

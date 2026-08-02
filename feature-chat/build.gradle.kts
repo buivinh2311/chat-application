@@ -37,6 +37,7 @@ android {
 dependencies {
     implementation(project(":core-resource"))
     implementation(project(":core-ui"))
+    implementation(project(":share-presentation"))
 
     implementation(libs.coil)
 

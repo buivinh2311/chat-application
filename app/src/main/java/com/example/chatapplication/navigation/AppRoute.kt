@@ -5,6 +5,7 @@ object AppRoute {
     const val LOGIN = "login?showDialog={showDialog}"
     const val REGISTER = "register"
     const val FORGOT_PASSWORD = "forgotPassword"
+    const val SEARCH = "search"
     const val CHAT = "chat"
     const val CHAT_DETAIL = "chatDetail"
     const val CHAT_DETAIL_WITH_ARG = "chatDetail/{chatId}"

@@ -9,7 +9,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.example.core_model.DarkModeState
+import com.example.core_model.enum.DarkModeState
 import com.example.core_resources.ui.theme.AppTypography
 
 private val lightScheme = lightColorScheme(

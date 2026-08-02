@@ -12,7 +12,6 @@ data class UserDto(
     val dateOfBirth: Timestamp? = null,
     val gender: String? = null,
     val status: String = "OFFLINE",
-    val friends: List<String> = emptyList(),
     val fcmTokens: List<String> = emptyList(),
     val createdAt: Timestamp? = null
 )
