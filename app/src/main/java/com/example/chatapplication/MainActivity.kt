@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
 
                                 StartupState.Chat -> {
                                     AppNavHost(
-                                        startDestination = AppRoute.CHAT
+                                        startDestination = AppRoute.CONVERSATION
                                     )
                                 }
                             }

@@ -1,4 +1,4 @@
-package com.example.feature_chat.screen
+package com.example.feature_chat.presentation.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,17 +13,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.example.core_model.enum.ConversationType
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_chat.component.ChatStatus
-import com.example.share_presentation.ChatItem
+import com.example.feature_chat.presentation.component.ConversationStatus
 
 @Composable
-fun ChatScreen(
-    onChatItemClick: (String) -> Unit,
+fun ConversationScreen(
+    onNavigationToConversationDetail: (String) -> Unit,
     onSearchClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
@@ -60,7 +60,7 @@ fun ChatScreen(
                     items(
                         count = 12
                     ) {
-                        ChatStatus()
+                        ConversationStatus()
                     }
                 }
                 Spacer(modifier = Modifier.height(AppDimens.Space.Md))

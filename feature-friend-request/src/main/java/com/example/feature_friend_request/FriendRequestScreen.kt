@@ -40,13 +40,14 @@ fun FriendRequestScreen(
                 vertical = AppDimens.Space.Sm
             )
         ) {
-            items(
-                count = 10
-            ) {
-                FriendRequest(
-                    onClick = { }
-                )
-            }
+//            items(
+//                count = 10
+//            ) {
+//                FriendRequest(
+//
+//                    onClick = { }
+//                )
+//            }
         }
     }
 }

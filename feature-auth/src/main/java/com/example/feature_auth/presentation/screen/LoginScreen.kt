@@ -98,7 +98,7 @@ fun LoginScreen(
         loginViewModel.event.collect { event ->
             when (event) {
                 LoginEvent.NavigateToHome -> onNavigateToHome()
-                is LoginEvent.ShowBanner -> {
+                LoginEvent.ShowBanner -> {
                     showBanner = true
                     delay(3000)
                     showBanner = false

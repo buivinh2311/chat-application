@@ -7,12 +7,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import javax.inject.Inject
 
-class GetUserUseCase @Inject constructor(
+class ObserverUserUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository
 ) {
     operator fun invoke(): Flow<User?> {
-        val uid = authRepository.getCurrentUserId() ?: ""
-        return userRepository.getUser(uid).catch { emit(null) }
+        val uid = authRepository.getCurrentUserId()
+            ?: throw IllegalStateException("User not logged in")
+        return userRepository.observerUser(uid).catch { emit(null) }
     }
 }

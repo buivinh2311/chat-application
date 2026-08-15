@@ -25,14 +25,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.core_model.FriendRequest
+import com.example.core_model.User
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import com.example.core_ui.component.AppButton
 
 @Composable
 fun FriendRequest(
+    user: User,
+    request: FriendRequest,
+    onAcceptClick: (FriendRequest) -> Unit,
+    onRejectClick: (FriendRequest) -> Unit,
     onClick: () -> Unit
 ) {
     Surface(
@@ -50,7 +55,7 @@ fun FriendRequest(
         ) {
             Box {
                 AsyncImage(
-                    model = "",
+                    model = user.avatarUrl,
                     contentDescription = null,
                     placeholder = painterResource(R.drawable.account),
                     error = painterResource(R.drawable.account),
@@ -85,15 +90,16 @@ fun FriendRequest(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "person/group name",
+                    text = user.firstName + " " + user.lastName,
                     style = MaterialTheme.typography.titleMedium
                 )
-
-                Text(
-                    text = "ban chung",
-                    style = MaterialTheme.typography.bodySmall
-                )
                 Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
+
+//                Text(
+//                    text = "ban chung",
+//                    style = MaterialTheme.typography.bodySmall
+//                )
+//                Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -103,14 +109,18 @@ fun FriendRequest(
                         modifier = Modifier.weight(1f),
                         label = stringResource(R.string.label_confirm),
                         color = MaterialTheme.colorScheme.primary,
-                        onClick = { }
+                        onClick = {
+                            onAcceptClick(request)
+                        }
                     )
 
                     AppButton(
                         modifier = Modifier.weight(1f),
                         label = stringResource(R.string.label_delete),
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
-                        onClick = { }
+                        onClick = {
+                            onRejectClick(request)
+                        }
                     )
                 }
             }

@@ -82,4 +82,5 @@
     <string name="action_cancel">Hủy bỏ</string>
     <string name="action_confirm">Xác nhận</string>
     <string name="title_no_search">Không tìm thấy kết quả phù hợp</string>
+    <string name="recall">Thu hồi</string>
 </resources>

@@ -1,19 +1,19 @@
 package com.example.chatapplication.navigation.route
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
+import com.example.core_model.enum.ConversationType
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_chat.screen.ChatScreen
+import com.example.feature_chat.presentation.screen.ConversationScreen
 
 @Composable
-fun ChatRoute(
+fun ConversationRoute(
     onSearchClick: () -> Unit,
-    onChatItemClick: (String) -> Unit,
+    onNavigationToConversationDetail: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
-    ChatScreen(
+    ConversationScreen(
         onSearchClick = onSearchClick,
-        onChatItemClick = onChatItemClick,
+        onNavigationToConversationDetail = onNavigationToConversationDetail,
         onBottomActionClick = onBottomActionClick
     )
 }

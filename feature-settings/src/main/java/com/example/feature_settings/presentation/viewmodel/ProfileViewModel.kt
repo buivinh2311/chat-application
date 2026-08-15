@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.core_model.enum.Gender
 import com.example.feature_settings.presentation.event.ProfileEvent
 import com.example.feature_settings.presentation.state.ProfileUiState
-import com.example.feature_settings.usecase.GetUserUseCase
+import com.example.feature_settings.usecase.ObserverUserUseCase
 import com.example.feature_settings.usecase.UpdateProfileUseCase
 import com.example.feature_settings.usecase.UploadAvatarUseCase
 import com.google.firebase.Timestamp
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val updateProfileUseCase: UpdateProfileUseCase,
     private val uploadAvatarUseCase: UploadAvatarUseCase,
-    getUserUseCase: GetUserUseCase
+    observerUserUseCase: ObserverUserUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState = _uiState.asStateFlow()
@@ -31,7 +31,7 @@ class ProfileViewModel @Inject constructor(
     private val _event = MutableSharedFlow<ProfileEvent>()
     val event = _event.asSharedFlow()
 
-    val currentUser = getUserUseCase()
+    val currentUser = observerUserUseCase()
 
     fun uploadAvatar(
         uid: String,

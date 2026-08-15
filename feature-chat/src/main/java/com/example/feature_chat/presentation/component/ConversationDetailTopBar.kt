@@ -1,4 +1,4 @@
-package com.example.feature_chat.component
+package com.example.feature_chat.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,8 +30,10 @@ import com.example.core_resource.R
 import com.example.core_ui.component.AppIconButton
 
 @Composable
-fun ChatDetailTopBar(
+fun ConversationDetailTopBar(
     modifier: Modifier = Modifier,
+    imageUrl: String?,
+    name: String,
     onBackClick: () -> Unit
 ) {
     Row(
@@ -54,7 +56,7 @@ fun ChatDetailTopBar(
 
         Box {
             AsyncImage(
-                model = "",
+                model = imageUrl,
                 contentDescription = null,
                 placeholder = painterResource(R.drawable.account),
                 error = painterResource(R.drawable.account),
@@ -83,14 +85,14 @@ fun ChatDetailTopBar(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "name",
+                text = name,
                 style = MaterialTheme.typography.titleMedium
             )
 
-            Text(
-                text = "last online",
-                style = MaterialTheme.typography.bodyMedium
-            )
+//            Text(
+//                text = "last online",
+//                style = MaterialTheme.typography.bodyMedium
+//            )
         }
 
         AppIconButton(

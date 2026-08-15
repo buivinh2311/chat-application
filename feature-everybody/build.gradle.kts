@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -35,9 +37,20 @@ android {
 }
 
 dependencies {
+    implementation(project(":core-domain"))
+    implementation(project(":core-model"))
     implementation(project(":core-resource"))
     implementation(project(":core-ui"))
     implementation(project(":share-presentation"))
+
+    //hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation)
+
+    //firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

@@ -1,12 +1,12 @@
 package com.example.core_model
 
-import com.example.core_model.enum.RequestStatus
+import com.example.core_model.enum.FriendRequestStatus
 import com.google.firebase.Timestamp
 
 data class FriendRequest(
-    val requestId: String,
+    val id: String,
     val senderId: String,
     val receiverId: String,
-    val status: RequestStatus,
+    val status: FriendRequestStatus,
     val createdAt: Timestamp
 )

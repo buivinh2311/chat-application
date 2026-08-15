@@ -9,8 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.chatapplication.navigation.route.ChangePasswordRoute
-import com.example.chatapplication.navigation.route.ChatDetailRoute
-import com.example.chatapplication.navigation.route.ChatRoute
+import com.example.chatapplication.navigation.route.ConversationDetailRoute
+import com.example.chatapplication.navigation.route.ConversationRoute
 import com.example.chatapplication.navigation.route.DarkModeRoute
 import com.example.chatapplication.navigation.route.EverybodyRoute
 import com.example.chatapplication.navigation.route.ForgotPasswordRoute
@@ -20,11 +20,11 @@ import com.example.chatapplication.navigation.route.LanguageRoute
 import com.example.chatapplication.navigation.route.LoginRoute
 import com.example.chatapplication.navigation.route.ProfileRoute
 import com.example.chatapplication.navigation.route.RegisterRoute
+import com.example.chatapplication.navigation.route.SearchRoute
 import com.example.chatapplication.navigation.route.SettingsRoute
+import com.example.core_model.enum.ConversationType
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_search.presentation.SearchScreen
 import com.example.feature_settings.presentation.menu.SettingOptionAction
-import kotlin.text.get
 
 @Composable
 fun AppNavHost(
@@ -40,8 +40,8 @@ fun AppNavHost(
         navController.navigate(AppRoute.SEARCH)
     }
 
-    val onChatItemClick: (String) -> Unit = { chatId ->
-        navController.navigate("${AppRoute.CHAT_DETAIL}/$chatId")
+    val onNavigationToConversationDetail: (String) -> Unit = { conversationId ->
+        navController.navigate("${AppRoute.CONVERSATION_DETAIL}/$conversationId")
     }
 
     val onViewAllClick: () -> Unit = {
@@ -67,7 +67,7 @@ fun AppNavHost(
     val onBottomActionClick: (AppBottomBarAction) -> Unit = { action ->
         when(action) {
             AppBottomBarAction.CHAT -> {
-                navController.navigate(AppRoute.CHAT)
+                navController.navigate(AppRoute.CONVERSATION)
             }
 
             AppBottomBarAction.EVERYBODY -> {
@@ -105,25 +105,29 @@ fun AppNavHost(
     }
 
     NavHost(navController = navController, startDestination = startDestination) {
-        composable(route = AppRoute.CHAT) {
-            ChatRoute(
+        composable(route = AppRoute.CONVERSATION) {
+            ConversationRoute(
                 onSearchClick = onSearchClick,
-                onChatItemClick = onChatItemClick,
+                onNavigationToConversationDetail = onNavigationToConversationDetail,
                 onBottomActionClick = onBottomActionClick
             )
         }
 
-        composable(route = AppRoute.CHAT_DETAIL_WITH_ARG) {
-            ChatDetailRoute(
+        composable(route = AppRoute.CONVERSATION_DETAIL_WITH_ARG) { backStackEntry ->
+            val conversationId =
+                backStackEntry.arguments?.getString("conversationId")
+                    ?: return@composable
+            ConversationDetailRoute(
+                conversationId = conversationId,
                 onBackClick = onBackClick
             )
         }
 
         composable(route = AppRoute.SEARCH) {
-            SearchScreen(
+            SearchRoute(
                 selectedAction = selectedAction,
-                onChatItemClick = onChatItemClick,
                 onBackClick = onBackClick,
+                onNavigationToConversationDetail = onNavigationToConversationDetail,
                 onBottomActionClick = onBottomActionClick
             )
         }
@@ -193,7 +197,7 @@ fun AppNavHost(
             LoginRoute(
                 showDialog = showDialog,
                 onNavigateToHome = {
-                    navController.navigate(AppRoute.CHAT)
+                    navController.navigate(AppRoute.CONVERSATION)
                 },
                 onCreateNewAccountClick = onCreateNewAccountClick,
                 onForgotPasswordClick = {

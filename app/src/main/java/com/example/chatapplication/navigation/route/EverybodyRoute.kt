@@ -2,7 +2,7 @@ package com.example.chatapplication.navigation.route
 
 import androidx.compose.runtime.Composable
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_everybody.EverybodyScreen
+import com.example.feature_everybody.presentation.EverybodyScreen
 
 @Composable
 fun EverybodyRoute(

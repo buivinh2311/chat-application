@@ -30,7 +30,7 @@ import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 
 @Composable
-fun ChatItem(
+fun ConversationItem(
     modifier: Modifier = Modifier,
     user: User,
     onClick: (User) -> Unit

@@ -2,11 +2,8 @@ package com.example.feature_search.presentation
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,17 +11,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -37,18 +30,16 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.EmptyScreen
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
-import com.example.feature_search.presentation.component.DeleteConfirmDialog
 import com.example.feature_search.presentation.component.SearchTopBar
-import com.example.share_presentation.ChatItem
-import kotlin.collections.get
+import com.example.share_presentation.ConversationItem
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen (
-    onChatItemClick: (String) -> Unit,
     selectedAction: AppBottomBarAction,
     onBackClick: () -> Unit,
+    onNavigateToConversationDetail: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     var showConfirmDialog by remember {
@@ -59,6 +50,8 @@ fun SearchScreen (
         mutableStateOf("")
     }
 
+    val searchViewModel: SearchViewModel = hiltViewModel()
+    val uiState by searchViewModel.uiState.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -68,9 +61,17 @@ fun SearchScreen (
             keyboardController?.hide()
         }
     }
-    val searchViewModel: SearchViewModel = hiltViewModel()
-    val uiState by searchViewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        searchViewModel.event.collect { event ->
+            when(event) {
+                is SearchEvent.NavigateToConversationDetail -> {
+                    val conversationId = event.conversationId
+                    onNavigateToConversationDetail(conversationId)
+                }
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -127,23 +128,12 @@ fun SearchScreen (
                             count = users.size,
                             key = { index -> users[index].id }
                         ) { index ->
-                            ChatItem(
+                            ConversationItem(
                                 user = users[index],
                                 onClick = { user ->
-//                                    keyboardController?.hide()
-//                                    searchViewModel.addSongToDataBase(song)
-//                                    searchViewModel.addSongToSearchSong(song.id)
-//                                    searchViewModel.play(
-//                                        queueSource = QueueSource.SEARCH,
-//                                        queue = songs,
-//                                        startSong = song
-//                                    )
-                                    onChatItemClick(user.id)
-                                },
-//                                onSongOptionClick = { song ->
-//                                    keyboardController?.hide()
-//                                    onSongOptionClick(song)
-//                                }
+                                    keyboardController?.hide()
+                                    searchViewModel.openDirectConversation(user.id)
+                                }
                             )
                         }
                     }

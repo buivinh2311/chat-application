@@ -1,4 +1,4 @@
-package com.example.feature_chat.component
+package com.example.feature_chat.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,7 +31,7 @@ import com.example.core_resource.R
 import com.example.core_ui.component.AppIconButton
 
 @Composable
-fun ChatDetailBottomBar(
+fun ConversationDetailBottomBar(
     modifier: Modifier = Modifier
 ) {
     var message by remember {

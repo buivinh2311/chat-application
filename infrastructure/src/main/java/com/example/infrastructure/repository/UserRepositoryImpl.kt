@@ -9,6 +9,7 @@ import com.example.core_network.dto.UserDto
 import com.example.infrastructure.mapper.remote.toDomain
 import com.example.infrastructure.mapper.remote.toDto
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
@@ -35,7 +36,7 @@ class UserRepositoryImpl @Inject constructor(
             .await()
     }
 
-    override fun getUser(uid: String): Flow<User?> = callbackFlow {
+    override fun observerUser(uid: String): Flow<User?> = callbackFlow {
         val listener = firestore
             .collection(USERS)
             .document(uid)
@@ -53,6 +54,31 @@ class UserRepositoryImpl @Inject constructor(
         awaitClose {
             listener.remove()
         }
+    }
+
+    override suspend fun getUser(uid: String): User? {
+        return firestore
+            .collection(USERS)
+            .document(uid)
+            .get()
+            .await()
+            ?.toObject(UserDto::class.java)
+            ?.toDomain()
+    }
+
+    override suspend fun getUsersByIds(ids: List<String>): List<User> {
+        if (ids.isEmpty()) {
+            return emptyList()
+        }
+        return firestore
+            .collection(USERS)
+            .whereIn(FieldPath.documentId(), ids)
+            .get()
+            .await()
+            .documents
+            .mapNotNull {
+                it.toObject(UserDto::class.java)?.toDomain()
+            }
     }
 
     override suspend fun updateUser(
