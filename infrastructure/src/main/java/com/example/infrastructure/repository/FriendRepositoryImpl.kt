@@ -36,12 +36,6 @@ class FriendRepositoryImpl @Inject constructor(
         user2: String
     ) {
         val friendId = buildFriendId(user1, user2)
-
-        Log.d(
-            "ACCEPT_FRIEND",
-            "user1=$user1 user2=$user2 friendId=$friendId"
-        )
-
         val friend = FriendDto(
             id = friendId,
             participants = listOf(user1, user2),
@@ -62,6 +56,7 @@ class FriendRepositoryImpl @Inject constructor(
             .document(friendId)
             .addSnapshotListener { snapshot, exception ->
                 if(exception != null) {
+                    close(exception)
                     return@addSnapshotListener
                 }
                 trySend(snapshot?.exists() == true)
@@ -77,6 +72,7 @@ class FriendRepositoryImpl @Inject constructor(
             .whereArrayContains("participants", uid)
             .addSnapshotListener { snapshots, exception ->
                 if(exception != null) {
+                    close(exception)
                     return@addSnapshotListener
                 }
                 val friends = snapshots?.documents

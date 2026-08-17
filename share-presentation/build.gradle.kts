@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":core-model"))
     implementation(project(":core-resource"))
     implementation(project(":core-ui"))
+    implementation(project(":core-utils"))
 
     implementation(libs.coil)
 

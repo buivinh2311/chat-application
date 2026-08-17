@@ -52,6 +52,7 @@ class GroupRepositoryImpl @Inject constructor(
             .whereEqualTo("conversationId", conversationId)
             .addSnapshotListener { snapshots, exception ->
                 if (exception != null) {
+                    close(exception)
                     return@addSnapshotListener
                 }
                 val group = snapshots

@@ -13,6 +13,7 @@ class IsFriendUseCase @Inject constructor(
     operator fun invoke(uid: String): Flow<Boolean> {
         val currentUserId = authRepository.getCurrentUserId()
             ?: throw IllegalStateException("User not logged in")
-        return friendRepository.isFriend(uid, currentUserId).catch { emit(false) }
+        return friendRepository
+            .isFriend(uid, currentUserId).catch { emit(false) }
     }
 }

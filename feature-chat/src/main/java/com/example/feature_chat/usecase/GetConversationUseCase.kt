@@ -1,14 +1,11 @@
 package com.example.feature_chat.usecase
 
 import com.example.core_domain.repository.AuthRepository
-import com.example.core_model.Conversation
 import com.example.core_domain.repository.ConversationRepository
 import com.example.core_domain.repository.GroupRepository
 import com.example.core_domain.repository.UserRepository
 import com.example.core_model.enum.ConversationType
 import com.example.feature_chat.presentation.screen.ConversationDetailData
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import javax.inject.Inject
 
 class GetConversationUseCase @Inject constructor(

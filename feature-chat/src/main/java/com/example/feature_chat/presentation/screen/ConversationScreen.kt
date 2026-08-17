@@ -11,8 +11,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.enum.ConversationType
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
@@ -20,6 +23,8 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_chat.presentation.component.ConversationStatus
+import com.example.feature_chat.presentation.viewmodel.ConversationViewModel
+import com.example.share_presentation.ConversationItem
 
 @Composable
 fun ConversationScreen(
@@ -27,6 +32,10 @@ fun ConversationScreen(
     onSearchClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
+    val conversationViewModel: ConversationViewModel = hiltViewModel()
+    val conversations by conversationViewModel.conversations()
+        .collectAsStateWithLifecycle(emptyList())
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -66,15 +75,18 @@ fun ConversationScreen(
                 Spacer(modifier = Modifier.height(AppDimens.Space.Md))
             }
 
-//            items(
-//                count = 10
-//            ) {
-//                ChatItem(
-//                    onClick = {
-//                        onChatItemClick("")
-//                    }
-//                )
-//            }
+            items(
+                count = conversations.size,
+                key = { index -> conversations[index].conversation.id}
+            ) { index ->
+                val conversationWithInfo = conversations[index]
+                ConversationItem(
+                    conversationWithInfo = conversationWithInfo,
+                    onClick = { conversationId ->
+                        onNavigationToConversationDetail(conversationId)
+                    }
+                )
+            }
         }
     }
 }

@@ -32,6 +32,7 @@ import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_search.presentation.component.SearchTopBar
 import com.example.share_presentation.ConversationItem
+import com.example.share_presentation.SearchItem
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -128,9 +129,13 @@ fun SearchScreen (
                             count = users.size,
                             key = { index -> users[index].id }
                         ) { index ->
-                            ConversationItem(
-                                user = users[index],
-                                onClick = { user ->
+                            val user = users[index]
+                            SearchItem(
+                                id = user.id,
+                                name = user.firstName + " " + user.lastName,
+                                avatarUrl = user.avatarUrl,
+                                status = user.status,
+                                onClick = {
                                     keyboardController?.hide()
                                     searchViewModel.openDirectConversation(user.id)
                                 }

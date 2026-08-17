@@ -1,8 +1,13 @@
 package com.example.infrastructure.mapper.remote
 
 import com.example.core_model.Conversation
+import com.example.core_model.Group
+import com.example.core_model.User
+import com.example.core_model.composite.ConversationDisplayInfo
+import com.example.core_model.composite.ConversationWithInfo
 import com.example.core_model.enum.ConversationType
 import com.example.core_network.dto.ConversationDto
+import com.example.core_utils.toRelativeString
 
 fun ConversationDto.toDomain(): Conversation {
     return Conversation(
@@ -10,18 +15,21 @@ fun ConversationDto.toDomain(): Conversation {
         type = ConversationType.valueOf(type),
         participants = participants,
         lastMessage = lastMessage,
-        lastMessageTime = lastMessageTime,
-        createdAt = createdAt
+        lastMessageTime = lastMessageTime?.toRelativeString(),
+        createdAt = createdAt.toRelativeString()
     )
 }
 
-fun Conversation.toDto(): ConversationDto {
-    return ConversationDto(
-        id = id,
-        type = type.name,
-        participants = participants,
-        lastMessage = lastMessage,
-        lastMessageTime = lastMessageTime,
-        createdAt = createdAt
+fun Conversation.toConversationWithUser(user: User): ConversationWithInfo {
+    return ConversationWithInfo(
+        conversation = this,
+        displayInfo = ConversationDisplayInfo.Direct(user)
+    )
+}
+
+fun Conversation.toConversationWithGroup(group: Group): ConversationWithInfo {
+    return ConversationWithInfo(
+        conversation = this,
+        displayInfo = ConversationDisplayInfo.Group(group)
     )
 }

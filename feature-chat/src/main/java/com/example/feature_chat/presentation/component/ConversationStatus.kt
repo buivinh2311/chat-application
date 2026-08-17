@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
+import com.example.core_model.Conversation
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 

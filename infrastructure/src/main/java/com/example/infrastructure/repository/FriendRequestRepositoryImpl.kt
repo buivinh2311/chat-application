@@ -57,6 +57,7 @@ class FriendRequestRepositoryImpl @Inject constructor(
             .document(friendRequestId)
             .addSnapshotListener { snapshots, exception ->
                 if(exception != null) {
+                    close(exception)
                     return@addSnapshotListener
                 }
                 trySend(snapshots?.exists() == true)
@@ -80,6 +81,7 @@ class FriendRequestRepositoryImpl @Inject constructor(
             )
             .addSnapshotListener { snapshots, exception ->
                 if(exception != null) {
+                    close(exception)
                     return@addSnapshotListener
                 }
                 val list = snapshots?.documents
@@ -109,11 +111,6 @@ class FriendRequestRepositoryImpl @Inject constructor(
         transaction: Transaction,
         requestId: String
     ) {
-        Log.d(
-            "ACCEPT_FRIEND",
-            "delete requestId=$requestId"
-        )
-
         val requestRef = firestore
             .collection(FRIEND_REQUESTS)
             .document(requestId)

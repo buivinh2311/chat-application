@@ -80,7 +80,7 @@ fun ConversationDetailScreen(
                     val conversation = data.conversation
                     val isFriend by conversationDetailViewModel
                         .isFriend(user.id)
-                        .collectAsStateWithLifecycle(false)
+                        .collectAsStateWithLifecycle(true)
                     val isSentRequest by conversationDetailViewModel
                         .isSentRequest(user.id)
                         .collectAsStateWithLifecycle(false)

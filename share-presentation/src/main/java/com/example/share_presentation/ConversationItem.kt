@@ -24,7 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
+import com.example.core_model.Conversation
 import com.example.core_model.User
+import com.example.core_model.composite.ConversationDisplayInfo
+import com.example.core_model.composite.ConversationWithInfo
+import com.example.core_model.enum.ConversationType
 import com.example.core_model.enum.UserStatus
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
@@ -32,12 +36,14 @@ import com.example.core_resource.R
 @Composable
 fun ConversationItem(
     modifier: Modifier = Modifier,
-    user: User,
-    onClick: (User) -> Unit
+    conversationWithInfo: ConversationWithInfo,
+    onClick: (String) -> Unit
 ) {
+    val conversation = conversationWithInfo.conversation
+    val displayInfo = conversationWithInfo.displayInfo
     Surface(
         onClick = {
-            onClick(user)
+            onClick(conversation.id)
         },
         color = Color.Transparent,
         modifier = modifier.height(AppDimens.Layout.ChatItemHeight)
@@ -52,7 +58,10 @@ fun ConversationItem(
         ) {
             Box {
                 AsyncImage(
-                    model = user.avatarUrl,
+                    model = when(displayInfo) {
+                        is ConversationDisplayInfo.Direct -> displayInfo.otherUser.avatarUrl
+                        is ConversationDisplayInfo.Group -> displayInfo.group.avatarUrl
+                    },
                     contentDescription = null,
                     placeholder = painterResource(R.drawable.account),
                     error = painterResource(R.drawable.account),
@@ -63,20 +72,21 @@ fun ConversationItem(
                     contentScale = ContentScale.Crop
                 )
 
-                if(user.status == UserStatus.ONLINE) {
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .size(AppDimens.Icon.Xs)
-                            .clip(shape = CircleShape)
-                            .background(color = Color(0xFF31A24C))
-                            .border(
-                                width = AppDimens.Border.Thick,
-                                color = MaterialTheme.colorScheme.background,
-                                shape = CircleShape
-                            )
-                    )
-                }
+
+//                if(conversation.status == UserStatus.ONLINE) {
+//                    Box(
+//                        modifier = Modifier
+//                            .align(Alignment.BottomEnd)
+//                            .size(AppDimens.Icon.Xs)
+//                            .clip(shape = CircleShape)
+//                            .background(color = Color(0xFF31A24C))
+//                            .border(
+//                                width = AppDimens.Border.Thick,
+//                                color = MaterialTheme.colorScheme.background,
+//                                shape = CircleShape
+//                            )
+//                    )
+//                }
             }
             Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
@@ -85,21 +95,30 @@ fun ConversationItem(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = user.firstName + " " + user.lastName,
+                    text = when(displayInfo) {
+                        is ConversationDisplayInfo.Direct ->
+                            displayInfo.otherUser.firstName + " " + displayInfo.otherUser.lastName
+
+                        is ConversationDisplayInfo.Group -> displayInfo.group.name
+                    },
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                Text(
-                    text = "last message",
-                    style = MaterialTheme.typography.bodySmall
-                )
+                conversation.lastMessage?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
             Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
-            Text(
-                text = "last day",
-                style = MaterialTheme.typography.bodySmall
-            )
+            conversation.lastMessageTime?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 }
