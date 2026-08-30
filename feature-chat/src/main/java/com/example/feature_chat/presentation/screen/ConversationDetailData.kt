@@ -11,6 +11,7 @@ sealed interface ConversationDetailData {
 
     data class Group(
         val conversation: Conversation,
-        val group: com.example.core_model.Group
+        val group: com.example.core_model.Group,
+        val users: Map<String, User>
     ) : ConversationDetailData
 }

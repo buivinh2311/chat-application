@@ -38,6 +38,7 @@ uiTextGoogleFontsVersion = "1.11.4"
 firebase-bom = "34.2.0"
 google-services = "4.4.0"
 okhttp = "5.1.0"
+cloudinary = "3.1.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -103,10 +104,15 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 androidx-window = { module = "androidx.window:window", version.ref = "window" }
+#noinspection SimilarGradleDependency
 androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3Session" }
+#noinspection SimilarGradleDependency
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3Exoplayer" }
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastoreCore" }
+#noinspection SimilarGradleDependency
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFontsVersion" }
+
+cloudinary-android = { module = "com.cloudinary:cloudinary-android", version.ref = "cloudinary" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

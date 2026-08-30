@@ -3,6 +3,7 @@ package com.example.chatapplication
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -36,6 +37,9 @@ class MainActivity : ComponentActivity() {
             )
         }
         enableEdgeToEdge()
+        window.setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+        )
         setContent {
             val mainViewModel: MainViewModel = hiltViewModel()
             val themeState by mainViewModel.themeState.collectAsStateWithLifecycle()

@@ -2,26 +2,46 @@ package com.example.core_utils
 
 import android.content.Context
 import android.net.Uri
+import android.provider.OpenableColumns
+import android.webkit.MimeTypeMap
 import java.io.File
 
 fun uriToFile(
     context: Context,
     uri: Uri
 ): File {
+    val fileName = context.contentResolver.query(
+        uri,
+        arrayOf(OpenableColumns.DISPLAY_NAME),
+        null,
+        null,
+        null
+    )?.use { cursor ->
+        if (cursor.moveToFirst()) {
+            cursor.getString(
+                cursor.getColumnIndexOrThrow(
+                    OpenableColumns.DISPLAY_NAME
+                )
+            )
+        } else {
+            null
+        }
+    } ?: "upload_file"
 
     val inputStream =
         context.contentResolver.openInputStream(uri)
             ?: throw IllegalArgumentException("Cannot open Uri")
 
-    val file =
-        File.createTempFile(
-            "avatar",
-            ".jpg",
-            context.cacheDir
-        )
+    val file = File(
+        context.cacheDir,
+        fileName
+    )
 
-    file.outputStream().use { output ->
-        inputStream.copyTo(output)
+    inputStream.use { input ->
+        file.outputStream().use { output ->
+            input.copyTo(output)
+        }
     }
+
     return file
 }

@@ -34,10 +34,12 @@ class GetConversationUseCase @Inject constructor(
                 }
 
                 ConversationType.GROUP -> {
+                    val users = userRepository.getUsersByIds(conversation.participants)
                     ConversationDetailData.Group(
                         conversation = conversation,
                         group = groupRepository.getGroup(conversationId)
-                            ?: throw IllegalStateException("Group not found")
+                            ?: throw IllegalStateException("Group not found"),
+                        users = users.associateBy { it.id }
                     )
                 }
             }

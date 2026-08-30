@@ -1,6 +1,7 @@
 package com.example.core_domain.repository
 
 import android.net.Uri
+import com.example.core_model.CloudinaryUploadResult
 import java.io.File
 
 interface StorageRepository {
@@ -10,4 +11,9 @@ interface StorageRepository {
     ): String
 
     suspend fun deleteAvatar(uid: String): Result<Unit>
+
+    suspend fun upload(
+        file: File,
+        resourceType: String
+    ): CloudinaryUploadResult?
 }

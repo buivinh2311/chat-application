@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -26,17 +28,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.example.core_model.enum.ConversationType
+import com.example.core_model.Message
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import com.example.core_ui.component.AppButton
-import com.example.core_ui.component.Message
 import com.example.core_ui.component.showToast
 import com.example.core_ui.state.UiState
 import com.example.feature_chat.presentation.component.ConversationDetailBottomBar
 import com.example.feature_chat.presentation.component.ConversationDetailTopBar
 import com.example.feature_chat.presentation.event.ConversationEvent
 import com.example.feature_chat.presentation.viewmodel.ConversationDetailViewModel
+import com.example.share_presentation.FileMessageItem
+import com.example.share_presentation.ImageMessageItem
+import com.example.share_presentation.TextMessageItem
+import com.example.share_presentation.VideoMessageItem
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
@@ -84,6 +89,9 @@ fun ConversationDetailScreen(
                     val isSentRequest by conversationDetailViewModel
                         .isSentRequest(user.id)
                         .collectAsStateWithLifecycle(false)
+                    val messages by conversationDetailViewModel
+                        .getMessage(conversationId)
+                        .collectAsStateWithLifecycle(emptyList())
 
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
@@ -95,7 +103,22 @@ fun ConversationDetailScreen(
                             )
                         },
                         bottomBar = {
-                            ConversationDetailBottomBar()
+                            ConversationDetailBottomBar(
+                                onSendMessageClick = { message ->
+                                    conversationDetailViewModel.sendTextMessage(conversationId, message)
+                                },
+                                onLikeClick = {
+
+                                },
+                                onFileSelected = { files ->
+                                    conversationDetailViewModel.sendFileMessage(conversationId, files)
+                                },
+                                onCameraClick = { },
+                                onMediaSelected = { medias ->
+                                    conversationDetailViewModel.sendMediaMessage(conversationId, medias)
+                                },
+                                onEmojiClick = { }
+                            )
                         }
                     ) { innerPadding ->
                         LazyColumn(
@@ -125,7 +148,7 @@ fun ConversationDetailScreen(
                                     )
                                 }
 
-                                if(isFriend == false) {
+                                if(!isFriend) {
                                     Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
@@ -153,18 +176,48 @@ fun ConversationDetailScreen(
                             }
 
                             items(
-                                count = 30
+                                count = messages.size,
+                                key = { index -> messages[index].id }
                             ) { index ->
-                                if (index % 2 == 0) {
-                                    Message(
-                                        content = "message",
-                                        isMine = false
-                                    )
-                                } else {
-                                    Message(
-                                        content = "message",
-                                        isMine = true
-                                    )
+                                val message = messages[index]
+                                val prevMessage = if(index != 0) messages[index - 1] else null
+                                val isMine = message.senderId != user.id
+                                when (message) {
+                                    is Message.Text -> {
+                                        TextMessageItem(
+                                            text = message.text,
+                                            isMine = isMine
+                                        )
+                                    }
+
+                                    is Message.Image -> {
+                                        ImageMessageItem(
+                                            fileUrl = message.fileUrl,
+                                            width = message.width,
+                                            height = message.height,
+                                            isMine = isMine,
+                                            onClick = { }
+                                        )
+                                    }
+
+                                    is Message.Video -> {
+                                        VideoMessageItem(
+                                            thumbnailUrl = message.thumbnailUrl,
+                                            width = message.width,
+                                            height = message.height,
+                                            isMine = isMine,
+                                            onClick = { }
+                                        )
+                                    }
+
+                                    is Message.File -> {
+                                        FileMessageItem(
+                                            fileName = message.fileName,
+                                            fileSize = message.fileSize,
+                                            isMine = true,
+                                            onClick = {}
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -183,7 +236,20 @@ fun ConversationDetailScreen(
                             )
                         },
                         bottomBar = {
-                            ConversationDetailBottomBar()
+                            ConversationDetailBottomBar(
+                                onSendMessageClick = { message ->
+                                    conversationDetailViewModel.sendTextMessage(conversationId, message)
+                                },
+                                onLikeClick = { },
+                                onFileSelected = { files ->
+                                    conversationDetailViewModel.sendFileMessage(conversationId, files)
+                                },
+                                onCameraClick = { },
+                                onMediaSelected = { medias ->
+                                    conversationDetailViewModel.sendMediaMessage(conversationId, medias)
+                                },
+                                onEmojiClick = { }
+                            )
                         }
                     ) { innerPadding ->
                         LazyColumn(
@@ -199,7 +265,7 @@ fun ConversationDetailScreen(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     AsyncImage(
-                                        model = " ",
+                                        model = group.avatarUrl,
                                         contentDescription = null,
                                         placeholder = painterResource(R.drawable.account),
                                         error = painterResource(R.drawable.account),
@@ -221,21 +287,21 @@ fun ConversationDetailScreen(
                                 )
                             }
 
-                            items(
-                                count = 30
-                            ) { index ->
-                                if (index % 2 == 0) {
-                                    Message(
-                                        content = "message",
-                                        isMine = false
-                                    )
-                                } else {
-                                    Message(
-                                        content = "message",
-                                        isMine = true
-                                    )
-                                }
-                            }
+//                            items(
+//                                count = 30
+//                            ) { index ->
+//                                if (index % 2 == 0) {
+//                                    Message(
+//                                        content = "message",
+//                                        isMine = false
+//                                    )
+//                                } else {
+//                                    Message(
+//                                        content = "message",
+//                                        isMine = true
+//                                    )
+//                                }
+//                            }
                         }
                     }
                 }

@@ -72,6 +72,9 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
 
+    //cloudinary
+    implementation(libs.cloudinary.android)
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)

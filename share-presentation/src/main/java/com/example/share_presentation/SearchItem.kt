@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,7 +41,9 @@ fun SearchItem(
             onClick(id)
         },
         color = Color.Transparent,
-        modifier = modifier.height(AppDimens.Layout.ChatItemHeight)
+        modifier = modifier
+            .height(AppDimens.Layout.ChatItemHeight)
+            .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
