@@ -33,6 +33,10 @@ object AppIcons {
         @Composable
         get() = painterResource(R.drawable.ic_chat)
 
+    val Close
+        @Composable
+        get() = painterResource(R.drawable.ic_close)
+
     val DarkMode
         @Composable
         get() = painterResource(R.drawable.ic_dark_mode)
@@ -40,6 +44,10 @@ object AppIcons {
     val Delete
         @Composable
         get() = painterResource(R.drawable.ic_delete)
+
+    val Download
+        @Composable
+        get() = painterResource(R.drawable.ic_download)
 
     val Emoji
         @Composable

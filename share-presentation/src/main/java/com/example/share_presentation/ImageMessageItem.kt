@@ -1,5 +1,6 @@
 package com.example.share_presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
@@ -74,7 +75,10 @@ fun ImageMessageItem(
                         .align(
                             alignment = if (isMine) Alignment.CenterEnd
                             else Alignment.CenterStart
-                        ),
+                        )
+                        .clickable {
+                            onClick()
+                        },
                     contentScale = ContentScale.Fit
                 )
             }

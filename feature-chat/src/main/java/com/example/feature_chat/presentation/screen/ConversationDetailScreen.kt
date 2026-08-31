@@ -19,6 +19,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -36,6 +39,8 @@ import com.example.core_ui.component.showToast
 import com.example.core_ui.state.UiState
 import com.example.feature_chat.presentation.component.ConversationDetailBottomBar
 import com.example.feature_chat.presentation.component.ConversationDetailTopBar
+import com.example.feature_chat.presentation.component.ImagePreviewDialog
+import com.example.feature_chat.presentation.event.ConversationDetailEvent
 import com.example.feature_chat.presentation.event.ConversationEvent
 import com.example.feature_chat.presentation.viewmodel.ConversationDetailViewModel
 import com.example.share_presentation.FileMessageItem
@@ -59,14 +64,32 @@ fun ConversationDetailScreen(
     LaunchedEffect(Unit) {
         conversationDetailViewModel.event.collect { event ->
             when (event) {
-                ConversationEvent.ShowError -> {
+                ConversationDetailEvent.ShowError -> {
                     showToast(
                         context,
                         message = context.getString(R.string.text_unknown_error)
                     )
                 }
+
+                ConversationDetailEvent.DownloadSuccess -> {
+                    showToast(
+                        context,
+                        message = context.getString(R.string.download_success)
+                    )
+                }
+
+                ConversationDetailEvent.DownloadFailed -> {
+                    showToast(
+                        context,
+                        message = context.getString(R.string.download_failed)
+                    )
+                }
             }
         }
+    }
+
+    var imageMessage: Message.Image? by rememberSaveable {
+        mutableStateOf(null)
     }
 
     when (val state = uiState) {
@@ -82,7 +105,6 @@ fun ConversationDetailScreen(
             when(val data = state.data) {
                 is ConversationDetailData.Direct -> {
                     val user = data.user
-                    val conversation = data.conversation
                     val isFriend by conversationDetailViewModel
                         .isFriend(user.id)
                         .collectAsStateWithLifecycle(true)
@@ -196,7 +218,9 @@ fun ConversationDetailScreen(
                                             width = message.width,
                                             height = message.height,
                                             isMine = isMine,
-                                            onClick = { }
+                                            onClick = {
+                                                imageMessage = message
+                                            }
                                         )
                                     }
 
@@ -279,7 +303,7 @@ fun ConversationDetailScreen(
                                 Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
 
                                 AppButton(
-                                    label = stringResource(R.string.add_friend),
+                                    label = stringResource(R.string.send_group_request),
                                     color = MaterialTheme.colorScheme.primary,
                                     onClick = {
 
@@ -307,5 +331,21 @@ fun ConversationDetailScreen(
                 }
             }
         }
+    }
+
+    imageMessage?.let {
+        ImagePreviewDialog(
+            imageUrl = it.fileUrl,
+            onDismiss = {
+                imageMessage = null
+            },
+            onDownload = {
+                conversationDetailViewModel.downloadImage(
+                    context,
+                    it.fileUrl,
+                    it.fileName
+                )
+            }
+        )
     }
 }

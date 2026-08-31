@@ -83,4 +83,7 @@
     <string name="action_confirm">Xác nhận</string>
     <string name="title_no_search">Không tìm thấy kết quả phù hợp</string>
     <string name="recall">Thu hồi</string>
+    <string name="send_group_request">Tham gia nhóm</string>
+    <string name="download_success">Tải xuống thành công</string>
+    <string name="download_failed">Tải xuống thất bại</string>
 </resources>

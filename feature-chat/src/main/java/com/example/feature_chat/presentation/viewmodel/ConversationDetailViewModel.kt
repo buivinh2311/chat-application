@@ -8,8 +8,10 @@ import com.example.core_model.Message
 import com.example.core_model.MediaFile
 import com.example.core_model.VideoMetadata
 import com.example.core_ui.state.UiState
+import com.example.feature_chat.presentation.event.ConversationDetailEvent
 import com.example.feature_chat.presentation.screen.ConversationDetailData
 import com.example.feature_chat.presentation.event.ConversationEvent
+import com.example.feature_chat.usecase.DownloadImageUseCase
 import com.example.feature_chat.usecase.GetConversationUseCase
 import com.example.feature_chat.usecase.GetMessagesUseCase
 import com.example.feature_chat.usecase.IsFriendUseCase
@@ -45,20 +47,21 @@ class ConversationDetailViewModel @Inject constructor(
     private val sendImageMessageUseCase: SendImageMessageUseCase,
     private val sendVideoMessageUseCase: SendVideoMessageUseCase,
     private val sendFileMessageUseCase: SendFileMessageUseCase,
-    private val markMessageAsReadUseCase: MarkMessageAsReadUseCase
-): ViewModel() {
+    private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
+    private val downloadImageUseCase: DownloadImageUseCase
+) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState<ConversationDetailData>>(
         UiState.Loading
     )
     val uiState = _uiState.asStateFlow()
 
-    private val _event = MutableSharedFlow<ConversationEvent>()
+    private val _event = MutableSharedFlow<ConversationDetailEvent>()
     val event = _event.asSharedFlow()
 
     fun loadConversation(conversationId: String) {
         viewModelScope.launch {
             val result = getConversationUseCase(conversationId)
-            _uiState.value = if(result == null) {
+            _uiState.value = if (result == null) {
                 UiState.Empty
             } else {
                 UiState.Success(result)
@@ -73,8 +76,8 @@ class ConversationDetailViewModel @Inject constructor(
     fun sendFriendRequest(receiverId: String) {
         viewModelScope.launch {
             val result = sendFriendRequestUseCase(receiverId)
-            if(result.isFailure) {
-                _event.emit(ConversationEvent.ShowError)
+            if (result.isFailure) {
+                _event.emit(ConversationDetailEvent.ShowError)
             }
         }
     }
@@ -82,8 +85,8 @@ class ConversationDetailViewModel @Inject constructor(
     fun recallFriendRequest(receiverId: String) {
         viewModelScope.launch {
             val result = recallFriendRequestUseCase(receiverId)
-            if(result.isFailure) {
-                _event.emit(ConversationEvent.ShowError)
+            if (result.isFailure) {
+                _event.emit(ConversationDetailEvent.ShowError)
             }
         }
     }
@@ -105,8 +108,8 @@ class ConversationDetailViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val result = sendTextMessageUseCase(conversationId, text)
-            if(result.isFailure) {
-                _event.emit(ConversationEvent.ShowError)
+            if (result.isFailure) {
+                _event.emit(ConversationDetailEvent.ShowError)
             }
         }
     }
@@ -145,6 +148,26 @@ class ConversationDetailViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             markMessageAsReadUseCase(conversationId, messageId)
+        }
+    }
+
+    fun downloadImage(
+        context: Context,
+        imageUrl: String,
+        fileName: String
+    ) {
+        viewModelScope.launch {
+            downloadImageUseCase(
+                context = context,
+                imageUrl = imageUrl,
+                fileName = fileName
+            )
+            .onSuccess {
+                _event.emit(ConversationDetailEvent.DownloadSuccess)
+            }
+            .onFailure {
+                _event.emit(ConversationDetailEvent.DownloadFailed)
+            }
         }
     }
 }
