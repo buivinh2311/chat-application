@@ -1,18 +1,12 @@
 package com.example.feature_chat.usecase
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.media.MediaMetadataRetriever
 import com.example.core_domain.repository.AuthRepository
 import com.example.core_domain.repository.MessageRepository
 import com.example.core_domain.repository.StorageRepository
-import com.example.core_model.MediaFile
 import com.example.core_model.Message
-import com.example.core_model.VideoMetadata
 import com.example.core_model.enum.MessageStatus
 import com.google.firebase.Timestamp
 import java.io.File
-import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
 

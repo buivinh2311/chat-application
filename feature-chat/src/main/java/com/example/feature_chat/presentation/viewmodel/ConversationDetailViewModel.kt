@@ -1,16 +1,12 @@
 package com.example.feature_chat.presentation.viewmodel
 
 import android.content.Context
-import android.media.MediaMetadataRetriever
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core_model.Message
 import com.example.core_model.MediaFile
-import com.example.core_model.VideoMetadata
 import com.example.core_ui.state.UiState
 import com.example.feature_chat.presentation.event.ConversationDetailEvent
 import com.example.feature_chat.presentation.screen.ConversationDetailData
-import com.example.feature_chat.presentation.event.ConversationEvent
 import com.example.feature_chat.usecase.DownloadImageUseCase
 import com.example.feature_chat.usecase.GetConversationUseCase
 import com.example.feature_chat.usecase.GetMessagesUseCase

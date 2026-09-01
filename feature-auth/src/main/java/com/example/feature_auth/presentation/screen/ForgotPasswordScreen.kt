@@ -54,7 +54,7 @@ fun ForgotPasswordScreen(
         mutableStateOf("")
     }
 
-    var remainingSeconds by rememberSaveable {
+    var remainingSeconds by remember {
         mutableIntStateOf(0)
     }
 

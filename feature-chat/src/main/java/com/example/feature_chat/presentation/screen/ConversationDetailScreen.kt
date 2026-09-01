@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -32,11 +33,13 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.core_model.Message
+import com.example.core_model.composite.MediaPreview
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import com.example.core_ui.component.AppButton
 import com.example.core_ui.component.showToast
 import com.example.core_ui.state.UiState
+import com.example.core_utils.toRelativeString
 import com.example.feature_chat.presentation.component.ConversationDetailBottomBar
 import com.example.feature_chat.presentation.component.ConversationDetailTopBar
 import com.example.feature_chat.presentation.component.ImagePreviewDialog
@@ -88,7 +91,7 @@ fun ConversationDetailScreen(
         }
     }
 
-    var imageMessage: Message.Image? by rememberSaveable {
+    var mediaPreview: MediaPreview? by remember {
         mutableStateOf(null)
     }
 
@@ -219,7 +222,13 @@ fun ConversationDetailScreen(
                                             height = message.height,
                                             isMine = isMine,
                                             onClick = {
-                                                imageMessage = message
+                                                mediaPreview = MediaPreview(
+                                                    fileUrl = message.fileUrl,
+                                                    fileName = message.fileName,
+                                                    sentAt = message.createdAt.toRelativeString(),
+                                                    avatarUrl = user.avatarUrl,
+                                                    displayName = user.firstName + " " + user.lastName
+                                                )
                                             }
                                         )
                                     }
@@ -333,11 +342,14 @@ fun ConversationDetailScreen(
         }
     }
 
-    imageMessage?.let {
+    mediaPreview?.let {
         ImagePreviewDialog(
-            imageUrl = it.fileUrl,
+            fileUrl = it.fileUrl,
+            sentAt = it.sentAt,
+            avatarUrl = it.avatarUrl,
+            senderName = it.displayName,
             onDismiss = {
-                imageMessage = null
+                mediaPreview = null
             },
             onDownload = {
                 conversationDetailViewModel.downloadImage(

@@ -88,7 +88,7 @@ fun LoginScreen(
         mutableStateOf(showDialog)
     }
 
-    var remainingSeconds by rememberSaveable {
+    var remainingSeconds by remember {
         mutableIntStateOf(60)
     }
 

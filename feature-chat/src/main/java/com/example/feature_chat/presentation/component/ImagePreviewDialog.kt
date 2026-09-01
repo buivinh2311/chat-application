@@ -1,14 +1,32 @@
 package com.example.feature_chat.presentation.component
 
 import android.app.Activity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -19,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -26,6 +45,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
@@ -34,6 +56,7 @@ import androidx.core.view.WindowInsetsCompat
 import coil.compose.AsyncImage
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
+import com.example.core_resource.R
 import com.example.core_utils.hideSystemBars
 import com.example.core_utils.showSystemBars
 import kotlin.div
@@ -42,12 +65,16 @@ import kotlin.unaryMinus
 
 @Composable
 fun ImagePreviewDialog(
-    imageUrl: String,
+    fileUrl: String,
+    sentAt: String,
+    avatarUrl: String?,
+    senderName: String,
     onDismiss: () -> Unit,
     onDownload: () -> Unit
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
+    var isVisible by remember { mutableStateOf(false) }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -76,7 +103,7 @@ fun ImagePreviewDialog(
                 .background(Color.Black)
         ) {
             AsyncImage(
-                model = imageUrl,
+                model = fileUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
@@ -99,6 +126,9 @@ fun ImagePreviewDialog(
                     }
                     .pointerInput(Unit) {
                         detectTapGestures(
+                            onTap = {
+                                isVisible = !isVisible
+                            },
                             onDoubleTap = {
                                 if (scale > 1f) {
                                     scale = 1f
@@ -117,36 +147,103 @@ fun ImagePreviewDialog(
                     }
             )
 
-            IconButton(
-                onClick = onDismiss,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(
-                        top = AppDimens.Space.Md,
-                        start = AppDimens.Space.Md
+            if(isVisible) {
+                AnimatedVisibility(
+                    visible = isVisible,
+                    enter = fadeIn(
+                        animationSpec = tween(100)
+                    ) + slideInVertically(
+                        initialOffsetY = { -it },
+                        animationSpec = tween(300)
+                    ),
+                    exit = fadeOut(
+                        animationSpec = tween(100)
+                    ) + slideOutVertically(
+                        targetOffsetY = { -it },
+                        animationSpec = tween(200)
                     )
-            ) {
-                Icon(
-                    painter = AppIcons.Close,
-                    contentDescription = "Close",
-                    tint = Color.White
-                )
-            }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(alignment = Alignment.TopStart)
+                            .background(
+                                color = Color.Black.copy(alpha = 0.3f)
+                            )
+                            .padding(
+                                top = 36.dp,
+                                bottom = AppDimens.Space.Sm,
+                                start = AppDimens.Space.Xs,
+                                end = AppDimens.Space.Xs
+                            ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = onDismiss
+                        ) {
+                            Icon(
+                                painter = AppIcons.Back,
+                                contentDescription = "Close",
+                                tint = Color.White,
+                                modifier = Modifier.size(AppDimens.Icon.Md)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
-            IconButton(
-                onClick = onDownload,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(
-                        top = AppDimens.Space.Md,
-                        end = AppDimens.Space.Md
-                    )
-            ) {
-                Icon(
-                    painter = AppIcons.Download,
-                    contentDescription = "Download",
-                    tint = Color.White
-                )
+                        AsyncImage(
+                            model = avatarUrl,
+                            contentDescription = null,
+                            placeholder = painterResource(R.drawable.account),
+                            error = painterResource(R.drawable.account),
+                            modifier = Modifier
+                                .size(AppDimens.ImageSize.Sm)
+                                .clip(shape = CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                        Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
+
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = senderName,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = Color.White,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+
+                            Text(
+                                text = sentAt,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White
+                            )
+                        }
+
+                        IconButton(
+                            onClick = onDownload
+                        ) {
+                            Icon(
+                                painter = AppIcons.Download,
+                                contentDescription = "Download",
+                                tint = Color.White,
+                                modifier = Modifier.size(AppDimens.Icon.Md)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+
+                        IconButton(
+                            onClick = { }
+                        ) {
+                            Icon(
+                                painter = AppIcons.More,
+                                contentDescription = "More",
+                                tint = Color.White,
+                                modifier = Modifier.size(AppDimens.Icon.Md)
+                            )
+                        }
+                    }
+                }
             }
         }
     }
