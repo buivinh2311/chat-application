@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.core_model.Message
 import com.example.core_model.composite.MediaPreview
+import com.example.core_model.enum.MessageType
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import com.example.core_ui.component.AppButton
@@ -43,6 +44,7 @@ import com.example.core_utils.toRelativeString
 import com.example.feature_chat.presentation.component.ConversationDetailBottomBar
 import com.example.feature_chat.presentation.component.ConversationDetailTopBar
 import com.example.feature_chat.presentation.component.ImagePreviewDialog
+import com.example.feature_chat.presentation.component.VideoPreviewDialog
 import com.example.feature_chat.presentation.event.ConversationDetailEvent
 import com.example.feature_chat.presentation.event.ConversationEvent
 import com.example.feature_chat.presentation.viewmodel.ConversationDetailViewModel
@@ -91,7 +93,11 @@ fun ConversationDetailScreen(
         }
     }
 
-    var mediaPreview: MediaPreview? by remember {
+    var imagePreview: MediaPreview? by remember {
+        mutableStateOf(null)
+    }
+
+    var videoPreview: MediaPreview? by remember {
         mutableStateOf(null)
     }
 
@@ -222,7 +228,7 @@ fun ConversationDetailScreen(
                                             height = message.height,
                                             isMine = isMine,
                                             onClick = {
-                                                mediaPreview = MediaPreview(
+                                                imagePreview = MediaPreview(
                                                     fileUrl = message.fileUrl,
                                                     fileName = message.fileName,
                                                     sentAt = message.createdAt.toRelativeString(),
@@ -239,7 +245,15 @@ fun ConversationDetailScreen(
                                             width = message.width,
                                             height = message.height,
                                             isMine = isMine,
-                                            onClick = { }
+                                            onClick = {
+                                                videoPreview = MediaPreview(
+                                                    fileUrl = message.fileUrl,
+                                                    fileName = message.fileName,
+                                                    sentAt = message.createdAt.toRelativeString(),
+                                                    avatarUrl = user.avatarUrl,
+                                                    displayName = user.firstName + " " + user.lastName
+                                                )
+                                            }
                                         )
                                     }
 
@@ -342,17 +356,36 @@ fun ConversationDetailScreen(
         }
     }
 
-    mediaPreview?.let {
+    imagePreview?.let {
         ImagePreviewDialog(
             fileUrl = it.fileUrl,
             sentAt = it.sentAt,
             avatarUrl = it.avatarUrl,
             senderName = it.displayName,
             onDismiss = {
-                mediaPreview = null
+                imagePreview = null
             },
             onDownload = {
                 conversationDetailViewModel.downloadImage(
+                    context,
+                    it.fileUrl,
+                    it.fileName
+                )
+            }
+        )
+    }
+
+    videoPreview?.let {
+        VideoPreviewDialog(
+            fileUrl = it.fileUrl,
+            sentAt = it.sentAt,
+            avatarUrl = it.avatarUrl,
+            senderName = it.displayName,
+            onDismiss = {
+                videoPreview = null
+            },
+            onDownload = {
+                conversationDetailViewModel.downloadVideo(
                     context,
                     it.fileUrl,
                     it.fileName

@@ -1,5 +1,6 @@
 package com.example.share_presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
@@ -71,6 +72,9 @@ fun VideoMessageItem(
                             height = imageHeight
                         )
                         .clip(RoundedCornerShape(AppDimens.Radius.Xl))
+                        .clickable {
+                            onClick()
+                        }
                         .align(
                             alignment = if (isMine) Alignment.CenterEnd
                             else Alignment.CenterStart

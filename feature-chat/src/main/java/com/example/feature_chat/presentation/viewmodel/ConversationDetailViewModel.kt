@@ -8,6 +8,7 @@ import com.example.core_ui.state.UiState
 import com.example.feature_chat.presentation.event.ConversationDetailEvent
 import com.example.feature_chat.presentation.screen.ConversationDetailData
 import com.example.feature_chat.usecase.DownloadImageUseCase
+import com.example.feature_chat.usecase.DownloadVideoUseCase
 import com.example.feature_chat.usecase.GetConversationUseCase
 import com.example.feature_chat.usecase.GetMessagesUseCase
 import com.example.feature_chat.usecase.IsFriendUseCase
@@ -44,7 +45,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val sendVideoMessageUseCase: SendVideoMessageUseCase,
     private val sendFileMessageUseCase: SendFileMessageUseCase,
     private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
-    private val downloadImageUseCase: DownloadImageUseCase
+    private val downloadImageUseCase: DownloadImageUseCase,
+    private val downloadVideoUseCase: DownloadVideoUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState<ConversationDetailData>>(
         UiState.Loading
@@ -164,6 +166,26 @@ class ConversationDetailViewModel @Inject constructor(
             .onFailure {
                 _event.emit(ConversationDetailEvent.DownloadFailed)
             }
+        }
+    }
+
+    fun downloadVideo(
+        context: Context,
+        imageUrl: String,
+        fileName: String
+    ) {
+        viewModelScope.launch {
+            downloadVideoUseCase(
+                context = context,
+                videoUrl = imageUrl,
+                fileName = fileName
+            )
+                .onSuccess {
+                    _event.emit(ConversationDetailEvent.DownloadSuccess)
+                }
+                .onFailure {
+                    _event.emit(ConversationDetailEvent.DownloadFailed)
+                }
         }
     }
 }

@@ -46,6 +46,10 @@ dependencies {
 
     implementation(libs.coil)
 
+    //media3
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.ui)
+
     //hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

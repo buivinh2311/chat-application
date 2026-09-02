@@ -1,6 +1,7 @@
 package com.example.core_resource
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import java.util.Calendar
 
@@ -105,6 +106,14 @@ object AppIcons {
     val Password
         @Composable
         get() = painterResource(R.drawable.ic_password)
+
+    val Pause
+        @Composable
+        get() = painterResource(R.drawable.ic_pause)
+
+    val Play
+        @Composable
+        get() = painterResource(R.drawable.ic_play)
 
     val Search
         @Composable

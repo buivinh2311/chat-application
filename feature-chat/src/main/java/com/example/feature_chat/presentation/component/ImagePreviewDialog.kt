@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,6 +27,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -128,6 +131,13 @@ fun ImagePreviewDialog(
                         detectTapGestures(
                             onTap = {
                                 isVisible = !isVisible
+                                window?.let {
+                                    if(isVisible) {
+                                        showSystemBars(it)
+                                    } else {
+                                        hideSystemBars(it)
+                                    }
+                                }
                             },
                             onDoubleTap = {
                                 if (scale > 1f) {
@@ -147,101 +157,143 @@ fun ImagePreviewDialog(
                     }
             )
 
-            if(isVisible) {
-                AnimatedVisibility(
-                    visible = isVisible,
-                    enter = fadeIn(
-                        animationSpec = tween(100)
-                    ) + slideInVertically(
-                        initialOffsetY = { -it },
-                        animationSpec = tween(300)
-                    ),
-                    exit = fadeOut(
-                        animationSpec = tween(100)
-                    ) + slideOutVertically(
-                        targetOffsetY = { -it },
-                        animationSpec = tween(200)
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(alignment = Alignment.TopStart)
-                            .background(
-                                color = Color.Black.copy(alpha = 0.3f)
-                            )
-                            .padding(
-                                top = 36.dp,
-                                bottom = AppDimens.Space.Sm,
-                                start = AppDimens.Space.Xs,
-                                end = AppDimens.Space.Xs
-                            ),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        IconButton(
-                            onClick = onDismiss
-                        ) {
-                            Icon(
-                                painter = AppIcons.Back,
-                                contentDescription = "Close",
-                                tint = Color.White,
-                                modifier = Modifier.size(AppDimens.Icon.Md)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
-
-                        AsyncImage(
-                            model = avatarUrl,
-                            contentDescription = null,
-                            placeholder = painterResource(R.drawable.account),
-                            error = painterResource(R.drawable.account),
-                            modifier = Modifier
-                                .size(AppDimens.ImageSize.Sm)
-                                .clip(shape = CircleShape),
-                            contentScale = ContentScale.Crop
+            AnimatedVisibility(
+                visible = isVisible,
+                enter = fadeIn(
+                    animationSpec = tween(100)
+                ) + slideInVertically(
+                    initialOffsetY = { -it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(
+                    animationSpec = tween(100)
+                ) + slideOutVertically(
+                    targetOffsetY = { -it },
+                    animationSpec = tween(200)
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(alignment = Alignment.TopStart)
+                        .background(
+                            color = Color.Black.copy(alpha = 0.7f)
                         )
-                        Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
+                        .padding(
+                            top = 36.dp,
+                            bottom = AppDimens.Space.Sm,
+                            start = AppDimens.Space.Xs,
+                            end = AppDimens.Space.Xs
+                        ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(
+                        onClick = onDismiss
+                    ) {
+                        Icon(
+                            painter = AppIcons.Back,
+                            contentDescription = "Close",
+                            tint = Color.White,
+                            modifier = Modifier.size(AppDimens.Icon.Md)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text(
-                                text = senderName,
-                                style = MaterialTheme.typography.titleMedium,
-                                color = Color.White,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                    AsyncImage(
+                        model = avatarUrl,
+                        contentDescription = null,
+                        placeholder = painterResource(R.drawable.account),
+                        error = painterResource(R.drawable.account),
+                        modifier = Modifier
+                            .size(AppDimens.ImageSize.Sm)
+                            .clip(shape = CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
 
-                            Text(
-                                text = sentAt,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.White
-                            )
-                        }
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = senderName,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
 
-                        IconButton(
-                            onClick = onDownload
-                        ) {
-                            Icon(
-                                painter = AppIcons.Download,
-                                contentDescription = "Download",
-                                tint = Color.White,
-                                modifier = Modifier.size(AppDimens.Icon.Md)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+                        Text(
+                            text = sentAt,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White
+                        )
+                    }
 
-                        IconButton(
-                            onClick = { }
-                        ) {
-                            Icon(
-                                painter = AppIcons.More,
-                                contentDescription = "More",
-                                tint = Color.White,
-                                modifier = Modifier.size(AppDimens.Icon.Md)
-                            )
-                        }
+                    IconButton(
+                        onClick = onDownload
+                    ) {
+                        Icon(
+                            painter = AppIcons.Download,
+                            contentDescription = "Download",
+                            tint = Color.White,
+                            modifier = Modifier.size(AppDimens.Icon.Md)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(
+                            painter = AppIcons.More,
+                            contentDescription = "More",
+                            tint = Color.White,
+                            modifier = Modifier.size(AppDimens.Icon.Md)
+                        )
+                    }
+                }
+            }
+
+            AnimatedVisibility(
+                visible = isVisible,
+                enter = fadeIn(
+                    animationSpec = tween(100)
+                ) + slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(
+                    animationSpec = tween(100)
+                ) + slideOutVertically(
+                    targetOffsetY = { it },
+                    animationSpec = tween(200)
+                ),
+                modifier = Modifier.align(Alignment.BottomStart)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color.Black.copy(alpha = 0.7f)
+                        )
+                        .navigationBarsPadding()
+                        .padding(
+                            top = AppDimens.Space.Xs,
+                            bottom = AppDimens.Space.Xs,
+                            start = AppDimens.Space.Xs,
+                            end = AppDimens.Space.Xs
+                        ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(
+                            painter = AppIcons.More,
+                            contentDescription = "More",
+                            tint = Color.White,
+                            modifier = Modifier.size(AppDimens.Icon.Md)
+                        )
                     }
                 }
             }

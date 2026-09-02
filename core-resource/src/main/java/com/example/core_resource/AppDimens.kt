@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.dp
 object AppDimens {
 
     object Space {
+        val Xxs = 2.dp
         val Xs = 4.dp
         val Sm = 8.dp
         val Md = 12.dp
@@ -32,6 +33,7 @@ object AppDimens {
         val Sm = 20.dp
         val Md = 30.dp
         val Lg = 40.dp
+        val Xl = 56.dp
     }
 
     object Layout {
