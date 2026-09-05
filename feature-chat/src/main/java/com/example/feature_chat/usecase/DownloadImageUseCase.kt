@@ -14,7 +14,8 @@ class DownloadImageUseCase @Inject constructor() {
     suspend operator fun invoke(
         context: Context,
         imageUrl: String,
-        fileName: String
+        fileName: String,
+        mimeType: String
     ): Result<Long> = withContext(Dispatchers.IO) {
         runCatching {
             val resolver = context.contentResolver
@@ -25,7 +26,7 @@ class DownloadImageUseCase @Inject constructor() {
                 )
                 put(
                     MediaStore.Images.Media.MIME_TYPE,
-                    "image/jpeg"
+                    mimeType
                 )
                 put(
                     MediaStore.Images.Media.RELATIVE_PATH,

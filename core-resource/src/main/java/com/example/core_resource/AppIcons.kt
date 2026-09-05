@@ -46,6 +46,10 @@ object AppIcons {
         @Composable
         get() = painterResource(R.drawable.ic_delete)
 
+    val Down
+        @Composable
+        get() = painterResource(R.drawable.ic_down)
+
     val Download
         @Composable
         get() = painterResource(R.drawable.ic_download)

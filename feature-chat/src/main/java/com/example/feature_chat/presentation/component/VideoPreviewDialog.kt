@@ -90,8 +90,6 @@ fun VideoPreviewDialog (
     onDismiss: () -> Unit,
     onDownload: () -> Unit
 ) {
-    var scale by remember { mutableFloatStateOf(1f) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
     var isVisible by remember { mutableStateOf(false) }
     var currentPosition by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(0L) }

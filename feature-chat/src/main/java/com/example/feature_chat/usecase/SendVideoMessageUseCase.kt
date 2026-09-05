@@ -3,6 +3,7 @@ package com.example.feature_chat.usecase
 import com.example.core_domain.repository.AuthRepository
 import com.example.core_domain.repository.MessageRepository
 import com.example.core_domain.repository.StorageRepository
+import com.example.core_model.FileInfo
 import com.example.core_model.Message
 import com.example.core_model.enum.MessageStatus
 import com.google.firebase.Timestamp
@@ -17,13 +18,13 @@ class SendVideoMessageUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         conversationId: String,
-        file: File
+        fileInfo: FileInfo
     ): Result<Unit> {
         return try {
             val senderId = authRepository.getCurrentUserId()
                 ?: return Result.failure(IllegalStateException("User not logged in"))
 
-            val uploadResult = storageRepository.upload(file, "video")
+            val uploadResult = storageRepository.upload(fileInfo.file)
                 ?: return Result.failure(Exception("Failed to upload file"))
 
             val thumbnailUrl = uploadResult.url
@@ -38,12 +39,12 @@ class SendVideoMessageUseCase @Inject constructor(
                 status = MessageStatus.DELIVERED,
                 fileUrl = uploadResult.url,
                 thumbnailUrl = thumbnailUrl,
-                fileName = file.name,
+                fileName = fileInfo.file.name,
                 fileSize = uploadResult.bytes,
                 duration = uploadResult.duration ?: 0,
                 width = uploadResult.width ?: 0,
                 height = uploadResult.height ?: 0,
-                mimeType = uploadResult.format.orEmpty()
+                mimeType = fileInfo.mimeType
             )
             messageRepository.sendMessage(message)
             Result.success(Unit)

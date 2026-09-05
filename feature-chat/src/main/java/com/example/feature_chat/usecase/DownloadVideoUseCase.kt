@@ -15,7 +15,8 @@ class DownloadVideoUseCase @Inject constructor() {
     suspend operator fun invoke(
         context: Context,
         videoUrl: String,
-        fileName: String
+        fileName: String,
+        mimeType: String
     ): Result<Long> = withContext(Dispatchers.IO) {
         runCatching {
             val resolver = context.contentResolver
@@ -26,7 +27,7 @@ class DownloadVideoUseCase @Inject constructor() {
                 )
                 put(
                     MediaStore.Video.Media.MIME_TYPE,
-                    "video/mp4"
+                    mimeType
                 )
                 put(
                     MediaStore.Video.Media.RELATIVE_PATH,

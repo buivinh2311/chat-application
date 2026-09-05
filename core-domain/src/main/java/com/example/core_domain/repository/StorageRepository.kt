@@ -13,7 +13,6 @@ interface StorageRepository {
     suspend fun deleteAvatar(uid: String): Result<Unit>
 
     suspend fun upload(
-        file: File,
-        resourceType: String
+        file: File
     ): CloudinaryUploadResult?
 }

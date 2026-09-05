@@ -30,22 +30,21 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import com.example.core_model.MediaFile
+import com.example.core_model.FileInfo
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
 import com.example.core_resource.R
 import com.example.core_ui.component.AppIconButton
 import com.example.core_utils.uriToFile
-import java.io.File
 
 @Composable
 fun ConversationDetailBottomBar(
     modifier: Modifier = Modifier,
     onSendMessageClick: (String) -> Unit,
     onLikeClick: () -> Unit,
-    onFileSelected: (files: List<File>) -> Unit,
+    onFileSelected: (fileInfos: List<FileInfo>) -> Unit,
     onCameraClick: () -> Unit,
-    onMediaSelected: (files: List<MediaFile>) -> Unit,
+    onMediaSelected: (fileInfos: List<FileInfo>) -> Unit,
     onEmojiClick: () -> Unit
 ) {
     var message by remember {
@@ -59,24 +58,29 @@ fun ConversationDetailBottomBar(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia()
     ) { uris ->
-        val media = uris.mapNotNull { uri ->
+        val fileInfos = uris.mapNotNull { uri ->
             val mimeType = context.contentResolver.getType(uri)
                 ?: return@mapNotNull null
-            MediaFile(
+            FileInfo(
                 file = uriToFile(context, uri),
                 mimeType = mimeType
             )
         }
-        onMediaSelected(media)
+        onMediaSelected(fileInfos)
     }
 
     val fileLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
     ) { uris ->
-        val files = uris.map { uri ->
-            uriToFile(context, uri)
+        val fileInfos = uris.mapNotNull { uri ->
+            val mimeType = context.contentResolver.getType(uri)
+                ?: return@mapNotNull null
+            FileInfo(
+                file = uriToFile(context, uri),
+                mimeType = mimeType
+            )
         }
-        onFileSelected(files)
+        onFileSelected(fileInfos)
     }
 
     Row(

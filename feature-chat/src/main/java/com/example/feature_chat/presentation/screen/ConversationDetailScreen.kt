@@ -1,6 +1,9 @@
 package com.example.feature_chat.presentation.screen
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Environment
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -52,6 +55,7 @@ import com.example.share_presentation.FileMessageItem
 import com.example.share_presentation.ImageMessageItem
 import com.example.share_presentation.TextMessageItem
 import com.example.share_presentation.VideoMessageItem
+import java.io.File
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
@@ -87,6 +91,13 @@ fun ConversationDetailScreen(
                     showToast(
                         context,
                         message = context.getString(R.string.download_failed)
+                    )
+                }
+
+                ConversationDetailEvent.OpenFileFailed -> {
+                    showToast(
+                        context,
+                        message = context.getString(R.string.open_file_failed)
                     )
                 }
             }
@@ -141,12 +152,12 @@ fun ConversationDetailScreen(
                                 onLikeClick = {
 
                                 },
-                                onFileSelected = { files ->
-                                    conversationDetailViewModel.sendFileMessage(conversationId, files)
+                                onFileSelected = { fileInfos ->
+                                    conversationDetailViewModel.sendFileMessage(conversationId, fileInfos)
                                 },
                                 onCameraClick = { },
-                                onMediaSelected = { medias ->
-                                    conversationDetailViewModel.sendMediaMessage(conversationId, medias)
+                                onMediaSelected = { fileInfos ->
+                                    conversationDetailViewModel.sendMediaMessage(conversationId, fileInfos)
                                 },
                                 onEmojiClick = { }
                             )
@@ -231,6 +242,7 @@ fun ConversationDetailScreen(
                                                 imagePreview = MediaPreview(
                                                     fileUrl = message.fileUrl,
                                                     fileName = message.fileName,
+                                                    mimeType = message.mimeType,
                                                     sentAt = message.createdAt.toRelativeString(),
                                                     avatarUrl = user.avatarUrl,
                                                     displayName = user.firstName + " " + user.lastName
@@ -249,6 +261,7 @@ fun ConversationDetailScreen(
                                                 videoPreview = MediaPreview(
                                                     fileUrl = message.fileUrl,
                                                     fileName = message.fileName,
+                                                    mimeType = message.mimeType,
                                                     sentAt = message.createdAt.toRelativeString(),
                                                     avatarUrl = user.avatarUrl,
                                                     displayName = user.firstName + " " + user.lastName
@@ -261,8 +274,19 @@ fun ConversationDetailScreen(
                                         FileMessageItem(
                                             fileName = message.fileName,
                                             fileSize = message.fileSize,
+                                            mimeType = message.mimeType,
                                             isMine = true,
-                                            onClick = {}
+                                            onDownloadClick = {
+                                                conversationDetailViewModel.downloadFile(
+                                                    context = context,
+                                                    fileUrl = message.fileUrl,
+                                                    fileName = message.fileName,
+                                                    mimeType = message.mimeType
+                                                )
+                                            },
+                                            onClick = {
+
+                                            }
                                         )
                                     }
                                 }
@@ -288,12 +312,12 @@ fun ConversationDetailScreen(
                                     conversationDetailViewModel.sendTextMessage(conversationId, message)
                                 },
                                 onLikeClick = { },
-                                onFileSelected = { files ->
-                                    conversationDetailViewModel.sendFileMessage(conversationId, files)
+                                onFileSelected = { fileInfos ->
+                                    conversationDetailViewModel.sendFileMessage(conversationId, fileInfos)
                                 },
                                 onCameraClick = { },
-                                onMediaSelected = { medias ->
-                                    conversationDetailViewModel.sendMediaMessage(conversationId, medias)
+                                onMediaSelected = { fileInfos ->
+                                    conversationDetailViewModel.sendMediaMessage(conversationId, fileInfos)
                                 },
                                 onEmojiClick = { }
                             )
@@ -367,9 +391,10 @@ fun ConversationDetailScreen(
             },
             onDownload = {
                 conversationDetailViewModel.downloadImage(
-                    context,
-                    it.fileUrl,
-                    it.fileName
+                    context = context,
+                    imageUrl = it.fileUrl,
+                    fileName = it.fileName,
+                    mimeType = it.mimeType
                 )
             }
         )
@@ -386,9 +411,10 @@ fun ConversationDetailScreen(
             },
             onDownload = {
                 conversationDetailViewModel.downloadVideo(
-                    context,
-                    it.fileUrl,
-                    it.fileName
+                    context = context,
+                    videoUrl = it.fileUrl,
+                    fileName = it.fileName,
+                    mimeType = it.mimeType
                 )
             }
         )

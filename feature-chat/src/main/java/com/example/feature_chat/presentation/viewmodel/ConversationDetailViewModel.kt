@@ -1,12 +1,14 @@
 package com.example.feature_chat.presentation.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core_model.MediaFile
+import com.example.core_model.FileInfo
 import com.example.core_ui.state.UiState
 import com.example.feature_chat.presentation.event.ConversationDetailEvent
 import com.example.feature_chat.presentation.screen.ConversationDetailData
+import com.example.feature_chat.usecase.DownloadFileUseCase
 import com.example.feature_chat.usecase.DownloadImageUseCase
 import com.example.feature_chat.usecase.DownloadVideoUseCase
 import com.example.feature_chat.usecase.GetConversationUseCase
@@ -15,6 +17,7 @@ import com.example.feature_chat.usecase.IsFriendUseCase
 import com.example.feature_chat.usecase.LoadMoreMessagesUseCase
 import com.example.feature_chat.usecase.MarkMessageAsReadUseCase
 import com.example.feature_chat.usecase.ObserverFriendRequestUseCase
+import com.example.feature_chat.usecase.OpenFileUseCase
 import com.example.feature_chat.usecase.RecallFriendRequestUseCase
 import com.example.feature_chat.usecase.SendFileMessageUseCase
 import com.example.feature_chat.usecase.SendFriendRequestUseCase
@@ -28,7 +31,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,7 +48,9 @@ class ConversationDetailViewModel @Inject constructor(
     private val sendFileMessageUseCase: SendFileMessageUseCase,
     private val markMessageAsReadUseCase: MarkMessageAsReadUseCase,
     private val downloadImageUseCase: DownloadImageUseCase,
-    private val downloadVideoUseCase: DownloadVideoUseCase
+    private val downloadVideoUseCase: DownloadVideoUseCase,
+    private val downloadFileUseCase: DownloadFileUseCase,
+    private val openFileUseCase: OpenFileUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState<ConversationDetailData>>(
         UiState.Loading
@@ -114,16 +118,16 @@ class ConversationDetailViewModel @Inject constructor(
 
     fun sendMediaMessage(
         conversationId: String,
-        media: List<MediaFile>
+        fileInfos: List<FileInfo>
     ) {
         viewModelScope.launch {
-            media.forEach { item ->
+            fileInfos.forEach { fileInfo ->
                 when {
-                    item.mimeType.startsWith("image/") ->
-                        sendImageMessageUseCase(conversationId, item.file)
+                    fileInfo.mimeType.startsWith("image/") ->
+                        sendImageMessageUseCase(conversationId, fileInfo)
 
-                    item.mimeType.startsWith("video/") ->
-                        sendVideoMessageUseCase(conversationId, item.file)
+                    fileInfo.mimeType.startsWith("video/") ->
+                        sendVideoMessageUseCase(conversationId, fileInfo)
                 }
             }
         }
@@ -131,11 +135,11 @@ class ConversationDetailViewModel @Inject constructor(
 
     fun sendFileMessage(
         conversationId: String,
-        files: List<File>
+        fileInfos: List<FileInfo>
     ) {
         viewModelScope.launch {
-            files.forEach { file ->
-                sendFileMessageUseCase(conversationId, file)
+            fileInfos.forEach { fileInfo ->
+                sendFileMessageUseCase(conversationId, fileInfo)
             }
         }
     }
@@ -152,13 +156,15 @@ class ConversationDetailViewModel @Inject constructor(
     fun downloadImage(
         context: Context,
         imageUrl: String,
-        fileName: String
+        fileName: String,
+        mimeType: String
     ) {
         viewModelScope.launch {
             downloadImageUseCase(
                 context = context,
                 imageUrl = imageUrl,
-                fileName = fileName
+                fileName = fileName,
+                mimeType = mimeType
             )
             .onSuccess {
                 _event.emit(ConversationDetailEvent.DownloadSuccess)
@@ -171,20 +177,61 @@ class ConversationDetailViewModel @Inject constructor(
 
     fun downloadVideo(
         context: Context,
-        imageUrl: String,
-        fileName: String
+        videoUrl: String,
+        fileName: String,
+        mimeType: String
     ) {
         viewModelScope.launch {
             downloadVideoUseCase(
                 context = context,
-                videoUrl = imageUrl,
-                fileName = fileName
+                videoUrl = videoUrl,
+                fileName = fileName,
+                mimeType = mimeType
             )
                 .onSuccess {
                     _event.emit(ConversationDetailEvent.DownloadSuccess)
                 }
                 .onFailure {
                     _event.emit(ConversationDetailEvent.DownloadFailed)
+                }
+        }
+    }
+
+    fun downloadFile(
+        context: Context,
+        fileUrl: String,
+        fileName: String,
+        mimeType: String
+    ) {
+        viewModelScope.launch {
+            downloadFileUseCase(
+                context = context,
+                fileUrl = fileUrl,
+                fileName = fileName,
+                mimeType = mimeType
+            )
+                .onSuccess {
+                    _event.emit(ConversationDetailEvent.DownloadSuccess)
+                }
+                .onFailure {
+                    _event.emit(ConversationDetailEvent.DownloadFailed)
+                }
+        }
+    }
+
+    fun openFile(
+        context: Context,
+        mediaStoreId: Long,
+        mimeType: String
+    ) {
+        viewModelScope.launch {
+            openFileUseCase(
+                context = context,
+                mediaStoreId = mediaStoreId,
+                mimeType = mimeType
+            )
+                .onFailure {
+                    _event.emit(ConversationDetailEvent.OpenFileFailed)
                 }
         }
     }

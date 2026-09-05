@@ -4,4 +4,5 @@ sealed interface ConversationDetailEvent {
     data object ShowError: ConversationDetailEvent
     data object DownloadSuccess: ConversationDetailEvent
     data object DownloadFailed: ConversationDetailEvent
+    data object OpenFileFailed: ConversationDetailEvent
 }

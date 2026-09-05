@@ -48,15 +48,14 @@ class StorageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun upload(
-        file: File,
-        resourceType: String
+        file: File
     ): CloudinaryUploadResult? {
         return suspendCancellableCoroutine { continuation ->
             val requestId = MediaManager
                 .get()
                 .upload(file.absolutePath)
                 .unsigned("chat_media")
-                .option("resource_type", resourceType)
+                .option("resource_type", "auto")
                 .callback(object : UploadCallback {
 
                     override fun onStart(

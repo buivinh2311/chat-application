@@ -56,7 +56,7 @@ sealed class Message {
         override val createdAt: Timestamp,
         override val status: MessageStatus,
         val fileUrl: String,
-        val thumbnailUrl: String,
+        val thumbnailUrl: String?,
         val fileName: String,
         val fileSize: Long,
         val width: Int,

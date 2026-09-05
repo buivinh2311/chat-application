@@ -86,4 +86,5 @@
     <string name="send_group_request">Tham gia nhóm</string>
     <string name="download_success">Tải xuống thành công</string>
     <string name="download_failed">Tải xuống thất bại</string>
+    <string name="open_file_failed">Không thể mở file</string>
 </resources>
