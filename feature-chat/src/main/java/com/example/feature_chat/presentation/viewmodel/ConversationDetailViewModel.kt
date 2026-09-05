@@ -221,13 +221,13 @@ class ConversationDetailViewModel @Inject constructor(
 
     fun openFile(
         context: Context,
-        mediaStoreId: Long,
+        fileName: String,
         mimeType: String
     ) {
         viewModelScope.launch {
             openFileUseCase(
                 context = context,
-                mediaStoreId = mediaStoreId,
+                fileName = fileName,
                 mimeType = mimeType
             )
                 .onFailure {

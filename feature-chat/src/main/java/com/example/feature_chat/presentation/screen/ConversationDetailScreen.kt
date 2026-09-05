@@ -285,7 +285,11 @@ fun ConversationDetailScreen(
                                                 )
                                             },
                                             onClick = {
-
+                                                conversationDetailViewModel.openFile(
+                                                    context = context,
+                                                    fileName = message.fileName,
+                                                    mimeType = message.mimeType
+                                                )
                                             }
                                         )
                                     }
