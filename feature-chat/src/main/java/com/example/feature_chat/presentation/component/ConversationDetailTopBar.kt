@@ -34,7 +34,8 @@ fun ConversationDetailTopBar(
     modifier: Modifier = Modifier,
     imageUrl: String?,
     name: String,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -103,16 +104,16 @@ fun ConversationDetailTopBar(
         Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
 
         AppIconButton(
-            icon = AppIcons.Videocam,
+            icon = AppIcons.VideoCall,
             color = MaterialTheme.colorScheme.primary,
             onClick = { }
         )
         Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
 
         AppIconButton(
-            icon = AppIcons.Info,
+            icon = AppIcons.Option,
             color = MaterialTheme.colorScheme.primary,
-            onClick = { }
+            onClick = onOptionClick
         )
     }
 }

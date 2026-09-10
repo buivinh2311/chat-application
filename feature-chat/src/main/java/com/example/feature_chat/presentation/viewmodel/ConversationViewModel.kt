@@ -1,7 +1,7 @@
 package com.example.feature_chat.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.feature_chat.usecase.GetAllConversationWithInfoUseCase
+import com.example.feature_chat.domain.usecase.GetAllConversationWithInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

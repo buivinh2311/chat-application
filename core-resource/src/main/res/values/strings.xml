@@ -87,4 +87,22 @@
     <string name="download_success">Tải xuống thành công</string>
     <string name="download_failed">Tải xuống thất bại</string>
     <string name="open_file_failed">Không thể mở file</string>
+    <string name="title_unfriend">Hủy kết bạn</string>
+    <string name="title_delete_chat_history">Xóa lịch sử trò chuyện</string>
+    <string name="title_block">Quản lý chặn</string>
+    <string name="title_create_group">Tạo nhóm với %s</string>
+    <string name="title_media">Ảnh, video, file</string>
+    <string name="title_turn_on_notification">Bật thông báo</string>
+    <string name="title_turn_off_notification">Tắt thông báo</string>
+    <string name="title_change_backgroud_image">Đổi hình nền</string>
+    <string name="title_group_link">Link nhóm</string>
+    <string name="title_view_member">Xem thành viên</string>
+    <string name="title_create_vote">Bình chọn</string>
+    <string name="title_group_calendar">Lịch nhóm</string>
+    <string name="title_search">Tìm kiếm</string>
+    <string name="title_option">Tùy chọn</string>
+    <string name="title_group_name">Tạo nhóm</string>
+    <string name="hint_group_name">Nhập tên nhóm</string>
+    <string name="title_quantity_choose">Đã chọn %d</string>
+    <string name="title_pick_group_member">Chọn thành viên</string>
 </resources>

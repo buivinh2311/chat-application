@@ -66,7 +66,7 @@ class FriendRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getFriends(uid: String): Flow<List<Friend>> = callbackFlow {
+    override fun observeFriends(uid: String): Flow<List<Friend>> = callbackFlow {
         val listener = firestore
             .collection(FRIENDS)
             .whereArrayContains("participants", uid)
@@ -86,6 +86,18 @@ class FriendRepositoryImpl @Inject constructor(
         awaitClose {
             listener.remove()
         }
+    }
+
+    override suspend fun getFriends(uid: String): List<Friend> {
+        return firestore
+            .collection(FRIENDS)
+            .whereArrayContains("participants", uid)
+            .get()
+            .await()
+            .documents
+            .mapNotNull {
+                it.toObject(FriendDto::class.java)?.toDomain()
+            }
     }
 
     override suspend fun unFriend(friendId: String) {

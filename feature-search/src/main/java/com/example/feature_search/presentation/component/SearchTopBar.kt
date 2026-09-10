@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
@@ -53,35 +54,36 @@ fun SearchTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
+            .height(AppDimens.Layout.TopBarHeight)
+            .background(MaterialTheme.colorScheme.primary)
             .padding(
-                start = AppDimens.Space.Lg,
-                end = AppDimens.Space.Lg,
-                top = AppDimens.Space.Sm,
-                bottom = AppDimens.Space.Xs
+                horizontal = AppDimens.Space.Lg,
+                vertical = AppDimens.Space.Sm
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AppIconButton(
             icon = AppIcons.Back,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onPrimary,
             onClick = onBackClick
         )
         Spacer(modifier = Modifier.width(AppDimens.Space.Md))
+
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(AppDimens.Radius.Xl))
-                .background(MaterialTheme.colorScheme.onBackground.copy(0.05f))
-                .padding(AppDimens.Space.Sm),
+                .weight(1f)
+                .clip(RoundedCornerShape(AppDimens.Radius.Sm))
+                .background(MaterialTheme.colorScheme.onPrimary)
+                .padding(AppDimens.Space.Xs),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 painter = AppIcons.Search,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                tint = MaterialTheme.colorScheme.onBackground
             )
+            Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
-            Spacer(Modifier.width(8.dp))
             BasicTextField(
                 value = keyword,
                 onValueChange = {
@@ -89,7 +91,7 @@ fun SearchTopBar(
                     onQueryChange(it)
                 },
                 singleLine = true,
-                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onBackground
                 ),
                 cursorBrush = SolidColor(
@@ -103,8 +105,8 @@ fun SearchTopBar(
                         if (keyword.isEmpty()) {
                             Text(
                                 text = stringResource(R.string.hint_query),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
                             )
                         }
                         innerTextField()
@@ -112,5 +114,15 @@ fun SearchTopBar(
                 }
             )
         }
+        Spacer(modifier = Modifier.width(AppDimens.Space.Xl))
+
+        AppIconButton(
+            icon = AppIcons.Scanner,
+            color = MaterialTheme.colorScheme.onPrimary,
+            iconSize = AppDimens.Icon.Sm,
+            onClick = {
+
+            }
+        )
     }
 }

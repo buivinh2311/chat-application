@@ -30,6 +30,7 @@ import com.example.share_presentation.ConversationItem
 fun ConversationScreen(
     onNavigationToConversationDetail: (String) -> Unit,
     onSearchClick: () -> Unit,
+    onScannerClick: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     val conversationViewModel: ConversationViewModel = hiltViewModel()
@@ -40,8 +41,9 @@ fun ConversationScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
-                title = stringResource(R.string.title_chat),
-                onSearchClick = onSearchClick
+                title = stringResource(R.string.title_search),
+                onSearchClick = onSearchClick,
+                onScannerClick = onScannerClick
             )
         },
         bottomBar = {

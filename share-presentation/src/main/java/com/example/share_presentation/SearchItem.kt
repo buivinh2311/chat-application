@@ -53,40 +53,22 @@ fun SearchItem(
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box {
-                AsyncImage(
-                    model = avatarUrl,
-                    contentDescription = null,
-                    placeholder = painterResource(R.drawable.account),
-                    error = painterResource(R.drawable.account),
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .size(AppDimens.ImageSize.Md)
-                        .clip(shape = CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-
-
-                if(status == UserStatus.ONLINE) {
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .size(AppDimens.Icon.Xs)
-                            .clip(shape = CircleShape)
-                            .background(color = Color(0xFF31A24C))
-                            .border(
-                                width = AppDimens.Border.Thick,
-                                color = MaterialTheme.colorScheme.background,
-                                shape = CircleShape
-                            )
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+            AsyncImage(
+                model = avatarUrl,
+                contentDescription = null,
+                placeholder = painterResource(R.drawable.account),
+                error = painterResource(R.drawable.account),
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .size(AppDimens.ImageSize.Md)
+                    .clip(shape = CircleShape),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.width(AppDimens.Space.Md))
 
             Text(
                 text = name,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }

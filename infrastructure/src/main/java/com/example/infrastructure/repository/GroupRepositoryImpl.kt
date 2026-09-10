@@ -6,6 +6,7 @@ import com.example.core_model.Group
 import com.example.core_model.User
 import com.example.core_network.dto.GroupDto
 import com.example.infrastructure.mapper.remote.toDomain
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +27,8 @@ class GroupRepositoryImpl @Inject constructor(
     ) {
         val group = GroupDto(
             name = name,
-            conversationId = conversationId
+            conversationId = conversationId,
+            createdAt = Timestamp.now()
         )
         firestore
             .collection(GROUPS)
@@ -65,5 +67,9 @@ class GroupRepositoryImpl @Inject constructor(
         awaitClose {
             listener.remove()
         }
+    }
+
+    override suspend fun changeAvatar() {
+
     }
 }

@@ -23,6 +23,8 @@ import com.example.chatapplication.navigation.AppRoute
 import com.example.core_resource.ui.theme.ChatApplicationTheme
 import com.example.core_ui.state.UiState
 import com.example.feature_auth.presentation.screen.LoginScreen
+import com.example.feature_chat.presentation.screen.ConversationOptionScreen
+import com.example.feature_chat.presentation.screen.PickGroupMemberScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -83,4 +85,13 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+@Composable
+@Preview
+fun Tmp() {
+    PickGroupMemberScreen(
+        userId = "",
+        onBackClick = {}
+    )
 }

@@ -12,4 +12,5 @@ interface GroupRepository {
     )
     suspend fun getGroup(conversationId: String): Group?
     fun observerGroup(conversationId: String): Flow<Group?>
+    suspend fun changeAvatar()
 }

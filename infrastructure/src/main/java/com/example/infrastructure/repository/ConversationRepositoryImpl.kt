@@ -15,6 +15,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 import javax.inject.Inject
 
 class ConversationRepositoryImpl @Inject constructor(
@@ -103,6 +104,26 @@ class ConversationRepositoryImpl @Inject constructor(
                 )
             ).await()
         }
+        return conversationId
+    }
+
+    override suspend fun createConversation(
+        user1: FirebaseUser,
+        user2: User
+    ): String {
+        val conversationId = UUID.randomUUID().toString()
+        firestore
+            .collection(CONVERSATIONS)
+            .document(conversationId)
+            .set(
+                ConversationDto(
+                    id = conversationId,
+                    type = ConversationType.DIRECT.name,
+                    memberAvatars = listOf(user1.photoUrl.toString(), user2.id),
+                    participants = listOf(user1.uid, user2.id),
+                    createdAt = Timestamp.now()
+                )
+            ).await()
         return conversationId
     }
 }

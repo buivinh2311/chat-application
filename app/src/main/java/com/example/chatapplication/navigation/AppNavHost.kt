@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.chatapplication.navigation.route.ChangePasswordRoute
 import com.example.chatapplication.navigation.route.ConversationDetailRoute
+import com.example.chatapplication.navigation.route.ConversationOptionRoute
 import com.example.chatapplication.navigation.route.ConversationRoute
 import com.example.chatapplication.navigation.route.DarkModeRoute
 import com.example.chatapplication.navigation.route.EverybodyRoute
@@ -18,6 +19,7 @@ import com.example.chatapplication.navigation.route.FriendRequestRoute
 import com.example.chatapplication.navigation.route.FriendSuggestionRoute
 import com.example.chatapplication.navigation.route.LanguageRoute
 import com.example.chatapplication.navigation.route.LoginRoute
+import com.example.chatapplication.navigation.route.PickGroupMemberRoute
 import com.example.chatapplication.navigation.route.ProfileRoute
 import com.example.chatapplication.navigation.route.RegisterRoute
 import com.example.chatapplication.navigation.route.SearchRoute
@@ -38,6 +40,10 @@ fun AppNavHost(
 
     val onSearchClick: () -> Unit = {
         navController.navigate(AppRoute.SEARCH)
+    }
+
+    val onScannerClick: () -> Unit = {
+        navController.navigate(AppRoute)
     }
 
     val onNavigationToConversationDetail: (String) -> Unit = { conversationId ->
@@ -109,16 +115,40 @@ fun AppNavHost(
             ConversationRoute(
                 onSearchClick = onSearchClick,
                 onNavigationToConversationDetail = onNavigationToConversationDetail,
-                onBottomActionClick = onBottomActionClick
+                onBottomActionClick = onBottomActionClick,
+                onScannerClick = onScannerClick
             )
         }
 
         composable(route = AppRoute.CONVERSATION_DETAIL_WITH_ARG) { backStackEntry ->
-            val conversationId =
-                backStackEntry.arguments?.getString("conversationId")
+            val conversationId = backStackEntry.arguments?.getString("conversationId")
                     ?: return@composable
             ConversationDetailRoute(
                 conversationId = conversationId,
+                onBackClick = onBackClick,
+                onOptionClick = {
+                    navController.navigate("${AppRoute.CONVERSATION_OPTION}/$conversationId")
+                }
+            )
+        }
+
+        composable(route = AppRoute.CONVERSATION_OPTION_WITH_ARG) { backStackEntry ->
+            val conversationId = backStackEntry.arguments?.getString("conversationId")
+                    ?: return@composable
+            ConversationOptionRoute(
+                conversationId = conversationId,
+                onBackClick = onBackClick,
+                onCreateGroup = { userId ->
+                    navController.navigate("${AppRoute.PICK_GROUP_MEMBER}/${userId}")
+                }
+            )
+        }
+
+        composable(route = AppRoute.PICK_GROUP_MEMBER_WITH_ARG) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId")
+                ?: return@composable
+            PickGroupMemberRoute(
+                userId = userId,
                 onBackClick = onBackClick
             )
         }

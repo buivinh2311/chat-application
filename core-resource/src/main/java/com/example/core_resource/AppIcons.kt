@@ -1,9 +1,7 @@
 package com.example.core_resource
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import java.util.Calendar
 
 object AppIcons {
     val Account
@@ -11,8 +9,8 @@ object AppIcons {
         get() = painterResource(R.drawable.ic_account)
 
     val Back
-    @Composable
-    get() = painterResource(R.drawable.ic_back)
+        @Composable
+        get() = painterResource(R.drawable.ic_back)
 
     val Block
         @Composable
@@ -30,13 +28,29 @@ object AppIcons {
         @Composable
         get() = painterResource(R.drawable.ic_camera)
 
-    val Chat
+    val CameraFilled
         @Composable
-        get() = painterResource(R.drawable.ic_chat)
+        get() = painterResource(R.drawable.ic_camera_filled)
+
+    val Check
+        @Composable
+        get() = painterResource(R.drawable.ic_check)
 
     val Close
         @Composable
         get() = painterResource(R.drawable.ic_close)
+
+    val Chat
+        @Composable
+        get() = painterResource(R.drawable.ic_conversation)
+
+    val CreateGroup
+        @Composable
+        get() = painterResource(R.drawable.ic_create_group)
+
+    val CreateVote
+        @Composable
+        get() = painterResource(R.drawable.ic_create_vote)
 
     val DarkMode
         @Composable
@@ -54,9 +68,9 @@ object AppIcons {
         @Composable
         get() = painterResource(R.drawable.ic_download)
 
-    val Emoji
+    val Edit
         @Composable
-        get() = painterResource(R.drawable.ic_emoji)
+        get() = painterResource(R.drawable.ic_edit)
 
     val Everybody
         @Composable
@@ -69,7 +83,11 @@ object AppIcons {
 
     val File
         @Composable
-        get() = painterResource(R.drawable.ic_file)
+        get() = painterResource(R.drawable.ic_link)
+
+    val FriendCancel
+        @Composable
+        get() = painterResource(R.drawable.ic_friend_cancel)
 
     val HidePassword
         @Composable
@@ -79,37 +97,49 @@ object AppIcons {
         @Composable
         get() = painterResource(R.drawable.ic_image)
 
-    val Info
-        @Composable
-        get() = painterResource(R.drawable.ic_info)
-
     val Language
         @Composable
         get() = painterResource(R.drawable.ic_language)
 
-    val Like
+    val Link
         @Composable
-        get() = painterResource(R.drawable.ic_like)
+        get() = painterResource(R.drawable.ic_link)
 
     val Logout
         @Composable
-        get() = painterResource(R.drawable.ic_log_out)
+        get() = painterResource(R.drawable.ic_logout)
 
-    val Menu
+    val Media
         @Composable
-        get() = painterResource(R.drawable.ic_menu)
+        get() = painterResource(R.drawable.ic_media)
+
+    val Mic
+        @Composable
+        get() = painterResource(R.drawable.ic_mic)
 
     val More
         @Composable
         get() = painterResource(R.drawable.ic_more)
 
-    val Notification
+    val NotificationOff
         @Composable
-        get() = painterResource(R.drawable.ic_notification)
+        get() = painterResource(R.drawable.ic_notification_off)
+
+    val NotificationOn
+        @Composable
+        get() = painterResource(R.drawable.ic_notification_on)
+
+    val Option
+        @Composable
+        get() = painterResource(R.drawable.ic_option)
+
+    val Paint
+        @Composable
+        get() = painterResource(R.drawable.ic_paint)
 
     val Password
         @Composable
-        get() = painterResource(R.drawable.ic_password)
+        get() = painterResource(R.drawable.ic_security)
 
     val Pause
         @Composable
@@ -118,6 +148,10 @@ object AppIcons {
     val Play
         @Composable
         get() = painterResource(R.drawable.ic_play)
+
+    val Scanner
+        @Composable
+        get() = painterResource(R.drawable.ic_scanner)
 
     val Search
         @Composable
@@ -139,9 +173,15 @@ object AppIcons {
         @Composable
         get() = painterResource(R.drawable.ic_success)
 
-
-    val Videocam
+    val Sticker
         @Composable
-        get() = painterResource(R.drawable.ic_videocam)
+        get() = painterResource(R.drawable.ic_sticker)
 
+    val VideoCall
+        @Composable
+        get() = painterResource(R.drawable.ic_video_call)
+
+    val ViewMember
+        @Composable
+        get() = painterResource(R.drawable.ic_view_member)
 }

@@ -13,10 +13,12 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:tint="#000000" android:viewportHeight="24" android:viewportWidth="24" android:width="24dp">
-      
-    <path android:fillColor="@android:color/white" android:pathData="M12,12m-3.2,0a3.2,3.2 0,1 1,6.4 0a3.2,3.2 0,1 1,-6.4 0"/>
-      
-    <path android:fillColor="@android:color/white" android:pathData="M9,2L7.17,4L4,4c-1.1,0 -2,0.9 -2,2v12c0,1.1 0.9,2 2,2h16c1.1,0 2,-0.9 2,-2L22,6c0,-1.1 -0.9,-2 -2,-2h-3.17L15,2L9,2zM12,17c-2.76,0 -5,-2.24 -5,-5s2.24,-5 5,-5 5,2.24 5,5 -2.24,5 -5,5z"/>
-    
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <path
+      android:pathData="M480,684.61q68.85,0 116.73,-47.88 47.88,-47.88 47.88,-116.73t-47.88,-116.73Q548.85,355.39 480,355.39t-116.73,47.88Q315.39,451.15 315.39,520t47.88,116.73q47.88,47.88 116.73,47.88ZM480,624.62q-44.31,0 -74.46,-30.16 -30.16,-30.15 -30.16,-74.46 0,-44.31 30.16,-74.46 30.15,-30.16 74.46,-30.16 44.31,0 74.46,30.16 30.16,30.15 30.16,74.46 0,44.31 -30.16,74.46 -30.15,30.16 -74.46,30.16ZM172.31,820Q142,820 121,799q-21,-21 -21,-51.31v-455.38Q100,262 121,241q21,-21 51.31,-21h122.15l74,-80h223.08l74,80h122.15Q818,220 839,241q21,21 21,51.31v455.38Q860,778 839,799q-21,21 -51.31,21L172.31,820ZM172.31,760h615.38q5.39,0 8.85,-3.46t3.46,-8.85v-455.38q0,-5.39 -3.46,-8.85t-8.85,-3.46L638.77,280l-73.39,-80L394.62,200l-73.39,80L172.31,280q-5.39,0 -8.85,3.46t-3.46,8.85v455.38q0,5.39 3.46,8.85t8.85,3.46ZM480,520Z"
+      android:fillColor="#1f1f1f"/>
 </vector>

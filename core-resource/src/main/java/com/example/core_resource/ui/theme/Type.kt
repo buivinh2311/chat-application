@@ -104,7 +104,7 @@ val AppTypography = Typography(
 
     titleLarge = TextStyle(
         fontFamily = Roboto,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Medium,
         fontSize = 20.sp,
         lineHeight = 24.sp
     ),
@@ -137,15 +137,15 @@ val AppTypography = Typography(
     bodyMedium = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 18.sp
+        fontSize = 16.sp,
+        lineHeight = 22.sp
     ),
 
     bodySmall = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp
+        fontSize = 14.sp,
+        lineHeight = 18.sp
     ),
 
     // =========================

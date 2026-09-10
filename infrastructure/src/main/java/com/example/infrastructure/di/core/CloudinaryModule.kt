@@ -1,12 +1,13 @@
 package com.example.infrastructure.di.core
 
-import com.example.core_network.api.CloudinaryApi
+import android.content.Context
+import com.cloudinary.android.MediaManager
+import com.example.core_utils.AppConstants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -14,25 +15,16 @@ import javax.inject.Singleton
 object CloudinaryModule {
     @Provides
     @Singleton
-    fun provideCloudinaryRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(
-                "https://api.cloudinary.com/v1_1/q11fqsai/"
+    fun provideMediaManager(
+        @ApplicationContext context: Context
+    ): MediaManager {
+        MediaManager.init(
+            context,
+            mapOf(
+                "cloud_name" to AppConstants.CLOUD_NAME,
+                "secure" to true
             )
-            .addConverterFactory(
-                GsonConverterFactory.create()
-            )
-            .build()
-
-    }
-
-    @Provides
-    @Singleton
-    fun provideCloudinaryApi(
-        retrofit: Retrofit
-    ): CloudinaryApi {
-        return retrofit.create(
-            CloudinaryApi::class.java
         )
+        return MediaManager.get()
     }
 }

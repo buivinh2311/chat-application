@@ -2,7 +2,7 @@ package com.example.core_resource.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val primaryLight = Color(0xFF4B5C92)
+val primaryLight = Color(0xFF2196F3)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFDBE1FF)
 val onPrimaryContainerLight = Color(0xFF324478)
@@ -18,7 +18,7 @@ val errorLight = Color(0xFF904A46)
 val onErrorLight = Color(0xFFFFFFFF)
 val errorContainerLight = Color(0xFFFFDAD7)
 val onErrorContainerLight = Color(0xFF733330)
-val backgroundLight = Color(0xFFFAF8FF)
+val backgroundLight = Color(0xFFFAFAFA)
 val onBackgroundLight = Color(0xFF1A1B21)
 val surfaceLight = Color(0xFFF9F9FF)
 val onSurfaceLight = Color(0xFF191C20)

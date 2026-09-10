@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import com.example.core_model.FileInfo
+import com.example.feature_chat.domain.model.FileInfo
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
 import com.example.core_resource.R
@@ -165,7 +165,7 @@ fun ConversationDetailBottomBar(
             Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
             AppIconButton(
-                icon = AppIcons.Emoji,
+                icon = AppIcons.Sticker,
                 color = MaterialTheme.colorScheme.primary,
                 onClick = { }
             )
@@ -174,7 +174,7 @@ fun ConversationDetailBottomBar(
 
         if(message.isBlank()) {
             AppIconButton(
-                icon = AppIcons.Like,
+                icon = AppIcons.Sticker,
                 color = MaterialTheme.colorScheme.primary,
                 onClick = onLikeClick
             )

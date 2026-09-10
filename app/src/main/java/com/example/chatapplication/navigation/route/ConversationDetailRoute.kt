@@ -7,10 +7,12 @@ import com.example.feature_chat.presentation.screen.ConversationDetailScreen
 @Composable
 fun ConversationDetailRoute(
     conversationId: String,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
     ConversationDetailScreen(
         conversationId = conversationId,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onOptionClick = onOptionClick
     )
 }

@@ -15,8 +15,9 @@ class UploadAvatarUseCase @Inject constructor(
         file: File
     ): Result<Unit> {
         return try {
-            val url = storageRepository.uploadAvatar(uid, file)
-            userRepository.uploadAvatar(uid, url)
+            val uploadResult = storageRepository.upload(file)
+                ?: return Result.failure(Exception("Failed to upload file"))
+            userRepository.uploadAvatar(uid, uploadResult.url)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

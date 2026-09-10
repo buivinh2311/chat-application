@@ -13,7 +13,9 @@ interface FriendRepository {
 
     fun isFriend(user1: String, user2: String): Flow<Boolean>
 
-    fun getFriends(uid: String): Flow<List<Friend>>
+    fun observeFriends(uid: String): Flow<List<Friend>>
+
+    suspend fun getFriends(uid: String): List<Friend>
 
     suspend fun unFriend(friendId: String)
 }

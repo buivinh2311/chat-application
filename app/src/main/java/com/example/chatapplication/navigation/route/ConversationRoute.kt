@@ -8,11 +8,13 @@ import com.example.feature_chat.presentation.screen.ConversationScreen
 @Composable
 fun ConversationRoute(
     onSearchClick: () -> Unit,
+    onScannerClick: () -> Unit,
     onNavigationToConversationDetail: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     ConversationScreen(
         onSearchClick = onSearchClick,
+        onScannerClick = onScannerClick,
         onNavigationToConversationDetail = onNavigationToConversationDetail,
         onBottomActionClick = onBottomActionClick
     )

@@ -61,7 +61,8 @@ import java.io.File
 @Composable
 fun ConversationDetailScreen(
     conversationId: String,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
     val conversationDetailViewModel: ConversationDetailViewModel = hiltViewModel()
     val uiState by conversationDetailViewModel.uiState.collectAsStateWithLifecycle()
@@ -141,7 +142,8 @@ fun ConversationDetailScreen(
                             ConversationDetailTopBar(
                                 imageUrl = user.avatarUrl,
                                 name = user.firstName + " " + user.lastName,
-                                onBackClick = onBackClick
+                                onBackClick = onBackClick,
+                                onOptionClick = onOptionClick
                             )
                         },
                         bottomBar = {
@@ -307,7 +309,8 @@ fun ConversationDetailScreen(
                             ConversationDetailTopBar(
                                 imageUrl = group.avatarUrl,
                                 name = group.name,
-                                onBackClick = onBackClick
+                                onBackClick = onBackClick,
+                                onOptionClick = onOptionClick
                             )
                         },
                         bottomBar = {
