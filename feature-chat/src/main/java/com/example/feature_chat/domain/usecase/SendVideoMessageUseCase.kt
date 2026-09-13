@@ -20,36 +20,34 @@ class SendVideoMessageUseCase @Inject constructor(
         conversationId: String,
         fileInfo: FileInfo
     ): Result<Unit> {
-        return try {
-            val senderId = authRepository.getCurrentUserId()
-                ?: return Result.failure(IllegalStateException("User not logged in"))
+        val senderId = authRepository.getCurrentUserId()
+            ?: return Result.failure(IllegalStateException("User not logged in"))
 
-            val uploadResult = storageRepository.upload(fileInfo.file)
-                ?: return Result.failure(Exception("Failed to upload file"))
+        val uploadResult = storageRepository
+            .upload(fileInfo.file)
+            .getOrElse { return Result.failure(it) }
+            ?: return Result.failure(Exception("Failed to upload file"))
 
-            val thumbnailUrl = uploadResult.url
-                .replace("/video/upload/", "/video/upload/so_0,w_400,h_400,c_fill/")
-                .replaceAfterLast(".", "jpg")
+        val thumbnailUrl = uploadResult.url
+            .replace("/video/upload/", "/video/upload/so_0,w_400,h_400,c_fill/")
+            .replaceAfterLast(".", "jpg")
 
-            val message = Message.Video(
-                id = UUID.randomUUID().toString(),
-                conversationId = conversationId,
-                senderId = senderId,
-                createdAt = Timestamp.now(),
-                status = MessageStatus.DELIVERED,
-                fileUrl = uploadResult.url,
-                thumbnailUrl = thumbnailUrl,
-                fileName = fileInfo.file.name,
-                fileSize = uploadResult.bytes,
-                duration = uploadResult.duration ?: 0,
-                width = uploadResult.width ?: 0,
-                height = uploadResult.height ?: 0,
-                mimeType = fileInfo.mimeType
-            )
-            messageRepository.sendMessage(message)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        val message = Message.Video(
+            id = UUID.randomUUID().toString(),
+            conversationId = conversationId,
+            senderId = senderId,
+            createdAt = Timestamp.now(),
+            status = MessageStatus.DELIVERED,
+            fileUrl = uploadResult.url,
+            thumbnailUrl = thumbnailUrl,
+            fileName = fileInfo.file.name,
+            fileSize = uploadResult.bytes,
+            duration = uploadResult.duration ?: 0,
+            width = uploadResult.width ?: 0,
+            height = uploadResult.height ?: 0,
+            mimeType = fileInfo.mimeType
+        )
+
+        return messageRepository.sendMessage(message)
     }
 }

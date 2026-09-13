@@ -16,23 +16,21 @@ class SendTextMessageUseCase @Inject constructor(
         conversationId: String,
         text: String
     ): Result<Unit> {
-        return try {
-            val textTrimmed = text.trim()
-            require(textTrimmed.isNotEmpty()) { "Message cannot be empty" }
-            val senderId = authRepository.getCurrentUserId()
-                ?: return Result.failure(IllegalStateException("User not logged in"))
-            val message = Message.Text(
-                id = UUID.randomUUID().toString(),
-                conversationId = conversationId,
-                senderId = senderId,
-                createdAt = Timestamp.now(),
-                status = MessageStatus.DELIVERED,
-                text = text
-            )
-            messageRepository.sendMessage(message)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        val textTrimmed = text.trim()
+        require(textTrimmed.isNotEmpty()) { "Message cannot be empty" }
+
+        val senderId = authRepository.getCurrentUserId()
+            ?: return Result.failure(IllegalStateException("User not logged in"))
+
+        val message = Message.Text(
+            id = UUID.randomUUID().toString(),
+            conversationId = conversationId,
+            senderId = senderId,
+            createdAt = Timestamp.now(),
+            status = MessageStatus.DELIVERED,
+            text = text
+        )
+
+        return messageRepository.sendMessage(message)
     }
 }

@@ -49,6 +49,8 @@ import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
 import com.example.core_resource.R
 import com.example.core_ui.component.AppTopBar
+import com.example.core_ui.component.ErrorScreen
+import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.state.UiState
 import com.example.core_utils.uriToFile
 import com.example.feature_chat.domain.model.ConversationDirectOption
@@ -57,6 +59,7 @@ import com.example.feature_chat.domain.model.ConversationGroupOption
 import com.example.feature_chat.domain.model.ConversationGroupOptionAction
 import com.example.feature_chat.presentation.component.ChangeGroupNameDialog
 import com.example.feature_chat.presentation.component.ConversationOptionItem
+import com.example.feature_chat.presentation.uistate.ConversationDetailData
 import com.example.feature_chat.presentation.viewmodel.ConversationOptionViewModel
 
 @Composable
@@ -90,29 +93,34 @@ fun ConversationOptionScreen(
             )
         }
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(innerPadding)
-                .consumeWindowInsets(innerPadding)
-                .imePadding()
-                .fillMaxSize(),
-            contentPadding = PaddingValues(
-                vertical = AppDimens.Space.Xl
-            ),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            when (val state = uiState) {
-                UiState.Loading -> {
+        when (val state = uiState) {
+            UiState.Loading -> {
+                LoadingScreen()
+            }
 
-                }
+            UiState.Error -> {
+                ErrorScreen(message = "ERROR")
+            }
 
-                UiState.Empty -> {
+            UiState.Empty -> {
 
-                }
+            }
 
-                is UiState.Success -> {
+            is UiState.Success -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .consumeWindowInsets(innerPadding)
+                        .imePadding()
+                        .fillMaxSize(),
+                    contentPadding = PaddingValues(
+                        vertical = AppDimens.Space.Xl
+                    ),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     item {
-                        when (val data = state.data) {
+                        val conversationOptionUiState = state.data
+                        when (val data = conversationOptionUiState.conversationDetailData) {
                             is ConversationDetailData.Direct -> {
                                 val user = data.user
                                 val displayName = "${user.firstName} ${user.lastName}"

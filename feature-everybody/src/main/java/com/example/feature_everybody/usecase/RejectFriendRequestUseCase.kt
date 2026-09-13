@@ -7,11 +7,7 @@ import javax.inject.Inject
 class RejectFriendRequestUseCase @Inject constructor(
     private val friendRequestRepository: FriendRequestRepository
 ) {
-    suspend operator fun invoke(requestId: String) {
-        try {
-            friendRequestRepository.rejectRequest(requestId)
-        } catch (_: Exception) {
-
-        }
+    suspend operator fun invoke(requestId: String): Result<Unit> {
+        return friendRequestRepository.rejectRequest(requestId)
     }
 }

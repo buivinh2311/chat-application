@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +24,10 @@ import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
+import com.example.core_ui.component.ErrorScreen
+import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.menu.AppBottomBarAction
+import com.example.core_ui.state.UiState
 import com.example.share_presentation.FriendRequest
 import com.example.share_presentation.FriendSuggestion
 import kotlin.math.min
@@ -36,8 +40,10 @@ fun EverybodyScreen(
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     val everyBodyViewModel: EveryBodyViewModel = hiltViewModel()
-    val friendReceivedRequest by everyBodyViewModel.friendReceivedRequest
-        .collectAsStateWithLifecycle(emptyList())
+    val uiState by everyBodyViewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        everyBodyViewModel.loadEverybody()
+    }
 
     Scaffold(
         topBar = {
@@ -53,97 +59,154 @@ fun EverybodyScreen(
             )
         }
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentPadding = PaddingValues(
-                vertical = AppDimens.Space.Lg
-            )
-        ) {
-            if(friendReceivedRequest.isNotEmpty()) {
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = AppDimens.Space.Lg
-                            ),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.title_friend_request),
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier.weight(1f)
-                        )
+        when (val state = uiState) {
+            UiState.Loading -> {
+                LoadingScreen()
+            }
 
-                        TextButton(
-                            onClick = onViewAllClick
-                        ) {
-                            Text(
-                                text = stringResource(R.string.label_view_all),
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.primary
+            UiState.Error -> {
+                ErrorScreen(message = "ERROR")
+            }
+
+            UiState.Empty -> {
+
+            }
+
+            is UiState.Success -> {
+                val data = state.data
+                val friendRequestReceived = data.friendRequestReceived
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentPadding = PaddingValues(
+                        vertical = AppDimens.Space.Lg
+                    )
+                ) {
+                    if (friendRequestReceived.isNotEmpty()) {
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        horizontal = AppDimens.Space.Lg
+                                    ),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.title_friend_request),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.weight(1f)
+                                )
+
+                                TextButton(
+                                    onClick = onViewAllClick
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.label_view_all),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
+                        }
+
+                        items(
+                            count = min(5, friendRequestReceived.size),
+                            key = { index -> friendRequestReceived[index].request.id }
+                        ) { index ->
+                            FriendRequest(
+                                user = friendRequestReceived[index].user,
+                                request = friendRequestReceived[index].request,
+                                onAcceptClick = { request ->
+                                    everyBodyViewModel.acceptRequest(request)
+                                },
+                                onRejectClick = { request ->
+                                    everyBodyViewModel.rejectRequest(request.id)
+                                },
+                                onClick = { }
                             )
                         }
+
+                        item {
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
+                        }
                     }
-                }
 
-                items(
-                    count = min(5, friendReceivedRequest.size),
-                    key = { index -> friendReceivedRequest[index].request.id }
-                ) { index ->
-                    FriendRequest(
-                        user = friendReceivedRequest[index].user,
-                        request = friendReceivedRequest[index].request,
-                        onAcceptClick = { request ->
-                            everyBodyViewModel.acceptRequest(request)
-                        },
-                        onRejectClick = { request ->
-                            everyBodyViewModel.rejectRequest(request.id)
-                        },
-                        onClick = { }
-                    )
-                }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    horizontal = AppDimens.Space.Lg
+                                ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(R.string.title_friend_sent),
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.weight(1f)
+                            )
 
-                item {
-                    Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
-                }
-            }
+                            TextButton(
+                                onClick = onViewMoreClick
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.label_view_more),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    }
 
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            horizontal = AppDimens.Space.Lg
-                        ),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.title_friend_suggetion),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.weight(1f)
-                    )
+                    item {
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
+                    }
 
-                    TextButton(
-                        onClick = onViewMoreClick
+                    items(
+                        count = 5
                     ) {
-                        Text(
-                            text = stringResource(R.string.label_view_more),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.primary
+                        FriendSuggestion(
+                            onClick = { }
+                        )
+                    }
+
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    horizontal = AppDimens.Space.Lg
+                                ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(R.string.title_friend_suggetion),
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.weight(1f)
+                            )
+
+                            TextButton(
+                                onClick = onViewMoreClick
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.label_view_more),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    }
+
+                    items(
+                        count = 5
+                    ) {
+                        FriendSuggestion(
+                            onClick = { }
                         )
                     }
                 }
-            }
-
-            items(
-                count = 5
-            ) {
-                FriendSuggestion(
-                    onClick = { }
-                )
             }
         }
     }

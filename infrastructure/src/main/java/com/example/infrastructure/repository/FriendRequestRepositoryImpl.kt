@@ -32,22 +32,30 @@ class FriendRequestRepositoryImpl @Inject constructor(
             .joinToString("_")
     }
 
-    override suspend fun sendFriendRequest(senderId: String, receiverId: String) {
-        val request = FriendRequestDto(
-            senderId = senderId,
-            receiverId = receiverId,
-            status = FriendRequestStatus.PENDING.name,
-            createdAt = Timestamp.now()
-        )
-        val friendRequestId = buildFriendRequestId(senderId, receiverId)
-        firestore
-            .collection(FRIEND_REQUESTS)
-            .document(friendRequestId)
-            .set(request)
-            .await()
+    override suspend fun sendFriendRequest(
+        senderId: String,
+        receiverId: String
+    ): Result<Unit> {
+        return try {
+            val request = FriendRequestDto(
+                senderId = senderId,
+                receiverId = receiverId,
+                status = FriendRequestStatus.PENDING.name,
+                createdAt = Timestamp.now()
+            )
+            val friendRequestId = buildFriendRequestId(senderId, receiverId)
+            firestore
+                .collection(FRIEND_REQUESTS)
+                .document(friendRequestId)
+                .set(request)
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override fun isSentFriendRequest(
+    override fun observeSentFriendRequest(
         senderId: String,
         receiverId: String
     ): Flow<Boolean> = callbackFlow {
@@ -67,7 +75,9 @@ class FriendRequestRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getReceivedRequests(uid: String): Flow<List<FriendRequest>> = callbackFlow {
+    override fun observeFriendRequestsByReceiverId(
+        uid: String
+    ): Flow<List<FriendRequest>> = callbackFlow {
         val listener = firestore
             .collection(FRIEND_REQUESTS)
             .whereEqualTo("receiverId", uid)
@@ -97,33 +107,48 @@ class FriendRequestRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun rejectRequest(
-        requestId: String
-    ) {
-        firestore
-            .collection(FRIEND_REQUESTS)
-            .document(requestId)
-            .delete()
-            .await()
+    override suspend fun rejectRequest(requestId: String): Result<Unit> {
+        return try {
+            firestore
+                .collection(FRIEND_REQUESTS)
+                .document(requestId)
+                .delete()
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override fun deleteRequest(
         transaction: Transaction,
         requestId: String
-    ) {
-        val requestRef = firestore
-            .collection(FRIEND_REQUESTS)
-            .document(requestId)
-
-        transaction.delete(requestRef)
+    ): Result<Unit> {
+        return try {
+            val requestRef = firestore
+                .collection(FRIEND_REQUESTS)
+                .document(requestId)
+            transaction.delete(requestRef)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun recallRequest(senderId: String, receiverId: String) {
-        val requestId = buildFriendRequestId(senderId, receiverId)
-        firestore
-            .collection(FRIEND_REQUESTS)
-            .document(requestId)
-            .delete()
-            .await()
+    override suspend fun recallRequest(
+        senderId: String,
+        receiverId: String
+    ): Result<Unit> {
+        return try {
+            val requestId = buildFriendRequestId(senderId, receiverId)
+            firestore
+                .collection(FRIEND_REQUESTS)
+                .document(requestId)
+                .delete()
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

@@ -9,13 +9,8 @@ class RecallFriendRequestUseCase @Inject constructor(
     private val friendRequestRepository: FriendRequestRepository
 ) {
     suspend operator fun invoke(receiverId: String): Result<Unit> {
-        return try {
-            val senderId = authRepository.getCurrentUserId()
-                ?: throw IllegalStateException("User not logged in")
-            friendRequestRepository.recallRequest(senderId, receiverId)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        val senderId = authRepository.getCurrentUserId()
+            ?: return Result.failure(IllegalStateException("User not logged in"))
+        return friendRequestRepository.recallRequest(senderId, receiverId)
     }
 }

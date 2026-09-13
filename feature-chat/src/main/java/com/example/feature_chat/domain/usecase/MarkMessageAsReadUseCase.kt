@@ -8,13 +8,13 @@ class MarkMessageAsReadUseCase @Inject constructor(
     private val messageRepository: MessageRepository,
     private val authRepository: AuthRepository
 ) {
-    suspend operator fun invoke(conversationId: String, messageId: String) {
-        try {
-            val uid = authRepository.getCurrentUserId()
-                ?: throw IllegalStateException("User not logged in")
-            messageRepository.markAsRead(conversationId, messageId, uid)
-        } catch (_: Exception) {
-
-        }
+    suspend operator fun invoke(
+        conversationId: String,
+        messageId: String
+    ): Result<Unit> {
+        val currentUserId = authRepository.getCurrentUserId()
+            ?: return Result.failure(IllegalStateException("User not logged in"))
+        return messageRepository
+            .markAsRead(conversationId, messageId, currentUserId)
     }
 }

@@ -21,37 +21,36 @@ class SendFileMessageUseCase @Inject constructor(
         conversationId: String,
         fileInfo: FileInfo
     ): Result<Unit> {
-        return try {
-            val senderId = authRepository.getCurrentUserId()
-                ?: return Result.failure(IllegalStateException("User not logged in"))
+        val senderId = authRepository
+            .getCurrentUserId()
+            ?: return Result.failure(IllegalStateException("User not logged in"))
 
-            val uploadResult = storageRepository.upload(fileInfo.file)
-                ?: return Result.failure(Exception("Failed to upload file"))
+        val uploadResult = storageRepository
+            .upload(fileInfo.file)
+            .getOrElse { return Result.failure(it) }
+            ?: return Result.failure(IllegalStateException("Failed to upload file"))
 
-            val thumbnailUrl = if (fileInfo.mimeType == "application/pdf") {
-                "https://res.cloudinary.com/$CLOUD_NAME/image/upload/pg_1,w_400,h_400,c_fill/${uploadResult.publicId}"
-            } else {
-                null
-            }
-
-            val message = Message.File(
-                id = UUID.randomUUID().toString(),
-                conversationId = conversationId,
-                senderId = senderId,
-                fileUrl = uploadResult.url,
-                thumbnailUrl = thumbnailUrl,
-                fileName = fileInfo.file.name,
-                fileSize = uploadResult.bytes,
-                createdAt = Timestamp.now(),
-                status = MessageStatus.DELIVERED,
-                width = uploadResult.width ?: 0,
-                height = uploadResult.height ?: 0,
-                mimeType = fileInfo.mimeType
-            )
-            messageRepository.sendMessage(message)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
+        val thumbnailUrl = if (fileInfo.mimeType == "application/pdf") {
+            "https://res.cloudinary.com/$CLOUD_NAME/image/upload/pg_1,w_400,h_400,c_fill/${uploadResult.publicId}"
+        } else {
+            null
         }
+
+        val message = Message.File(
+            id = UUID.randomUUID().toString(),
+            conversationId = conversationId,
+            senderId = senderId,
+            fileUrl = uploadResult.url,
+            thumbnailUrl = thumbnailUrl,
+            fileName = fileInfo.file.name,
+            fileSize = uploadResult.bytes,
+            createdAt = Timestamp.now(),
+            status = MessageStatus.DELIVERED,
+            width = uploadResult.width ?: 0,
+            height = uploadResult.height ?: 0,
+            mimeType = fileInfo.mimeType
+        )
+
+        return messageRepository.sendMessage(message)
     }
 }

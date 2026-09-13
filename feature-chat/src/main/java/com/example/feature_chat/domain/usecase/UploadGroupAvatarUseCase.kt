@@ -14,13 +14,7 @@ class UploadGroupAvatarUseCase @Inject constructor(
     suspend operator fun invoke(
         conversationId: String,
         file: File
-    ): Result<Unit> {
-        return try {
-            val uploadResult = storageRepository.upload(file)
-                ?: return Result.failure(Exception("Failed to upload file"))
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+    ): Result<CloudinaryUploadResult?> {
+        return storageRepository.upload(file)
     }
 }

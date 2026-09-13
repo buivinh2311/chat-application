@@ -6,21 +6,21 @@ import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.Flow
 
 interface MessageRepository {
-    fun getMessages(
+    fun observeMessagesByConversationId(
         conversationId: String,
         pageSize: Int = 30
     ): Flow<List<Message>>
 
-    suspend fun loadMoreMessages(
+    suspend fun loadMoreMessagesByConversationId(
         conversationId: String,
         lastVisibleTimestamp: Timestamp,
         pageSize: Int = 30
-    ): List<Message>
+    ): Result<List<Message>>
 
-    suspend fun sendMessage(message: Message)
+    suspend fun sendMessage(message: Message): Result<Unit>
 
     suspend fun markAsRead(
         conversationId: String,
         messageId: String, uid: String
-    )
+    ): Result<Unit>
 }

@@ -1,5 +1,6 @@
 package com.example.feature_settings.presentation.screen
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -70,7 +71,10 @@ import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_model.enum.Gender
+import com.example.core_ui.component.ErrorScreen
 import com.example.core_ui.component.LoadingScreen
+import com.example.core_ui.component.showToast
+import com.example.core_ui.state.UiState
 import com.example.core_utils.uriToFile
 import com.example.feature_settings.presentation.event.ProfileEvent
 import com.example.feature_settings.presentation.viewmodel.ProfileViewModel
@@ -82,6 +86,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+@SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -90,21 +95,24 @@ fun ProfileScreen(
 ) {
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
-    val currentUser by profileViewModel.currentUser.collectAsStateWithLifecycle(null)
-    val user = currentUser
     val context = LocalContext.current
 
-    var showBanner by remember {
-        mutableStateOf(false)
-    }
-
     LaunchedEffect(Unit) {
+        profileViewModel.loadCurrentUser()
         profileViewModel.event.collect { event ->
             when (event) {
-                is ProfileEvent.ShowBanner -> {
-                    showBanner = true
-                    delay(3000)
-                    showBanner = false
+                is ProfileEvent.ShowError -> {
+                    showToast(
+                        context,
+                        message = context.getString(R.string.text_unknown_error)
+                    )
+                }
+
+                is ProfileEvent.UpdateSuccessful -> {
+                    showToast(
+                        context,
+                        message = context.getString(R.string.text_update_success)
+                    )
                 }
             }
         }
@@ -127,258 +135,153 @@ fun ProfileScreen(
                 )
             }
         ) { innerPadding ->
-            if (uiState.isLoading || user == null) {
-                LoadingScreen()
-            } else {
-                var firstName by remember {
-                    mutableStateOf(user.firstName)
+            when (val state = uiState) {
+                UiState.Loading -> {
+                    LoadingScreen()
                 }
 
-                var lastName by remember {
-                    mutableStateOf(user.lastName)
+                UiState.Error -> {
+                    ErrorScreen(title = "ERROR")
                 }
 
-                var address by remember {
-                    mutableStateOf(user.address.orEmpty())
+                UiState.Empty -> {
+
                 }
 
-                var showDatePicker by remember {
-                    mutableStateOf(false)
-                }
+                is UiState.Success -> {
+                    val data = state.data
+                    val user = data.currentUser
+                    val isFirstNameBlank = data.isFirstNameBlank
+                    val isLastNameBlank = data.isLastNameBlank
+                    var firstName by remember {
+                        mutableStateOf(user.firstName)
+                    }
 
-                var selectedDate by remember {
-                    mutableStateOf(user.dateOfBirth)
-                }
+                    var lastName by remember {
+                        mutableStateOf(user.lastName)
+                    }
 
-                val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-                val datePickerState = rememberDatePickerState(
-                    selectableDates = object : SelectableDates {
-                        override fun isSelectableYear(year: Int): Boolean {
-                            return year <= currentYear
+                    var address by remember {
+                        mutableStateOf(user.address.orEmpty())
+                    }
+
+                    var showDatePicker by remember {
+                        mutableStateOf(false)
+                    }
+
+                    var selectedDate by remember {
+                        mutableStateOf(user.dateOfBirth)
+                    }
+
+                    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+                    val datePickerState = rememberDatePickerState(
+                        selectableDates = object : SelectableDates {
+                            override fun isSelectableYear(year: Int): Boolean {
+                                return year <= currentYear
+                            }
+
+                            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                                return utcTimeMillis <= System.currentTimeMillis()
+                            }
                         }
+                    )
 
-                        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                            return utcTimeMillis <= System.currentTimeMillis()
+                    var expanded by remember {
+                        mutableStateOf(false)
+                    }
+
+                    var selectedGender by remember {
+                        mutableStateOf(user.gender)
+                    }
+
+                    val genders = Gender.entries
+                    val launcher = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.PickVisualMedia()
+                    ) { uri ->
+                        if (uri != null) {
+                            val file = uriToFile(context, uri)
+                            profileViewModel.uploadAvatar(user.id, file)
                         }
                     }
-                )
 
-                var expanded by remember {
-                    mutableStateOf(false)
-                }
-
-                var selectedGender by remember {
-                    mutableStateOf(user.gender)
-                }
-
-                val genders = Gender.entries
-                val launcher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.PickVisualMedia()
-                ) { uri ->
-                    if(uri != null) {
-                        val file = uriToFile(context, uri)
-                        profileViewModel.uploadAvatar(user.id, file)
-                    }
-                }
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .consumeWindowInsets(innerPadding)
-                        .imePadding()
-                        .fillMaxSize(),
-                    contentPadding = PaddingValues(
-                        vertical = AppDimens.Space.Xl,
-                        horizontal = AppDimens.Space.Lg
-                    ),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    item {
-                        Box {
-                            AsyncImage(
-                                model = user.avatarUrl,
-                                contentDescription = null,
-                                placeholder = painterResource(R.drawable.account),
-                                error = painterResource(R.drawable.account),
-                                modifier = Modifier
-                                    .fillMaxWidth(0.4f)
-                                    .aspectRatio(1f)
-                                    .clip(shape = CircleShape)
-                                    .clickable {
-                                        launcher.launch(
-                                            PickVisualMediaRequest(
-                                                ActivityResultContracts.PickVisualMedia.ImageOnly
-                                            )
-                                        )
-                                    },
-                                contentScale = ContentScale.Crop
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .offset(
-                                        x = AppDimens.Space.Sm,
-                                        y = AppDimens.Space.Sm
-                                    )
-                                    .background(
-                                        Color.LightGray,
-                                        shape = CircleShape
-                                    )
-                                    .border(
-                                        width = AppDimens.Space.Sm,
-                                        color = MaterialTheme.colorScheme.background,
-                                        shape = CircleShape
-                                    )
-                            ) {
-                                Icon(
-                                    painter = AppIcons.Camera,
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .consumeWindowInsets(innerPadding)
+                            .imePadding()
+                            .fillMaxSize(),
+                        contentPadding = PaddingValues(
+                            vertical = AppDimens.Space.Xl,
+                            horizontal = AppDimens.Space.Lg
+                        ),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        item {
+                            Box {
+                                AsyncImage(
+                                    model = user.avatarUrl,
                                     contentDescription = null,
+                                    placeholder = painterResource(R.drawable.account),
+                                    error = painterResource(R.drawable.account),
                                     modifier = Modifier
-                                        .padding(AppDimens.Space.Lg)
-                                        .size(AppDimens.Icon.Md),
-                                    tint = MaterialTheme.colorScheme.onBackground
+                                        .fillMaxWidth(0.4f)
+                                        .aspectRatio(1f)
+                                        .clip(shape = CircleShape)
+                                        .clickable {
+                                            launcher.launch(
+                                                PickVisualMediaRequest(
+                                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                                )
+                                            )
+                                        },
+                                    contentScale = ContentScale.Crop
                                 )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
 
-                        Text(
-                            text = "${user.firstName} ${user.lastName}",
-                            style = MaterialTheme.typography.headlineSmall
-                        )
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Xxl))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Md)
-                        ) {
-                            OutlinedTextField(
-                                value = firstName,
-                                onValueChange = { firstName = it },
-                                placeholder = {
-                                    Text(
-                                        text = stringResource(R.string.hint_first_name),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomEnd)
+                                        .offset(
+                                            x = AppDimens.Space.Sm,
+                                            y = AppDimens.Space.Sm
+                                        )
+                                        .background(
+                                            Color.LightGray,
+                                            shape = CircleShape
+                                        )
+                                        .border(
+                                            width = AppDimens.Space.Sm,
+                                            color = MaterialTheme.colorScheme.background,
+                                            shape = CircleShape
+                                        )
+                                ) {
+                                    Icon(
+                                        painter = AppIcons.Camera,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .padding(AppDimens.Space.Lg)
+                                            .size(AppDimens.Icon.Md),
+                                        tint = MaterialTheme.colorScheme.onBackground
                                     )
-                                },
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Text,
-                                    imeAction = ImeAction.Next
-                                ),
-                                singleLine = true,
-                                modifier = Modifier.weight(1f)
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
+
+                            Text(
+                                text = "${user.firstName} ${user.lastName}",
+                                style = MaterialTheme.typography.headlineSmall
                             )
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Xxl))
 
-                            OutlinedTextField(
-                                value = lastName,
-                                onValueChange = { lastName = it },
-                                placeholder = {
-                                    Text(
-                                        text = stringResource(R.string.hint_last_name),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                                    )
-                                },
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Text,
-                                    imeAction = ImeAction.Next
-                                ),
-                                singleLine = true,
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Md)
-                        ) {
-                            AnimatedVisibility(
-                                visible = uiState.isFirstNameBlank || uiState.isLastNameBlank,
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Text(
-                                    text = if (uiState.isFirstNameBlank) stringResource(R.string.text_first_name_blank)
-                                    else " ",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.error,
-                                    modifier = Modifier.padding(
-                                        start = AppDimens.Space.Sm
-                                    )
-                                )
-                            }
-
-                            AnimatedVisibility(
-                                visible = uiState.isLastNameBlank,
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.text_last_name_blank),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.error,
-                                    modifier = Modifier.padding(
-                                        start = AppDimens.Space.Sm
-                                    )
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Md))
-
-                        OutlinedTextField(
-                            value = user.email,
-                            onValueChange = { },
-                            readOnly = true,
-                            enabled = false,
-                            placeholder = {
-                                Text(
-                                    text = stringResource(R.string.hint_email),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Email,
-                                imeAction = ImeAction.Next
-                            ),
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
-
-                        OutlinedTextField(
-                            value = address,
-                            onValueChange = { address = it },
-                            placeholder = {
-                                Text(
-                                    text = stringResource(R.string.hint_address),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Text,
-                                imeAction = ImeAction.Next
-                            ),
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Md)
-                        ) {
-                            Box(
-                                modifier = Modifier.weight(1f)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Md)
                             ) {
                                 OutlinedTextField(
-                                    value = selectedDate?.toDisplayString() ?: "",
-                                    onValueChange = { },
-                                    readOnly = true,
+                                    value = firstName,
+                                    onValueChange = { firstName = it },
                                     placeholder = {
                                         Text(
-                                            text = stringResource(R.string.hint_date_of_birth),
+                                            text = stringResource(R.string.hint_first_name),
                                             style = MaterialTheme.typography.bodyLarge,
                                             color = MaterialTheme.colorScheme.onBackground.copy(
                                                 alpha = 0.6f
@@ -386,170 +289,284 @@ fun ProfileScreen(
                                         )
                                     },
                                     keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Text,
                                         imeAction = ImeAction.Next
                                     ),
-                                    trailingIcon = {
-                                        Icon(
-                                            painter = AppIcons.Calendar,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(AppDimens.Icon.Sm)
-                                        )
-                                    },
                                     singleLine = true,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
+                                    modifier = Modifier.weight(1f)
                                 )
 
-                                Box(
-                                    modifier = Modifier
-                                        .matchParentSize()
-                                        .clickable {
-                                            showDatePicker = true
-                                        }
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(AppDimens.Space.Md))
-
-                            ExposedDropdownMenuBox(
-                                expanded = expanded,
-                                onExpandedChange = {
-                                    expanded = !expanded
-                                },
-                                modifier = Modifier.weight(1f)
-                            ) {
                                 OutlinedTextField(
-                                    value = selectedGender?.displayName() ?: "",
-                                    onValueChange = { },
-                                    readOnly = true,
+                                    value = lastName,
+                                    onValueChange = { lastName = it },
                                     placeholder = {
                                         Text(
-                                            text = stringResource(R.string.hint_gender),
+                                            text = stringResource(R.string.hint_last_name),
                                             style = MaterialTheme.typography.bodyLarge,
                                             color = MaterialTheme.colorScheme.onBackground.copy(
                                                 alpha = 0.6f
                                             )
                                         )
                                     },
-                                    trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded)
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .menuAnchor(
-                                            type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
-                                            enabled = true
-                                        )
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Text,
+                                        imeAction = ImeAction.Next
+                                    ),
+                                    singleLine = true,
+                                    modifier = Modifier.weight(1f)
                                 )
+                            }
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
 
-                                ExposedDropdownMenu(
-                                    expanded = expanded,
-                                    onDismissRequest = {
-                                        expanded = false
-                                    }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Md)
+                            ) {
+                                AnimatedVisibility(
+                                    visible = isFirstNameBlank || isLastNameBlank,
+                                    modifier = Modifier.weight(1f)
                                 ) {
-                                    genders.forEach { gender ->
-                                        DropdownMenuItem(
-                                            text = {
-                                                Text(
-                                                    text = gender.displayName(),
-                                                    style = MaterialTheme.typography.bodyLarge
-                                                )
-                                            },
-                                            onClick = {
-                                                selectedGender = gender
-                                                expanded = false
-                                            }
+                                    Text(
+                                        text = if (isFirstNameBlank) stringResource(R.string.text_first_name_blank)
+                                        else " ",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.padding(
+                                            start = AppDimens.Space.Sm
                                         )
+                                    )
+                                }
+
+                                AnimatedVisibility(
+                                    visible = isLastNameBlank,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.text_last_name_blank),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.padding(
+                                            start = AppDimens.Space.Sm
+                                        )
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Md))
+
+                            OutlinedTextField(
+                                value = user.email,
+                                onValueChange = { },
+                                readOnly = true,
+                                enabled = false,
+                                placeholder = {
+                                    Text(
+                                        text = stringResource(R.string.hint_email),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Email,
+                                    imeAction = ImeAction.Next
+                                ),
+                                singleLine = true,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
+
+                            OutlinedTextField(
+                                value = address,
+                                onValueChange = { address = it },
+                                placeholder = {
+                                    Text(
+                                        text = stringResource(R.string.hint_address),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Text,
+                                    imeAction = ImeAction.Next
+                                ),
+                                singleLine = true,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Md)
+                            ) {
+                                Box(
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    OutlinedTextField(
+                                        value = selectedDate?.toDisplayString() ?: "",
+                                        onValueChange = { },
+                                        readOnly = true,
+                                        placeholder = {
+                                            Text(
+                                                text = stringResource(R.string.hint_date_of_birth),
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                color = MaterialTheme.colorScheme.onBackground.copy(
+                                                    alpha = 0.6f
+                                                )
+                                            )
+                                        },
+                                        keyboardOptions = KeyboardOptions(
+                                            imeAction = ImeAction.Next
+                                        ),
+                                        trailingIcon = {
+                                            Icon(
+                                                painter = AppIcons.Calendar,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(AppDimens.Icon.Sm)
+                                            )
+                                        },
+                                        singleLine = true,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                    )
+
+                                    Box(
+                                        modifier = Modifier
+                                            .matchParentSize()
+                                            .clickable {
+                                                showDatePicker = true
+                                            }
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(AppDimens.Space.Md))
+
+                                ExposedDropdownMenuBox(
+                                    expanded = expanded,
+                                    onExpandedChange = {
+                                        expanded = !expanded
+                                    },
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    OutlinedTextField(
+                                        value = selectedGender?.displayName() ?: "",
+                                        onValueChange = { },
+                                        readOnly = true,
+                                        placeholder = {
+                                            Text(
+                                                text = stringResource(R.string.hint_gender),
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                color = MaterialTheme.colorScheme.onBackground.copy(
+                                                    alpha = 0.6f
+                                                )
+                                            )
+                                        },
+                                        trailingIcon = {
+                                            ExposedDropdownMenuDefaults.TrailingIcon(expanded)
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .menuAnchor(
+                                                type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                                                enabled = true
+                                            )
+                                    )
+
+                                    ExposedDropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = {
+                                            expanded = false
+                                        }
+                                    ) {
+                                        genders.forEach { gender ->
+                                            DropdownMenuItem(
+                                                text = {
+                                                    Text(
+                                                        text = gender.displayName(),
+                                                        style = MaterialTheme.typography.bodyLarge
+                                                    )
+                                                },
+                                                onClick = {
+                                                    selectedGender = gender
+                                                    expanded = false
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }
-                        }
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Xxl))
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Xxl))
 
-                        Button(
-                            onClick = {
-                                profileViewModel.updateProfile(
-                                    uid = user.id,
-                                    firstName = firstName,
-                                    lastName = lastName,
-                                    address = address,
-                                    dateOfBirth = selectedDate,
-                                    gender = selectedGender
+                            Button(
+                                onClick = {
+                                    profileViewModel.updateProfile(
+                                        user = user,
+                                        firstName = firstName,
+                                        lastName = lastName,
+                                        address = address,
+                                        dateOfBirth = selectedDate,
+                                        gender = selectedGender
+                                    )
+                                },
+                                shape = RoundedCornerShape(AppDimens.Radius.Sm),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary
                                 )
-                            },
-                            shape = RoundedCornerShape(AppDimens.Radius.Sm),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary
-                            )
-                        ) {
-                            Text(
-                                text = stringResource(R.string.label_update),
-                                style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier.padding(
-                                    vertical = AppDimens.Space.Sm,
-                                    horizontal = AppDimens.Space.Xs
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.label_update),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.padding(
+                                        vertical = AppDimens.Space.Sm,
+                                        horizontal = AppDimens.Space.Xs
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
-                }
 
-                if (showDatePicker) {
-                    DatePickerDialog(
-                        onDismissRequest = {
-                            showDatePicker = false
-                        },
-                        confirmButton = {
-                            TextButton(
-                                onClick = {
-                                    val millis = datePickerState.selectedDateMillis
-                                    if (millis != null) {
-                                        val formatter = SimpleDateFormat(
-                                            "dd/MM/yyyy",
-                                            Locale.getDefault()
-                                        )
-                                        selectedDate = Timestamp(Date(millis))
+                    if (showDatePicker) {
+                        DatePickerDialog(
+                            onDismissRequest = {
+                                showDatePicker = false
+                            },
+                            confirmButton = {
+                                TextButton(
+                                    onClick = {
+                                        val millis = datePickerState.selectedDateMillis
+                                        if (millis != null) {
+                                            val formatter = SimpleDateFormat(
+                                                "dd/MM/yyyy",
+                                                Locale.getDefault()
+                                            )
+                                            selectedDate = Timestamp(Date(millis))
+                                        }
+                                        showDatePicker = false
                                     }
-                                    showDatePicker = false
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.label_confirm),
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
                                 }
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.label_confirm),
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(
-                                onClick = {
-                                    showDatePicker = false
+                            },
+                            dismissButton = {
+                                TextButton(
+                                    onClick = {
+                                        showDatePicker = false
+                                    }
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.label_cancel),
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
                                 }
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.label_cancel),
-                                    style = MaterialTheme.typography.titleMedium
-                                )
                             }
+                        ) {
+                            DatePicker(
+                                state = datePickerState
+                            )
                         }
-                    ) {
-                        DatePicker(
-                            state = datePickerState
-                        )
                     }
                 }
             }
-        }
-
-        if (showBanner) {
-            AppTopBanner(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .zIndex(1f),
-                title = if (uiState.isUpdateSuccess == true) stringResource(R.string.text_update_success)
-                else stringResource(R.string.text_update_error),
-                type = if (uiState.isUpdateSuccess == true) BannerType.SUCCESS
-                else BannerType.FAILURE
-            )
         }
     }
 }

@@ -4,14 +4,10 @@ import com.example.core_domain.repository.UserRepository
 import com.example.core_model.User
 import javax.inject.Inject
 
-class GetUserUseCase @Inject constructor(
+class GetUserByIdUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(uid: String): User? {
-        return try {
-            userRepository.getUser(uid)
-        } catch (_: Exception) {
-            null
-        }
+    suspend operator fun invoke(uid: String): Result<User?> {
+        return userRepository.getUserById(uid)
     }
 }

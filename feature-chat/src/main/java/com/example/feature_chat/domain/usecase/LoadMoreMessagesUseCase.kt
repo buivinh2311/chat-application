@@ -11,11 +11,8 @@ class LoadMoreMessagesUseCase @Inject constructor(
     suspend operator fun invoke(
         conversationId: String,
         lastVisibleTimestamp: Timestamp
-    ): List<Message> {
-        return try {
-            messageRepository.loadMoreMessages(conversationId, lastVisibleTimestamp)
-        } catch (_: Exception) {
-            emptyList()
-        }
+    ): Result<List<Message>> {
+        return messageRepository
+            .loadMoreMessagesByConversationId(conversationId, lastVisibleTimestamp)
     }
 }

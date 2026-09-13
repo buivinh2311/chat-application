@@ -6,9 +6,9 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 
 interface ConversationRepository {
-    suspend fun getConversation(conversationId: String): Conversation?
-    fun observerConversation(conversationId: String): Flow<Conversation?>
-    fun getAllConversation(userId: String): Flow<List<Conversation>>
-    suspend fun ensureConversation(user1: FirebaseUser, user2: User): String
-    suspend fun createConversation(user1: FirebaseUser, user2: User): String
+    suspend fun getConversationById(conversationId: String): Result<Conversation?>
+    fun observerConversationById(conversationId: String): Flow<Conversation?>
+    fun observeConversationsByUserId(userId: String): Flow<List<Conversation>>
+    suspend fun ensureConversation(user1: FirebaseUser, user2: User): Result<String>
+    suspend fun createConversation(user1: FirebaseUser, user2: User): Result<String>
 }

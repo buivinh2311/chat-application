@@ -5,15 +5,13 @@ import com.google.firebase.firestore.Transaction
 import kotlinx.coroutines.flow.Flow
 
 interface FriendRequestRepository {
-    suspend fun sendFriendRequest(senderId: String, receiverId: String)
-    fun isSentFriendRequest(senderId: String, receiverId: String): Flow<Boolean>
-    fun getReceivedRequests(uid: String): Flow<List<FriendRequest>>
-    suspend fun rejectRequest(
-        requestId: String
-    )
+    suspend fun sendFriendRequest(senderId: String, receiverId: String): Result<Unit>
+    fun observeSentFriendRequest(senderId: String, receiverId: String): Flow<Boolean>
+    fun observeFriendRequestsByReceiverId(uid: String): Flow<List<FriendRequest>>
+    suspend fun rejectRequest(requestId: String): Result<Unit>
     fun deleteRequest(
         transaction: Transaction,
         requestId: String
-    )
-    suspend fun recallRequest(senderId: String, receiverId: String)
+    ): Result<Unit>
+    suspend fun recallRequest(senderId: String, receiverId: String): Result<Unit>
 }

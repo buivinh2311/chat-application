@@ -20,7 +20,7 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val searchUseCase: SearchUseCase,
     private val getConversationIdUseCase: GetConversationIdUseCase
-): ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState<List<User>>>(
         UiState.Loading
     )
@@ -31,26 +31,33 @@ class SearchViewModel @Inject constructor(
 
     fun searchUser(keyword: String) {
         viewModelScope.launch {
-            val users = searchUseCase(keyword)
-            _uiState.value = if(users.isEmpty()) {
-                UiState.Empty
-            } else {
-                UiState.Success(users)
-            }
+            searchUseCase(keyword)
+                .onSuccess { users ->
+                    _uiState.value = if (users.isEmpty()) {
+                        UiState.Empty
+                    } else {
+                        UiState.Success(users)
+                    }
+                }
+                .onFailure {
+                    _event.emit(SearchEvent.ShowError)
+                }
         }
     }
 
     fun openDirectConversation(user2: String) {
         viewModelScope.launch {
-            val conversationId = getConversationIdUseCase(user2)
-            conversationId?.let {
-                Log.d("CONVERSATION_DIRECT", conversationId)
-                _event.emit(
-                    SearchEvent.NavigateToConversationDetail(
-                        conversationId
+            getConversationIdUseCase(user2)
+                .onSuccess { conversationId ->
+                    _event.emit(
+                        SearchEvent.NavigateToConversationDetail(
+                            conversationId
+                        )
                     )
-                )
-            }
+                }
+                .onFailure {
+                    _event.emit(SearchEvent.ShowError)
+                }
         }
     }
 

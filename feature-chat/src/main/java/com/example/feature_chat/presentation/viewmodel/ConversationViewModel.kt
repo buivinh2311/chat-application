@@ -1,13 +1,48 @@
 package com.example.feature_chat.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.feature_chat.domain.usecase.GetAllConversationWithInfoUseCase
+import androidx.lifecycle.viewModelScope
+import com.example.core_ui.state.UiState
+import com.example.feature_chat.domain.usecase.ObserveConversationsWithInfoUseCase
+import com.example.feature_chat.presentation.event.ConversationEvent
+import com.example.feature_chat.presentation.uistate.ConversationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ConversationViewModel @Inject constructor(
-    private val getAllConversationWithInfoUseCase: GetAllConversationWithInfoUseCase
+    private val observeConversationsWithInfoUseCase: ObserveConversationsWithInfoUseCase
 ): ViewModel() {
-    fun conversations() = getAllConversationWithInfoUseCase()
+    private val _uiState = MutableStateFlow<UiState<ConversationUiState>>(
+        UiState.Loading
+    )
+    val uiState = _uiState.asStateFlow()
+
+    private val _event = MutableSharedFlow<ConversationEvent>()
+    val event = _event.asSharedFlow()
+
+    fun loadConversations() {
+        viewModelScope.launch {
+            observeConversationsWithInfoUseCase()
+                .catch {
+                    _uiState.value = UiState.Error
+                }
+                .collect { state ->
+                    _uiState.value = if(state.isEmpty()) {
+                        UiState.Empty
+                    } else {
+                        UiState.Success(
+                            ConversationUiState(state)
+                        )
+                    }
+                }
+        }
+    }
 }

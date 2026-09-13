@@ -11,12 +11,9 @@ class GetFriendListUseCase @Inject constructor(
     private val friendRepository: FriendRepository,
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(): List<User> {
-        return try {
-            val currentUserId = authRepository.getCurrentUserId()
-                ?: throw IllegalStateException("User not logged in")
-        } catch (_: Exception) {
-            emptyList()
-        }
+    suspend operator fun invoke(): Result<List<User>> {
+        val currentUserId = authRepository.getCurrentUserId()
+            ?: throw IllegalStateException("User not logged in")
+        return Result.success(emptyList())
     }
 }

@@ -7,13 +7,13 @@ import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    suspend fun createUser(user: User)
+    suspend fun createUser(user: User): Result<Unit>
 
-    fun observerUser(uid: String): Flow<User?>
+    fun observerUserById(uid: String): Flow<User?>
 
-    suspend fun getUser(uid: String): User?
+    suspend fun getUserById(uid: String): Result<User?>
 
-    suspend fun getUsersByIds(ids: List<String>): List<User>
+    suspend fun getUsersByIds(ids: List<String>): Result<List<User>>
 
     suspend fun updateUser(
         uid: String,
@@ -22,16 +22,16 @@ interface UserRepository {
         address: String?,
         dateOfBirth: Timestamp?,
         gender: Gender?
-    )
+    ): Result<Unit>
 
     suspend fun uploadAvatar(
         uid: String,
         imageUrl: String
-    )
+    ): Result<Unit>
 
-    suspend fun searchUser(keyword: String): List<User>
+    suspend fun searchUserByName(keyword: String): Result<List<User>>
 
-    suspend fun updateOnlineStatus(uid: String, status: UserStatus)
+    suspend fun updateOnlineStatus(uid: String, status: UserStatus): Result<Unit>
 
-    suspend fun updateFcmToken(uid: String, fcmToken: String)
+    suspend fun updateFcmToken(uid: String, fcmToken: String): Result<Unit>
 }

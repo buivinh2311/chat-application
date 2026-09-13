@@ -41,6 +41,8 @@ import com.example.core_model.enum.MessageType
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import com.example.core_ui.component.AppButton
+import com.example.core_ui.component.ErrorScreen
+import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.component.showToast
 import com.example.core_ui.state.UiState
 import com.example.core_utils.toRelativeString
@@ -49,7 +51,7 @@ import com.example.feature_chat.presentation.component.ConversationDetailTopBar
 import com.example.feature_chat.presentation.component.ImagePreviewDialog
 import com.example.feature_chat.presentation.component.VideoPreviewDialog
 import com.example.feature_chat.presentation.event.ConversationDetailEvent
-import com.example.feature_chat.presentation.event.ConversationEvent
+import com.example.feature_chat.presentation.uistate.ConversationDetailData
 import com.example.feature_chat.presentation.viewmodel.ConversationDetailViewModel
 import com.example.share_presentation.FileMessageItem
 import com.example.share_presentation.ImageMessageItem
@@ -115,7 +117,11 @@ fun ConversationDetailScreen(
 
     when (val state = uiState) {
         UiState.Loading -> {
+            LoadingScreen()
+        }
 
+        UiState.Error -> {
+            ErrorScreen(title = "error")
         }
 
         UiState.Empty -> {
@@ -123,19 +129,11 @@ fun ConversationDetailScreen(
         }
 
         is UiState.Success -> {
-            when(val data = state.data) {
+            val conversationUiState = state.data
+            when(val data = conversationUiState.conversationDetailData) {
                 is ConversationDetailData.Direct -> {
                     val user = data.user
-                    val isFriend by conversationDetailViewModel
-                        .isFriend(user.id)
-                        .collectAsStateWithLifecycle(true)
-                    val isSentRequest by conversationDetailViewModel
-                        .isSentRequest(user.id)
-                        .collectAsStateWithLifecycle(false)
-                    val messages by conversationDetailViewModel
-                        .getMessage(conversationId)
-                        .collectAsStateWithLifecycle(emptyList())
-
+                    val messages = conversationUiState.messages
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         topBar = {
@@ -192,7 +190,7 @@ fun ConversationDetailScreen(
                                     )
                                 }
 
-                                if(!isFriend) {
+                                if(!conversationUiState.isConnected) {
                                     Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
@@ -200,12 +198,16 @@ fun ConversationDetailScreen(
                                     ) {
                                         AppButton(
                                             modifier = Modifier.fillMaxWidth(0.35f),
-                                            label = if(!isSentRequest) stringResource(R.string.add_friend)
-                                            else stringResource(R.string.recall),
-                                            color = if(!isSentRequest) MaterialTheme.colorScheme.primary
-                                            else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+                                            label = if(!conversationUiState.isSentRequest)
+                                                stringResource(R.string.add_friend)
+                                            else
+                                                stringResource(R.string.recall),
+                                            color = if(!conversationUiState.isSentRequest)
+                                                MaterialTheme.colorScheme.primary
+                                            else
+                                                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
                                             onClick = {
-                                                if(!isSentRequest) {
+                                                if(!conversationUiState.isSentRequest) {
                                                     conversationDetailViewModel
                                                         .sendFriendRequest(user.id)
                                                 } else {

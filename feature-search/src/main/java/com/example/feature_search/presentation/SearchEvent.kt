@@ -6,4 +6,6 @@ sealed interface SearchEvent {
     data class NavigateToConversationDetail(
         val conversationId: String
     ): SearchEvent
+
+    data object ShowError: SearchEvent
 }

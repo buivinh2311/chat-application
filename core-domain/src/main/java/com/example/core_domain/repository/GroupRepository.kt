@@ -9,8 +9,11 @@ interface GroupRepository {
     suspend fun createGroup(
         name: String,
         conversationId: String
-    )
-    suspend fun getGroup(conversationId: String): Group?
-    fun observerGroup(conversationId: String): Flow<Group?>
-    suspend fun changeAvatar()
+    ): Result<Unit>
+
+    suspend fun getGroupByConversationId(conversationId: String): Result<Group?>
+
+    fun observerGroupByConversationId(conversationId: String): Flow<Group?>
+
+    suspend fun changeAvatar(): Result<Unit>
 }

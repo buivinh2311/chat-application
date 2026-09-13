@@ -105,4 +105,5 @@
     <string name="hint_group_name">Nhập tên nhóm</string>
     <string name="title_quantity_choose">Đã chọn %d</string>
     <string name="title_pick_group_member">Chọn thành viên</string>
+    <string name="title_friend_sent">Lời mời đã gửi</string>
 </resources>

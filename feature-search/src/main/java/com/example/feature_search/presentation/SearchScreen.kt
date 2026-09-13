@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -28,6 +29,9 @@ import com.example.core_resource.AppIcons
 import com.example.core_resource.R
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.EmptyScreen
+import com.example.core_ui.component.ErrorScreen
+import com.example.core_ui.component.LoadingScreen
+import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_search.presentation.component.SearchTopBar
@@ -53,6 +57,7 @@ fun SearchScreen (
 
     val searchViewModel: SearchViewModel = hiltViewModel()
     val uiState by searchViewModel.uiState.collectAsStateWithLifecycle()
+
     val listState = rememberLazyListState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -63,12 +68,20 @@ fun SearchScreen (
         }
     }
 
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         searchViewModel.event.collect { event ->
             when(event) {
                 is SearchEvent.NavigateToConversationDetail -> {
                     val conversationId = event.conversationId
                     onNavigateToConversationDetail(conversationId)
+                }
+
+                is SearchEvent.ShowError -> {
+                    showToast(
+                        context = context,
+                        message = context.getString(R.string.text_unknown_error)
+                    )
                 }
             }
         }
@@ -106,7 +119,11 @@ fun SearchScreen (
             if(keyword.isNotEmpty()) {
                 when(val state = uiState) {
                     UiState.Loading -> {
+                        item { LoadingScreen() }
+                    }
 
+                    UiState.Error -> {
+                        item { ErrorScreen(title = "ERROR") }
                     }
 
                     UiState.Empty -> {

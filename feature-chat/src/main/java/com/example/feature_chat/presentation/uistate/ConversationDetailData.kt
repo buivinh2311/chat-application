@@ -1,6 +1,7 @@
-package com.example.feature_chat.presentation.screen
+package com.example.feature_chat.presentation.uistate
 
 import com.example.core_model.Conversation
+import com.example.core_model.Message
 import com.example.core_model.User
 
 sealed interface ConversationDetailData {

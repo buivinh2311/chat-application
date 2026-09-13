@@ -3,16 +3,16 @@ package com.example.feature_chat.presentation.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.feature_chat.domain.model.FileInfo
 import com.example.core_ui.state.UiState
+import com.example.feature_chat.domain.model.FileInfo
 import com.example.feature_chat.presentation.event.ConversationDetailEvent
-import com.example.feature_chat.presentation.screen.ConversationDetailData
+import com.example.feature_chat.presentation.uistate.ConversationDetailData
 import com.example.feature_chat.domain.usecase.DownloadFileUseCase
 import com.example.feature_chat.domain.usecase.DownloadImageUseCase
 import com.example.feature_chat.domain.usecase.DownloadVideoUseCase
-import com.example.feature_chat.domain.usecase.GetConversationUseCase
-import com.example.feature_chat.domain.usecase.GetMessagesUseCase
-import com.example.feature_chat.domain.usecase.IsFriendUseCase
+import com.example.feature_chat.domain.usecase.GetConversationByIdUseCase
+import com.example.feature_chat.domain.usecase.ObserveMessagesByIdUseCase
+import com.example.feature_chat.domain.usecase.ObserveFriendshipUseCase
 import com.example.feature_chat.domain.usecase.LoadMoreMessagesUseCase
 import com.example.feature_chat.domain.usecase.MarkMessageAsReadUseCase
 import com.example.feature_chat.domain.usecase.ObserverFriendRequestUseCase
@@ -23,12 +23,16 @@ import com.example.feature_chat.domain.usecase.SendFriendRequestUseCase
 import com.example.feature_chat.domain.usecase.SendImageMessageUseCase
 import com.example.feature_chat.domain.usecase.SendTextMessageUseCase
 import com.example.feature_chat.domain.usecase.SendVideoMessageUseCase
+import com.example.feature_chat.presentation.uistate.ConversationDetailUiState
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,10 +40,10 @@ import javax.inject.Inject
 class ConversationDetailViewModel @Inject constructor(
     private val observerFriendRequestUseCase: ObserverFriendRequestUseCase,
     private val sendFriendRequestUseCase: SendFriendRequestUseCase,
-    private val getConversationUseCase: GetConversationUseCase,
+    private val getConversationByIdUseCase: GetConversationByIdUseCase,
     private val recallFriendRequestUseCase: RecallFriendRequestUseCase,
-    private val isFriendUseCase: IsFriendUseCase,
-    private val getMessagesUseCase: GetMessagesUseCase,
+    private val observeFriendshipUseCase: ObserveFriendshipUseCase,
+    private val observeMessagesByIdUseCase: ObserveMessagesByIdUseCase,
     private val loadMoreMessagesUseCase: LoadMoreMessagesUseCase,
     private val sendTextMessageUseCase: SendTextMessageUseCase,
     private val sendImageMessageUseCase: SendImageMessageUseCase,
@@ -51,7 +55,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val downloadFileUseCase: DownloadFileUseCase,
     private val openFileUseCase: OpenFileUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<UiState<ConversationDetailData>>(
+    private val _uiState = MutableStateFlow<UiState<ConversationDetailUiState>>(
         UiState.Loading
     )
     val uiState = _uiState.asStateFlow()
@@ -61,38 +65,95 @@ class ConversationDetailViewModel @Inject constructor(
 
     fun loadConversation(conversationId: String) {
         viewModelScope.launch {
-            val result = getConversationUseCase(conversationId)
-            _uiState.value = if (result == null) {
-                UiState.Empty
-            } else {
-                UiState.Success(result)
-            }
+            getConversationByIdUseCase(conversationId)
+                .onSuccess { data ->
+                    when (data) {
+                        is ConversationDetailData.Direct -> {
+                            observeDirectConversation(data)
+                        }
+
+                        is ConversationDetailData.Group -> {
+
+                        }
+                    }
+                }
+                .onFailure {
+                    _uiState.value = UiState.Error
+                }
         }
     }
 
-    fun isFriend(uid: String) = isFriendUseCase(uid)
+    private fun observeDirectConversation(data: ConversationDetailData.Direct) {
+        viewModelScope.launch {
+            combine(
+                observeFriendshipUseCase(data.user.id),
+                observerFriendRequestUseCase(data.user.id),
+                observeMessagesByIdUseCase(data.conversation.id)
+            ) { isFriend, isSentRequest, messages ->
+                ConversationDetailUiState(
+                    conversationDetailData = data,
+                    isConnected = isFriend,
+                    isSentRequest = isSentRequest,
+                    messages = messages
+                )
+            }
+                .catch {
+                    _uiState.value = UiState.Error
+                }
+                .collect { state ->
+                    _uiState.value = UiState.Success(state)
+                }
+        }
+    }
 
-    fun isSentRequest(receiverId: String) = observerFriendRequestUseCase(receiverId)
+//    private fun observeGroupConversation(data: ConversationDetailData.Group) {
+//        viewModelScope.launch {
+//            combine(
+//                observeFriendshipUseCase(data.user.id),
+//                observerFriendRequestUseCase(data.user.id),
+//                observeMessagesByIdUseCase(data.conversation.id)
+//            ) { isFriend, isSentRequest, messages ->
+//                ConversationDetailUiState(
+//                    conversationDetailData = data,
+//                    isConnected = isFriend,
+//                    isSentRequest = isSentRequest,
+//                    messages = messages,
+//                    isLoading = false
+//                )
+//            }
+//                .catch {
+//                    _uiState.update {
+//                        it.copy(
+//                            isLoading = false,
+//                            isError = true
+//                        )
+//                    }
+//
+//                    _event.emit(ConversationDetailEvent.ShowError)
+//                }
+//                .collect { state ->
+//                    _uiState.value = state
+//                }
+//        }
+//    }
 
     fun sendFriendRequest(receiverId: String) {
         viewModelScope.launch {
-            val result = sendFriendRequestUseCase(receiverId)
-            if (result.isFailure) {
-                _event.emit(ConversationDetailEvent.ShowError)
-            }
+            sendFriendRequestUseCase(receiverId)
+                .onFailure {
+                    _event.emit(ConversationDetailEvent.ShowError)
+                }
         }
     }
 
     fun recallFriendRequest(receiverId: String) {
         viewModelScope.launch {
-            val result = recallFriendRequestUseCase(receiverId)
-            if (result.isFailure) {
-                _event.emit(ConversationDetailEvent.ShowError)
-            }
+            recallFriendRequestUseCase(receiverId)
+                .onFailure {
+                    _event.emit(ConversationDetailEvent.ShowError)
+                }
         }
     }
-
-    fun getMessage(conversationId: String) = getMessagesUseCase(conversationId)
 
     fun loadMoreMessage(
         conversationId: String,
@@ -108,10 +169,10 @@ class ConversationDetailViewModel @Inject constructor(
         text: String
     ) {
         viewModelScope.launch {
-            val result = sendTextMessageUseCase(conversationId, text)
-            if (result.isFailure) {
-                _event.emit(ConversationDetailEvent.ShowError)
-            }
+            sendTextMessageUseCase(conversationId, text)
+                .onFailure {
+                    _event.emit(ConversationDetailEvent.ShowError)
+                }
         }
     }
 
@@ -122,11 +183,19 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch {
             fileInfos.forEach { fileInfo ->
                 when {
-                    fileInfo.mimeType.startsWith("image/") ->
+                    fileInfo.mimeType.startsWith("image/") -> {
                         sendImageMessageUseCase(conversationId, fileInfo)
+                            .onFailure {
+                                _event.emit(ConversationDetailEvent.ShowError)
+                            }
+                    }
 
-                    fileInfo.mimeType.startsWith("video/") ->
+                    fileInfo.mimeType.startsWith("video/") -> {
                         sendVideoMessageUseCase(conversationId, fileInfo)
+                            .onFailure {
+                                _event.emit(ConversationDetailEvent.ShowError)
+                            }
+                    }
                 }
             }
         }
@@ -165,12 +234,12 @@ class ConversationDetailViewModel @Inject constructor(
                 fileName = fileName,
                 mimeType = mimeType
             )
-            .onSuccess {
-                _event.emit(ConversationDetailEvent.DownloadSuccess)
-            }
-            .onFailure {
-                _event.emit(ConversationDetailEvent.DownloadFailed)
-            }
+                .onSuccess {
+                    _event.emit(ConversationDetailEvent.DownloadSuccess)
+                }
+                .onFailure {
+                    _event.emit(ConversationDetailEvent.DownloadFailed)
+                }
         }
     }
 

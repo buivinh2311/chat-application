@@ -15,6 +15,7 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,8 @@ import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
+import com.example.core_ui.component.ErrorScreen
+import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_settings.presentation.menu.DarkModeOptionItem
@@ -37,7 +40,10 @@ fun DarkModeScreen(
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     val darkModeViewModel: DarkModeViewModel = hiltViewModel()
-    val themeState by darkModeViewModel.themeState.collectAsStateWithLifecycle()
+    val uiState by darkModeViewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        darkModeViewModel.observerThemeState()
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -54,7 +60,19 @@ fun DarkModeScreen(
             )
         }
     ) { innerPadding ->
-        when(val state = themeState) {
+        when(val state = uiState) {
+            UiState.Loading -> {
+                LoadingScreen()
+            }
+
+            UiState.Error -> {
+                ErrorScreen(title = "ERROR")
+            }
+
+            UiState.Empty -> {
+
+            }
+
             is UiState.Success -> {
                 val darkModeState = state.data
                 Column(
@@ -99,10 +117,6 @@ fun DarkModeScreen(
                         )
                     )
                 }
-            }
-
-            else -> {
-
             }
         }
     }

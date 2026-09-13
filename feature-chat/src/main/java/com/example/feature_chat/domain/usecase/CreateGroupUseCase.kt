@@ -15,14 +15,14 @@ class CreateGroupUseCase @Inject constructor(
         name: String,
         user2: User
     ): Result<Unit> {
-        return try {
-            val currentUser = authRepository.getCurrentUser()
-                ?: throw IllegalStateException("User not logged in")
-            val conversationId = conversationRepository.createConversation(currentUser, user2)
-            groupRepository.createGroup(name, conversationId)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        val currentUser = authRepository.getCurrentUser()
+            ?: return Result.failure(IllegalStateException("User not logged in"))
+
+        val conversationId = conversationRepository
+            .createConversation(currentUser, user2)
+            .getOrElse { return Result.failure(it) }
+
+        return groupRepository
+            .createGroup(name, conversationId)
     }
 }

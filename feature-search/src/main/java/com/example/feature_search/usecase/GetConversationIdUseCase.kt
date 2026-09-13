@@ -11,15 +11,15 @@ class GetConversationIdUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val conversationRepository: ConversationRepository
 ) {
-    suspend operator fun invoke(uid: String): String? {
-        return try {
-            val user1 = authRepository.getCurrentUser()
-                ?: throw IllegalStateException("User not logged in")
-            val user2 = userRepository.getUser(uid)
-                ?: throw IllegalStateException("User not found")
-            conversationRepository.ensureConversation(user1, user2)
-        } catch (_: Exception) {
-            null
-        }
+    suspend operator fun invoke(uid: String): Result<String> {
+        val user1 = authRepository.getCurrentUser()
+            ?: return Result.failure(IllegalStateException("User not logged in"))
+
+        val user2 = userRepository
+            .getUserById(uid)
+            .getOrElse { return Result.failure(it) }
+            ?: throw IllegalStateException("User not found")
+
+        return conversationRepository.ensureConversation(user1, user2)
     }
 }

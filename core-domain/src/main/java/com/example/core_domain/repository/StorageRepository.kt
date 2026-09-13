@@ -5,5 +5,5 @@ import com.example.core_model.CloudinaryUploadResult
 import java.io.File
 
 interface StorageRepository {
-    suspend fun upload(file: File): CloudinaryUploadResult?
+    suspend fun upload(file: File): Result<CloudinaryUploadResult?>
 }

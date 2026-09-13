@@ -34,22 +34,30 @@ class FriendRepositoryImpl @Inject constructor(
         transaction: Transaction,
         user1: String,
         user2: String
-    ) {
-        val friendId = buildFriendId(user1, user2)
-        val friend = FriendDto(
-            id = friendId,
-            participants = listOf(user1, user2),
-            createdAt = Timestamp.now()
-        )
+    ): Result<Unit> {
+        return try {
+            val friendId = buildFriendId(user1, user2)
+            val friend = FriendDto(
+                id = friendId,
+                participants = listOf(user1, user2),
+                createdAt = Timestamp.now()
+            )
 
-        val friendRef = firestore
-            .collection(FRIENDS)
-            .document(friendId)
+            val friendRef = firestore
+                .collection(FRIENDS)
+                .document(friendId)
 
-        transaction.set(friendRef, friend)
+            transaction.set(friendRef, friend)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override fun isFriend(user1: String, user2: String): Flow<Boolean> = callbackFlow {
+    override fun observeFriendship(
+        user1: String,
+        user2: String
+    ): Flow<Boolean> = callbackFlow {
         val friendId = buildFriendId(user1, user2)
         val listener = firestore
             .collection(FRIENDS)
@@ -66,7 +74,9 @@ class FriendRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun observeFriends(uid: String): Flow<List<Friend>> = callbackFlow {
+    override fun observeFriendsByUserId(
+        uid: String
+    ): Flow<List<Friend>> = callbackFlow {
         val listener = firestore
             .collection(FRIENDS)
             .whereArrayContains("participants", uid)
@@ -88,23 +98,33 @@ class FriendRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFriends(uid: String): List<Friend> {
-        return firestore
-            .collection(FRIENDS)
-            .whereArrayContains("participants", uid)
-            .get()
-            .await()
-            .documents
-            .mapNotNull {
-                it.toObject(FriendDto::class.java)?.toDomain()
-            }
+    override suspend fun getFriendsByUserId(uid: String): Result<List<Friend>> {
+        return try {
+            val friends = firestore
+                .collection(FRIENDS)
+                .whereArrayContains("participants", uid)
+                .get()
+                .await()
+                .documents
+                .mapNotNull {
+                    it.toObject(FriendDto::class.java)?.toDomain()
+                }
+            Result.success(friends)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun unFriend(friendId: String) {
-        firestore
-            .collection(FRIENDS)
-            .document(friendId)
-            .delete()
-            .await()
+    override suspend fun unFriend(friendId: String): Result<Unit> {
+        return try {
+            firestore
+                .collection(FRIENDS)
+                .document(friendId)
+                .delete()
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

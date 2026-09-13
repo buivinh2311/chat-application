@@ -9,13 +9,13 @@ interface FriendRepository {
         transaction: Transaction,
         user1: String,
         user2: String
-    )
+    ): Result<Unit>
 
-    fun isFriend(user1: String, user2: String): Flow<Boolean>
+    fun observeFriendship(user1: String, user2: String): Flow<Boolean>
 
-    fun observeFriends(uid: String): Flow<List<Friend>>
+    fun observeFriendsByUserId(uid: String): Flow<List<Friend>>
 
-    suspend fun getFriends(uid: String): List<Friend>
+    suspend fun getFriendsByUserId(uid: String): Result<List<Friend>>
 
-    suspend fun unFriend(friendId: String)
+    suspend fun unFriend(friendId: String): Result<Unit>
 }

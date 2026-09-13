@@ -9,6 +9,7 @@ import com.example.feature_settings.usecase.SetThemeModeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,20 +18,20 @@ class DarkModeViewModel @Inject constructor(
     private val getThemeModeUseCase: GetThemeModeUseCase,
     private val setThemeModeUseCase: SetThemeModeUseCase
 ): ViewModel() {
-    private val _themeState = MutableStateFlow<UiState<DarkModeState>>(
+    private val _uiState = MutableStateFlow<UiState<DarkModeState>>(
         UiState.Loading
     )
-    val themeState = _themeState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
-    init {
-        observerThemeState()
-    }
-
-    private fun observerThemeState() {
+    fun observerThemeState() {
         viewModelScope.launch {
-            getThemeModeUseCase().collect { themeState ->
-                _themeState.value = UiState.Success(themeState)
-            }
+            getThemeModeUseCase()
+                .catch {
+                    _uiState.value = UiState.Error
+                }
+                .collect { theme ->
+                    _uiState.value = UiState.Success(theme)
+                }
         }
     }
 

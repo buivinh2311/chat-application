@@ -2,7 +2,9 @@ package com.example.feature_settings.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core_model.User
 import com.example.core_model.enum.Gender
+import com.example.core_ui.state.UiState
 import com.example.feature_settings.presentation.event.ProfileEvent
 import com.example.feature_settings.presentation.state.ProfileUiState
 import com.example.feature_settings.usecase.ObserverUserUseCase
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
@@ -23,37 +26,48 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val updateProfileUseCase: UpdateProfileUseCase,
     private val uploadAvatarUseCase: UploadAvatarUseCase,
-    observerUserUseCase: ObserverUserUseCase
+    private val observerUserUseCase: ObserverUserUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(ProfileUiState())
+    private val _uiState = MutableStateFlow<UiState<ProfileUiState>>(
+        UiState.Loading
+    )
     val uiState = _uiState.asStateFlow()
 
     private val _event = MutableSharedFlow<ProfileEvent>()
     val event = _event.asSharedFlow()
 
-    val currentUser = observerUserUseCase()
+    fun loadCurrentUser() {
+        viewModelScope.launch {
+            observerUserUseCase()
+                .catch {
+                    _uiState.value = UiState.Error
+                }
+                .collect { currentUser ->
+                    currentUser?.let {
+                        _uiState.value = UiState.Success(
+                            ProfileUiState(
+                                currentUser = currentUser
+                            )
+                        )
+                    }
+                }
+        }
+    }
 
     fun uploadAvatar(
         uid: String,
         file: File
     ) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
             uploadAvatarUseCase(uid, file)
-            _uiState.update {
-                it.copy(
-                    isLoading = false
-                )
-            }
+                .onFailure {
+                    _event.emit(ProfileEvent.ShowError)
+                }
         }
     }
 
     fun updateProfile(
-        uid: String,
+        user: User,
         firstName: String,
         lastName: String,
         address: String,
@@ -63,44 +77,30 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val isFirstNameBlank = firstName.isBlank()
             val isLastNameBlank = lastName.isBlank()
-            _uiState.update {
-                it.copy(
-                    isLastNameBlank = isLastNameBlank,
-                    isFirstNameBlank = isFirstNameBlank
+            _uiState.value = UiState.Success(
+                ProfileUiState(
+                    currentUser = user,
+                    isFirstNameBlank = isFirstNameBlank,
+                    isLastNameBlank = isLastNameBlank
                 )
-            }
+            )
             if (isLastNameBlank || isFirstNameBlank) {
                 return@launch
             }
-            _uiState.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
-            val result = updateProfileUseCase(
-                uid = uid,
+            updateProfileUseCase(
+                uid = user.id,
                 firstName = firstName,
                 lastName = lastName,
-                address = address.ifBlank{ null },
+                address = address.ifBlank { null },
                 dateOfBirth = dateOfBirth,
                 gender = gender
             )
-            if(result.isSuccess) {
-                _uiState.update {
-                    it.copy(
-                        isUpdateSuccess = true,
-                        isLoading = false
-                    )
+                .onSuccess {
+                    _event.emit(ProfileEvent.UpdateSuccessful)
                 }
-            } else {
-                _uiState.update {
-                    it.copy(
-                        isUpdateSuccess = false,
-                        isLoading = false
-                    )
+                .onFailure {
+                    _event.emit(ProfileEvent.ShowError)
                 }
-            }
-            _event.emit(ProfileEvent.ShowBanner)
         }
     }
 }

@@ -34,17 +34,26 @@ class ConversationRepositoryImpl @Inject constructor(
             .joinToString("_")
     }
 
-    override suspend fun getConversation(conversationId: String): Conversation? {
-        return firestore
-            .collection(CONVERSATIONS)
-            .document(conversationId)
-            .get()
-            .await()
-            ?.toObject(ConversationDto::class.java)
-            ?.toDomain()
+    override suspend fun getConversationById(
+        conversationId: String
+    ): Result<Conversation?> {
+        return try {
+            val conversation = firestore
+                .collection(CONVERSATIONS)
+                .document(conversationId)
+                .get()
+                .await()
+                ?.toObject(ConversationDto::class.java)
+                ?.toDomain()
+            Result.success(conversation)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override fun observerConversation(conversationId: String): Flow<Conversation?> = callbackFlow {
+    override fun observerConversationById(
+        conversationId: String
+    ): Flow<Conversation?> = callbackFlow {
         val listener = firestore
             .collection(CONVERSATIONS)
             .document(conversationId)
@@ -63,7 +72,9 @@ class ConversationRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getAllConversation(userId: String): Flow<List<Conversation>> = callbackFlow{
+    override fun observeConversationsByUserId(
+        userId: String
+    ): Flow<List<Conversation>> = callbackFlow{
         val listener = firestore
             .collection(CONVERSATIONS)
             .whereArrayContains("participants", userId)
@@ -88,42 +99,50 @@ class ConversationRepositoryImpl @Inject constructor(
     override suspend fun ensureConversation(
         user1: FirebaseUser,
         user2: User
-    ): String {
-        val conversationId = buildConversationId(user1.uid, user2.id)
-        val ref = firestore
-            .collection(CONVERSATIONS)
-            .document(conversationId)
-        if (!ref.get().await().exists()) {
-            ref.set(
-                ConversationDto(
-                    id = conversationId,
-                    type = ConversationType.DIRECT.name,
-                    memberAvatars = listOf(user1.photoUrl.toString(), user2.id),
-                    participants = listOf(user1.uid, user2.id),
-                    createdAt = Timestamp.now()
-                )
-            ).await()
+    ): Result<String> {
+        return try {
+            val conversationId = buildConversationId(user1.uid, user2.id)
+            val ref = firestore
+                .collection(CONVERSATIONS)
+                .document(conversationId)
+            if (!ref.get().await().exists()) {
+                ref.set(
+                    ConversationDto(
+                        id = conversationId,
+                        type = ConversationType.DIRECT.name,
+                        memberAvatars = listOf(user1.photoUrl.toString(), user2.id),
+                        participants = listOf(user1.uid, user2.id),
+                        createdAt = Timestamp.now()
+                    )
+                ).await()
+            }
+            Result.success(conversationId)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
-        return conversationId
     }
 
     override suspend fun createConversation(
         user1: FirebaseUser,
         user2: User
-    ): String {
-        val conversationId = UUID.randomUUID().toString()
-        firestore
-            .collection(CONVERSATIONS)
-            .document(conversationId)
-            .set(
-                ConversationDto(
-                    id = conversationId,
-                    type = ConversationType.DIRECT.name,
-                    memberAvatars = listOf(user1.photoUrl.toString(), user2.id),
-                    participants = listOf(user1.uid, user2.id),
-                    createdAt = Timestamp.now()
-                )
-            ).await()
-        return conversationId
+    ): Result<String> {
+        return try {
+            val conversationId = UUID.randomUUID().toString()
+            firestore
+                .collection(CONVERSATIONS)
+                .document(conversationId)
+                .set(
+                    ConversationDto(
+                        id = conversationId,
+                        type = ConversationType.DIRECT.name,
+                        memberAvatars = listOf(user1.photoUrl.toString(), user2.id),
+                        participants = listOf(user1.uid, user2.id),
+                        createdAt = Timestamp.now()
+                    )
+                ).await()
+            Result.success(conversationId)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

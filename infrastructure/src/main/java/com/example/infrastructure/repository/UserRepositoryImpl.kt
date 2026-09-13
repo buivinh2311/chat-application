@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import okhttp3.internal.wait
+import java.util.Collections.emptyList
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -28,15 +29,20 @@ class UserRepositoryImpl @Inject constructor(
         const val USERS = "users"
     }
 
-    override suspend fun createUser(user: User) {
-        firestore
-            .collection(USERS)
-            .document(user.id)
-            .set(user.toDto())
-            .await()
+    override suspend fun createUser(user: User): Result<Unit> {
+        return try {
+            firestore
+                .collection(USERS)
+                .document(user.id)
+                .set(user.toDto())
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override fun observerUser(uid: String): Flow<User?> = callbackFlow {
+    override fun observerUserById(uid: String): Flow<User?> = callbackFlow {
         val listener = firestore
             .collection(USERS)
             .document(uid)
@@ -56,29 +62,39 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUser(uid: String): User? {
-        return firestore
-            .collection(USERS)
-            .document(uid)
-            .get()
-            .await()
-            ?.toObject(UserDto::class.java)
-            ?.toDomain()
+    override suspend fun getUserById(uid: String): Result<User?> {
+        return try {
+            val user = firestore
+                .collection(USERS)
+                .document(uid)
+                .get()
+                .await()
+                ?.toObject(UserDto::class.java)
+                ?.toDomain()
+            Result.success(user)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun getUsersByIds(ids: List<String>): List<User> {
-        if (ids.isEmpty()) {
-            return emptyList()
-        }
-        return firestore
-            .collection(USERS)
-            .whereIn(FieldPath.documentId(), ids)
-            .get()
-            .await()
-            .documents
-            .mapNotNull {
-                it.toObject(UserDto::class.java)?.toDomain()
+    override suspend fun getUsersByIds(ids: List<String>): Result<List<User>> {
+        return try {
+            if (ids.isEmpty()) {
+                return Result.success(emptyList())
             }
+            val users = firestore
+                .collection(USERS)
+                .whereIn(FieldPath.documentId(), ids)
+                .get()
+                .await()
+                .documents
+                .mapNotNull {
+                    it.toObject(UserDto::class.java)?.toDomain()
+                }
+            Result.success(users)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun updateUser(
@@ -88,91 +104,116 @@ class UserRepositoryImpl @Inject constructor(
         address: String?,
         dateOfBirth: Timestamp?,
         gender: Gender?
-    ) {
-        firestore
-            .collection(USERS)
-            .document(uid)
-            .update(
-                mapOf(
-                    "firstName" to firstName,
-                    "lastName" to lastName,
-                    "address" to address,
-                    "dateOfBirth" to dateOfBirth,
-                    "gender" to gender.toString()
+    ): Result<Unit> {
+        return try {
+            firestore
+                .collection(USERS)
+                .document(uid)
+                .update(
+                    mapOf(
+                        "firstName" to firstName,
+                        "lastName" to lastName,
+                        "address" to address,
+                        "dateOfBirth" to dateOfBirth,
+                        "gender" to gender.toString()
+                    )
                 )
-            )
-            .await()
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun uploadAvatar(
         uid: String,
         imageUrl: String
-    ) {
-        firestore
-            .collection(USERS)
-            .document(uid)
-            .update("avatarUrl", imageUrl)
-            .await()
-        Result.success(Unit)
+    ): Result<Unit> {
+        return try {
+            firestore
+                .collection(USERS)
+                .document(uid)
+                .update("avatarUrl", imageUrl)
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun searchUser(keyword: String): List<User> = coroutineScope {
-        val key = keyword.trim()
-        if (key.isBlank()) {
-            return@coroutineScope emptyList()
-        }
-
-        val firstNameDeferred = async {
-            firestore
-                .collection(USERS)
-                .whereGreaterThanOrEqualTo("firstName", key)
-                .whereLessThanOrEqualTo("firstName", key + "\uf8ff")
-                .get()
-                .await()
-        }
-
-        val lastNameDeferred = async {
-            firestore
-                .collection(USERS)
-                .whereGreaterThanOrEqualTo("lastName", key)
-                .whereLessThanOrEqualTo("lastName", key + "\uf8ff")
-                .get()
-                .await()
-        }
-
-        val firstNameSnapshot = firstNameDeferred.await()
-        val lastNameSnapshot = lastNameDeferred.await()
-
-        return@coroutineScope (firstNameSnapshot.documents + lastNameSnapshot.documents)
-            .mapNotNull {
-                it.toObject(UserDto::class.java)?.toDomain()
+    override suspend fun searchUserByName(keyword: String): Result<List<User>> = coroutineScope {
+        return@coroutineScope try {
+            val key = keyword.trim()
+            if (key.isBlank()) {
+                return@coroutineScope Result.success(emptyList())
             }
-            .distinctBy { it.id }
+
+            val firstNameDeferred = async {
+                firestore
+                    .collection(USERS)
+                    .whereGreaterThanOrEqualTo("firstName", key)
+                    .whereLessThanOrEqualTo("firstName", key + "\uf8ff")
+                    .get()
+                    .await()
+            }
+
+            val lastNameDeferred = async {
+                firestore
+                    .collection(USERS)
+                    .whereGreaterThanOrEqualTo("lastName", key)
+                    .whereLessThanOrEqualTo("lastName", key + "\uf8ff")
+                    .get()
+                    .await()
+            }
+
+            val firstNameSnapshot = firstNameDeferred.await()
+            val lastNameSnapshot = lastNameDeferred.await()
+
+            Result.success(
+                (firstNameSnapshot.documents + lastNameSnapshot.documents)
+                    .mapNotNull {
+                        it.toObject(UserDto::class.java)?.toDomain()
+                    }
+                    .distinctBy { it.id }
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun updateOnlineStatus(
         uid: String,
         status: UserStatus
-    ) {
-        firestore
-            .collection(USERS)
-            .document(uid)
-            .update(
-                mapOf(
+    ): Result<Unit> {
+        return try {
+            firestore
+                .collection(USERS)
+                .document(uid)
+                .update(
+                    mapOf(
 
+                    )
                 )
-            )
-            .await()
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun updateFcmToken(uid: String, fcmToken: String) {
-        firestore
-            .collection(USERS)
-            .document(uid)
-            .update(
-                "fcmTokens",
-                FieldValue.arrayUnion(fcmToken)
-            )
-            .await()
+    override suspend fun updateFcmToken(uid: String, fcmToken: String): Result<Unit> {
+        return try {
+            firestore
+                .collection(USERS)
+                .document(uid)
+                .update(
+                    "fcmTokens",
+                    FieldValue.arrayUnion(fcmToken)
+                )
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

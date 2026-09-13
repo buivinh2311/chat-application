@@ -24,31 +24,45 @@ class GroupRepositoryImpl @Inject constructor(
     override suspend fun createGroup(
         name: String,
         conversationId: String
-    ) {
-        val group = GroupDto(
-            name = name,
-            conversationId = conversationId,
-            createdAt = Timestamp.now()
-        )
-        firestore
-            .collection(GROUPS)
-            .document()
-            .set(group)
-            .await()
+    ): Result<Unit> {
+        return try {
+            val group = GroupDto(
+                name = name,
+                conversationId = conversationId,
+                createdAt = Timestamp.now()
+            )
+            firestore
+                .collection(GROUPS)
+                .document()
+                .set(group)
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun getGroup(conversationId: String): Group? {
-        return firestore
-            .collection(GROUPS)
-            .whereEqualTo("conversationId", conversationId)
-            .get()
-            .await()
-            .firstOrNull()
-            ?.toObject(GroupDto::class.java)
-            ?.toDomain()
+    override suspend fun getGroupByConversationId(
+        conversationId: String
+    ): Result<Group?> {
+        return try {
+            val group = firestore
+                .collection(GROUPS)
+                .whereEqualTo("conversationId", conversationId)
+                .get()
+                .await()
+                .firstOrNull()
+                ?.toObject(GroupDto::class.java)
+                ?.toDomain()
+            Result.success(group)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override fun observerGroup(conversationId: String): Flow<Group?> = callbackFlow {
+    override fun observerGroupByConversationId(
+        conversationId: String
+    ): Flow<Group?> = callbackFlow {
         val listener = firestore
             .collection(GROUPS)
             .whereEqualTo("conversationId", conversationId)
@@ -69,7 +83,7 @@ class GroupRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun changeAvatar() {
-
+    override suspend fun changeAvatar(): Result<Unit> {
+        return Result.success(Unit)
     }
 }

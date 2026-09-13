@@ -1,8 +1,9 @@
 package com.example.feature_settings.presentation.state
 
+import com.example.core_model.User
+
 data class ProfileUiState (
-    val isLoading: Boolean = false,
+    val currentUser: User,
     val isFirstNameBlank: Boolean = false,
-    val isLastNameBlank: Boolean = false,
-    val isUpdateSuccess: Boolean? = null
+    val isLastNameBlank: Boolean = false
 )
