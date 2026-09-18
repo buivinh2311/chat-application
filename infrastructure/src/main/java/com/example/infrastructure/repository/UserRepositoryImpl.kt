@@ -115,7 +115,7 @@ class UserRepositoryImpl @Inject constructor(
                         "lastName" to lastName,
                         "address" to address,
                         "dateOfBirth" to dateOfBirth,
-                        "gender" to gender.toString()
+                        "gender" to gender
                     )
                 )
                 .await()

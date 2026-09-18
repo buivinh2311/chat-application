@@ -14,7 +14,7 @@ import kotlin.coroutines.resumeWithException
 class StorageRepositoryImpl @Inject constructor(
     private val mediaManager: MediaManager
 ) : StorageRepository {
-    override suspend fun upload(file: File): Result<CloudinaryUploadResult?> {
+    override suspend fun upload(file: File): Result<CloudinaryUploadResult> {
         return try {
             suspendCancellableCoroutine { continuation ->
                 val requestId = mediaManager

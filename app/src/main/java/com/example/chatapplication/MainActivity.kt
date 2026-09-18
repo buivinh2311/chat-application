@@ -23,6 +23,7 @@ import com.example.chatapplication.navigation.AppRoute
 import com.example.core_resource.ui.theme.ChatApplicationTheme
 import com.example.core_ui.state.UiState
 import com.example.feature_auth.presentation.screen.LoginScreen
+import com.example.feature_chat.presentation.component.TurnOffNotificationBottomSheet
 import com.example.feature_chat.presentation.screen.ConversationOptionScreen
 import com.example.feature_chat.presentation.screen.PickGroupMemberScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,7 +50,7 @@ class MainActivity : ComponentActivity() {
             splash.setKeepOnScreenCondition {
                 startupState is StartupState.Loading
             }
-            when(val state = themeState) {
+            when (val state = themeState) {
                 is UiState.Success -> {
                     ChatApplicationTheme(
                         themeState = state.data
@@ -91,7 +92,8 @@ class MainActivity : ComponentActivity() {
 @Preview
 fun Tmp() {
     PickGroupMemberScreen(
-        userId = "",
-        onBackClick = {}
+        currentFriendId = "1",
+        onNavigationToConversationDetail = { },
+        onBackClick = { }
     )
 }

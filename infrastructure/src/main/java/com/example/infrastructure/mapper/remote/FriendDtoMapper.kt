@@ -1,18 +1,18 @@
 package com.example.infrastructure.mapper.remote
 
-import com.example.core_model.Friend
+import com.example.core_model.Friendship
 import com.example.core_network.dto.FriendDto
 import com.google.firebase.Timestamp
 
-fun FriendDto.toDomain(): Friend {
-    return Friend(
+fun FriendDto.toDomain(): Friendship {
+    return Friendship(
         id = id,
         participants = participants,
         createdAt = createdAt ?: Timestamp.now()
     )
 }
 
-fun Friend.toDto(): FriendDto {
+fun Friendship.toDto(): FriendDto {
     return FriendDto(
         id = id,
         participants = participants,

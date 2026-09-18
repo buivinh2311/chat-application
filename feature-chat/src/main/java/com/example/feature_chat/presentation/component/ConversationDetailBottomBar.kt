@@ -45,7 +45,7 @@ fun ConversationDetailBottomBar(
     onFileSelected: (fileInfos: List<FileInfo>) -> Unit,
     onCameraClick: () -> Unit,
     onMediaSelected: (fileInfos: List<FileInfo>) -> Unit,
-    onEmojiClick: () -> Unit
+    onStickerClick: () -> Unit
 ) {
     var message by remember {
         mutableStateOf("")

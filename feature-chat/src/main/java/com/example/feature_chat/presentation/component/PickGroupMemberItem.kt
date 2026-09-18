@@ -40,16 +40,12 @@ import com.example.core_resource.R
 fun PickGroupMemberItem(
     modifier: Modifier = Modifier,
     name: String,
-    isChecked: Boolean,
+    avatarUrl: String?,
+    checked: Boolean,
     onCheckedChange: () -> Unit
 ) {
-    var checked by remember {
-        mutableStateOf(isChecked)
-    }
-
     Surface(
         onClick = {
-            checked = !checked
             onCheckedChange()
         },
         color = Color.Transparent,
@@ -64,14 +60,14 @@ fun PickGroupMemberItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = "user.avatarUrl",
+                model = avatarUrl,
                 contentDescription = null,
                 placeholder = painterResource(R.drawable.account),
                 error = painterResource(R.drawable.account),
                 modifier = Modifier
                     .size(AppDimens.ImageSize.Sm)
                     .clip(shape = CircleShape),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(AppDimens.Space.Md))
 

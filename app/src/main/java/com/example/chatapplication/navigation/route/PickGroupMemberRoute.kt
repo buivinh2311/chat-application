@@ -5,11 +5,13 @@ import com.example.feature_chat.presentation.screen.PickGroupMemberScreen
 
 @Composable
 fun PickGroupMemberRoute(
-    userId: String,
+    friendId: String,
+    onNavigationToConversationDetail: (String) -> Unit,
     onBackClick: () -> Unit
 ) {
     PickGroupMemberScreen(
-        userId = userId,
+        currentFriendId = friendId,
+        onNavigationToConversationDetail = onNavigationToConversationDetail,
         onBackClick = onBackClick
     )
 }

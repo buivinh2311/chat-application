@@ -40,6 +40,10 @@ object AppIcons {
         @Composable
         get() = painterResource(R.drawable.ic_close)
 
+    val Continue
+        @Composable
+        get() = painterResource(R.drawable.ic_continue)
+
     val Chat
         @Composable
         get() = painterResource(R.drawable.ic_conversation)

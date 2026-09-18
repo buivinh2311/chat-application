@@ -59,6 +59,7 @@ import com.example.feature_chat.domain.model.ConversationGroupOption
 import com.example.feature_chat.domain.model.ConversationGroupOptionAction
 import com.example.feature_chat.presentation.component.ChangeGroupNameDialog
 import com.example.feature_chat.presentation.component.ConversationOptionItem
+import com.example.feature_chat.presentation.component.TurnOffNotificationBottomSheet
 import com.example.feature_chat.presentation.uistate.ConversationDetailData
 import com.example.feature_chat.presentation.viewmodel.ConversationOptionViewModel
 
@@ -82,6 +83,10 @@ fun ConversationOptionScreen(
     val uiState by conversationOptionViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(conversationId) {
         conversationOptionViewModel.loadConversation(conversationId)
+    }
+
+    var showTurnOffNotification by remember {
+        mutableStateOf(false)
     }
 
     Scaffold(
@@ -153,7 +158,7 @@ fun ConversationOptionScreen(
                                                     onChangeBackgroundImage()
 
                                                 ConversationDirectOptionAction.TURN_OFF_NOTIFICATION ->
-                                                    onTurnOffNotification()
+                                                    showTurnOffNotification = !showTurnOffNotification
 
                                                 ConversationDirectOptionAction.TURN_ON_NOTIFICATION ->
                                                     onTurnOnNotification()
@@ -200,7 +205,7 @@ fun ConversationOptionScreen(
                                     ) { uri ->
                                         if (uri != null) {
                                             val file = uriToFile(context, uri)
-                                            conversationOptionViewModel.uploadGroupAvatar("", file)
+//                                            conversationOptionViewModel.uploadGroupAvatar("", file)
                                         }
                                     }
                                     AsyncImage(
@@ -292,6 +297,10 @@ fun ConversationOptionScreen(
                             }
                         }
                     }
+                }
+
+                if(showTurnOffNotification) {
+                    TurnOffNotificationBottomSheet()
                 }
             }
         }

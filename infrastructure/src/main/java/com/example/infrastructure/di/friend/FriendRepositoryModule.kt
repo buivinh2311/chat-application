@@ -1,7 +1,7 @@
 package com.example.infrastructure.di.friend
 
-import com.example.core_domain.repository.FriendRepository
-import com.example.infrastructure.repository.FriendRepositoryImpl
+import com.example.core_domain.repository.FriendshipRepository
+import com.example.infrastructure.repository.FriendshipRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,6 +12,6 @@ import dagger.hilt.components.SingletonComponent
 abstract class FriendRepositoryModule {
     @Binds
     abstract fun bindFriendRepository(
-        impl: FriendRepositoryImpl
-    ): FriendRepository
+        impl: FriendshipRepositoryImpl
+    ): FriendshipRepository
 }

@@ -7,5 +7,6 @@ data class Group(
     val name: String,
     val avatarUrl: String?,
     val conversationId: String,
+    val leaderId: String,
     val createdAt: Timestamp
 )

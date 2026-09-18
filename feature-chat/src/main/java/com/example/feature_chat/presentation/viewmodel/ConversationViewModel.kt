@@ -1,5 +1,6 @@
 package com.example.feature_chat.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_ui.state.UiState
@@ -32,6 +33,7 @@ class ConversationViewModel @Inject constructor(
         viewModelScope.launch {
             observeConversationsWithInfoUseCase()
                 .catch {
+                    Log.d("ConversationLoad", it.toString())
                     _uiState.value = UiState.Error
                 }
                 .collect { state ->

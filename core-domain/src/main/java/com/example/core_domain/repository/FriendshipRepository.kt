@@ -1,11 +1,11 @@
 package com.example.core_domain.repository
 
-import com.example.core_model.Friend
+import com.example.core_model.Friendship
 import com.google.firebase.firestore.Transaction
 import kotlinx.coroutines.flow.Flow
 
-interface FriendRepository {
-    fun createFriend(
+interface FriendshipRepository {
+    fun createFriendship(
         transaction: Transaction,
         user1: String,
         user2: String
@@ -13,9 +13,9 @@ interface FriendRepository {
 
     fun observeFriendship(user1: String, user2: String): Flow<Boolean>
 
-    fun observeFriendsByUserId(uid: String): Flow<List<Friend>>
+    fun observeFriendshipsByUserId(uid: String): Flow<List<Friendship>>
 
-    suspend fun getFriendsByUserId(uid: String): Result<List<Friend>>
+    suspend fun getFriendIdsByUserId(uid: String): Result<List<String>>
 
     suspend fun unFriend(friendId: String): Result<Unit>
 }

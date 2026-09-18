@@ -3,12 +3,11 @@ package com.example.feature_chat.domain.usecase
 import com.example.core_domain.repository.AuthRepository
 import com.example.core_domain.repository.FriendRequestRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class ObserverFriendRequestUseCase @Inject constructor(
+class ObserveFriendRequestUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val friendRequestRepository: FriendRequestRepository
 ) {

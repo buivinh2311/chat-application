@@ -1,8 +1,7 @@
 package com.example.infrastructure.repository
 
-import android.util.Log
-import com.example.core_domain.repository.FriendRepository
-import com.example.core_model.Friend
+import com.example.core_domain.repository.FriendshipRepository
+import com.example.core_model.Friendship
 import com.example.core_network.dto.FriendDto
 import com.example.infrastructure.mapper.remote.toDomain
 import com.google.firebase.Timestamp
@@ -14,9 +13,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FriendRepositoryImpl @Inject constructor(
+class FriendshipRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
-): FriendRepository {
+): FriendshipRepository {
     private companion object {
         const val FRIENDS = "friends"
     }
@@ -30,7 +29,7 @@ class FriendRepositoryImpl @Inject constructor(
             .joinToString("_")
     }
 
-    override fun createFriend(
+    override fun createFriendship(
         transaction: Transaction,
         user1: String,
         user2: String
@@ -74,9 +73,9 @@ class FriendRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun observeFriendsByUserId(
+    override fun observeFriendshipsByUserId(
         uid: String
-    ): Flow<List<Friend>> = callbackFlow {
+    ): Flow<List<Friendship>> = callbackFlow {
         val listener = firestore
             .collection(FRIENDS)
             .whereArrayContains("participants", uid)
@@ -98,18 +97,20 @@ class FriendRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFriendsByUserId(uid: String): Result<List<Friend>> {
+    override suspend fun getFriendIdsByUserId(uid: String): Result<List<String>> {
         return try {
-            val friends = firestore
+            val friendIds = firestore
                 .collection(FRIENDS)
                 .whereArrayContains("participants", uid)
                 .get()
                 .await()
                 .documents
                 .mapNotNull {
-                    it.toObject(FriendDto::class.java)?.toDomain()
+                    it.toObject(FriendDto::class.java)
+                        ?.participants
+                        ?.firstOrNull{ participateId -> participateId != uid}
                 }
-            Result.success(friends)
+            Result.success(friendIds)
         } catch (e: Exception) {
             Result.failure(e)
         }

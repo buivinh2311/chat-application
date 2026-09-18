@@ -1,6 +1,6 @@
 package com.example.feature_everybody.usecase
 
-import com.example.core_domain.repository.FriendRepository
+import com.example.core_domain.repository.FriendshipRepository
 import com.example.core_domain.repository.FriendRequestRepository
 import com.example.core_model.FriendRequest
 import com.google.firebase.firestore.FirebaseFirestore
@@ -9,12 +9,12 @@ import javax.inject.Inject
 
 class AcceptFriendRequestUseCase @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val friendRepository: FriendRepository,
+    private val friendshipRepository: FriendshipRepository,
     private val friendRequestRepository: FriendRequestRepository
 ) {
     suspend operator fun invoke(request: FriendRequest) {
         firestore.runTransaction { transaction ->
-            friendRepository.createFriend(
+            friendshipRepository.createFriendship(
                 transaction,
                 request.senderId,
                 request.receiverId

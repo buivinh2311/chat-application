@@ -10,5 +10,8 @@ interface ConversationRepository {
     fun observerConversationById(conversationId: String): Flow<Conversation?>
     fun observeConversationsByUserId(userId: String): Flow<List<Conversation>>
     suspend fun ensureConversation(user1: FirebaseUser, user2: User): Result<String>
-    suspend fun createConversation(user1: FirebaseUser, user2: User): Result<String>
+    suspend fun createConversation(
+        currentUser: FirebaseUser,
+        otherUser: List<User>
+    ): Result<String>
 }

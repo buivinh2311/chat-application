@@ -8,12 +8,15 @@ import kotlinx.coroutines.flow.Flow
 interface GroupRepository {
     suspend fun createGroup(
         name: String,
-        conversationId: String
+        avatarUrl: String? = null,
+        conversationId: String,
+        leaderId: String
     ): Result<Unit>
 
     suspend fun getGroupByConversationId(conversationId: String): Result<Group?>
 
     fun observerGroupByConversationId(conversationId: String): Flow<Group?>
 
-    suspend fun changeAvatar(): Result<Unit>
+    suspend fun changeAvatar(avatarUrl: String): Result<Unit>
+
 }

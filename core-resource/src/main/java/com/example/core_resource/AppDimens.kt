@@ -14,6 +14,12 @@ object AppDimens {
         val Xxl = 48.dp
     }
 
+    object ButtonSize {
+        val Xs = 16.dp
+        val Sm = 32.dp
+        val Md = 48.dp
+    }
+
     object ImageSize {
         val Sm = 48.dp
         val Md = 56.dp
@@ -44,6 +50,7 @@ object AppDimens {
     }
 
     object Icon {
+        val Xxs = 18.dp
         val Xs = 22.dp
         val Sm = 26.dp
         val Md = 30.dp

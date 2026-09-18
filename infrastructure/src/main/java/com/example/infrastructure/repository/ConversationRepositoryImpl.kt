@@ -123,20 +123,33 @@ class ConversationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createConversation(
-        user1: FirebaseUser,
-        user2: User
+        currentUser: FirebaseUser,
+        otherUser: List<User>
     ): Result<String> {
         return try {
             val conversationId = UUID.randomUUID().toString()
+            val memberAvatars = buildList {
+                currentUser.photoUrl?.toString()?.let { add(it) }
+                addAll(otherUser.mapNotNull { it.avatarUrl })
+            }
+            val participants = buildList {
+                add(currentUser.uid)
+                addAll(otherUser.map { it.id })
+            }
+            val type = if(otherUser.size < 2) {
+                ConversationType.DIRECT
+            } else {
+                ConversationType.GROUP
+            }
             firestore
                 .collection(CONVERSATIONS)
                 .document(conversationId)
                 .set(
                     ConversationDto(
                         id = conversationId,
-                        type = ConversationType.DIRECT.name,
-                        memberAvatars = listOf(user1.photoUrl.toString(), user2.id),
-                        participants = listOf(user1.uid, user2.id),
+                        type = type.name,
+                        memberAvatars = memberAvatars,
+                        participants = participants,
                         createdAt = Timestamp.now()
                     )
                 ).await()

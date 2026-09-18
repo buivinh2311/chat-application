@@ -11,11 +11,12 @@ import com.example.feature_chat.domain.usecase.DownloadFileUseCase
 import com.example.feature_chat.domain.usecase.DownloadImageUseCase
 import com.example.feature_chat.domain.usecase.DownloadVideoUseCase
 import com.example.feature_chat.domain.usecase.GetConversationByIdUseCase
+import com.example.feature_chat.domain.usecase.GetCurrentUserIdUseCase
 import com.example.feature_chat.domain.usecase.ObserveMessagesByIdUseCase
 import com.example.feature_chat.domain.usecase.ObserveFriendshipUseCase
 import com.example.feature_chat.domain.usecase.LoadMoreMessagesUseCase
 import com.example.feature_chat.domain.usecase.MarkMessageAsReadUseCase
-import com.example.feature_chat.domain.usecase.ObserverFriendRequestUseCase
+import com.example.feature_chat.domain.usecase.ObserveFriendRequestUseCase
 import com.example.feature_chat.domain.usecase.OpenFileUseCase
 import com.example.feature_chat.domain.usecase.RecallFriendRequestUseCase
 import com.example.feature_chat.domain.usecase.SendFileMessageUseCase
@@ -32,13 +33,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ConversationDetailViewModel @Inject constructor(
-    private val observerFriendRequestUseCase: ObserverFriendRequestUseCase,
+    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
+    private val observeFriendRequestUseCase: ObserveFriendRequestUseCase,
     private val sendFriendRequestUseCase: SendFriendRequestUseCase,
     private val getConversationByIdUseCase: GetConversationByIdUseCase,
     private val recallFriendRequestUseCase: RecallFriendRequestUseCase,
@@ -65,15 +66,20 @@ class ConversationDetailViewModel @Inject constructor(
 
     fun loadConversation(conversationId: String) {
         viewModelScope.launch {
+            val currentUserId = getCurrentUserIdUseCase()
+                .getOrElse {
+                    _uiState.value = UiState.Error
+                    return@launch
+                }
             getConversationByIdUseCase(conversationId)
                 .onSuccess { data ->
                     when (data) {
                         is ConversationDetailData.Direct -> {
-                            observeDirectConversation(data)
+                            observeDirectConversation(data, currentUserId)
                         }
 
                         is ConversationDetailData.Group -> {
-
+                            observeGroupConversation(data, currentUserId)
                         }
                     }
                 }
@@ -83,59 +89,55 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun observeDirectConversation(data: ConversationDetailData.Direct) {
-        viewModelScope.launch {
-            combine(
-                observeFriendshipUseCase(data.user.id),
-                observerFriendRequestUseCase(data.user.id),
-                observeMessagesByIdUseCase(data.conversation.id)
-            ) { isFriend, isSentRequest, messages ->
-                ConversationDetailUiState(
-                    conversationDetailData = data,
-                    isConnected = isFriend,
-                    isSentRequest = isSentRequest,
-                    messages = messages
-                )
-            }
-                .catch {
-                    _uiState.value = UiState.Error
-                }
-                .collect { state ->
-                    _uiState.value = UiState.Success(state)
-                }
+    private suspend fun observeDirectConversation(
+        data: ConversationDetailData.Direct,
+        currentUserId: String
+    ) {
+        combine(
+            observeFriendshipUseCase(data.user.id),
+            observeFriendRequestUseCase(data.user.id),
+            observeMessagesByIdUseCase(data.conversation.id)
+        ) { isFriend, isSentRequest, messages ->
+            ConversationDetailUiState(
+                conversationDetailData = data,
+                currentUserId = currentUserId,
+                isConnected = isFriend,
+                isSentRequest = isSentRequest,
+                messages = messages
+            )
         }
+            .catch {
+                _uiState.value = UiState.Error
+            }
+            .collect { state ->
+                _uiState.value = UiState.Success(state)
+            }
     }
 
-//    private fun observeGroupConversation(data: ConversationDetailData.Group) {
-//        viewModelScope.launch {
-//            combine(
-//                observeFriendshipUseCase(data.user.id),
-//                observerFriendRequestUseCase(data.user.id),
-//                observeMessagesByIdUseCase(data.conversation.id)
-//            ) { isFriend, isSentRequest, messages ->
-//                ConversationDetailUiState(
-//                    conversationDetailData = data,
-//                    isConnected = isFriend,
-//                    isSentRequest = isSentRequest,
-//                    messages = messages,
-//                    isLoading = false
-//                )
-//            }
-//                .catch {
-//                    _uiState.update {
-//                        it.copy(
-//                            isLoading = false,
-//                            isError = true
-//                        )
-//                    }
-//
-//                    _event.emit(ConversationDetailEvent.ShowError)
-//                }
-//                .collect { state ->
-//                    _uiState.value = state
-//                }
-//        }
-//    }
+    private suspend fun observeGroupConversation(
+        data: ConversationDetailData.Group,
+        currentUserId: String
+    ) {
+        combine(
+//            observeFriendshipUseCase(data.group.id),
+//            observeFriendRequestUseCase(data.group.id),
+            observeMessagesByIdUseCase(data.conversation.id)
+        ) { messages ->
+            ConversationDetailUiState(
+                conversationDetailData = data,
+                currentUserId = currentUserId,
+                isConnected = false,
+                isSentRequest = false,
+                messages = messages[0]
+            )
+        }
+            .catch {
+                _uiState.value = UiState.Error
+            }
+            .collect { state ->
+                _uiState.value = UiState.Success(state)
+            }
+    }
 
     fun sendFriendRequest(receiverId: String) {
         viewModelScope.launch {

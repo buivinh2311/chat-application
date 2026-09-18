@@ -39,6 +39,7 @@ firebase-bom = "34.2.0"
 google-services = "4.4.0"
 okhttp = "5.1.0"
 cloudinary = "3.1.2"
+roomKtx = "2.8.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -113,6 +114,7 @@ androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFontsVersion" }
 
 cloudinary-android = { module = "com.cloudinary:cloudinary-android", version.ref = "cloudinary" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -9,6 +9,7 @@ fun GroupDto.toDomain(): Group {
         name = name,
         avatarUrl = avatarUrl,
         conversationId = conversationId,
+        leaderId = leaderId,
         createdAt = createdAt
     )
 }
@@ -19,6 +20,7 @@ fun Group.toDto(): GroupDto {
         name = name,
         avatarUrl = avatarUrl,
         conversationId = conversationId,
+        leaderId = leaderId,
         createdAt = createdAt
     )
 }

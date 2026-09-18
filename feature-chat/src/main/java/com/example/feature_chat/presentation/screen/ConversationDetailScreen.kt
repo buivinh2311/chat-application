@@ -1,63 +1,35 @@
 package com.example.feature_chat.presentation.screen
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.os.Environment
-import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
 import com.example.core_model.Message
 import com.example.core_model.composite.MediaPreview
-import com.example.core_model.enum.MessageType
-import com.example.core_resource.AppDimens
 import com.example.core_resource.R
-import com.example.core_ui.component.AppButton
 import com.example.core_ui.component.ErrorScreen
 import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.component.showToast
 import com.example.core_ui.state.UiState
-import com.example.core_utils.toRelativeString
+import com.example.feature_chat.domain.model.FileInfo
 import com.example.feature_chat.presentation.component.ConversationDetailBottomBar
+import com.example.feature_chat.presentation.component.ConversationDetailDirect
+import com.example.feature_chat.presentation.component.ConversationDetailGroup
 import com.example.feature_chat.presentation.component.ConversationDetailTopBar
 import com.example.feature_chat.presentation.component.ImagePreviewDialog
 import com.example.feature_chat.presentation.component.VideoPreviewDialog
 import com.example.feature_chat.presentation.event.ConversationDetailEvent
 import com.example.feature_chat.presentation.uistate.ConversationDetailData
 import com.example.feature_chat.presentation.viewmodel.ConversationDetailViewModel
-import com.example.share_presentation.FileMessageItem
-import com.example.share_presentation.ImageMessageItem
-import com.example.share_presentation.TextMessageItem
-import com.example.share_presentation.VideoMessageItem
-import java.io.File
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
@@ -130,6 +102,36 @@ fun ConversationDetailScreen(
 
         is UiState.Success -> {
             val conversationUiState = state.data
+            val onSendMessageClick: (String) -> Unit = { message ->
+                conversationDetailViewModel.sendTextMessage(conversationId, message)
+            }
+            val onFileSelected: (List<FileInfo>) -> Unit = { fileInfos ->
+                conversationDetailViewModel.sendFileMessage(conversationId, fileInfos)
+            }
+            val onMediaSelected: (List<FileInfo>) -> Unit = { fileInfos ->
+                conversationDetailViewModel.sendMediaMessage(conversationId, fileInfos)
+            }
+            val onImageClick: (MediaPreview) -> Unit = { mediaPreview ->
+                imagePreview = mediaPreview
+            }
+            val onVideoClick: (MediaPreview) -> Unit = { mediaPreview ->
+                videoPreview = mediaPreview
+            }
+            val onDownloadFile: (Message.File) -> Unit = { file ->
+                conversationDetailViewModel.downloadFile(
+                    context = context,
+                    fileUrl = file.fileUrl,
+                    fileName = file.fileName,
+                    mimeType = file.mimeType
+                )
+            }
+            val onOpenFile: (Message.File) -> Unit = { file ->
+                conversationDetailViewModel.openFile(
+                    context = context,
+                    fileName = file.fileName,
+                    mimeType = file.mimeType
+                )
+            }
             when(val data = conversationUiState.conversationDetailData) {
                 is ConversationDetailData.Direct -> {
                     val user = data.user
@@ -139,172 +141,47 @@ fun ConversationDetailScreen(
                         topBar = {
                             ConversationDetailTopBar(
                                 imageUrl = user.avatarUrl,
-                                name = user.firstName + " " + user.lastName,
+                                name = "${user.firstName} ${user.lastName}",
                                 onBackClick = onBackClick,
                                 onOptionClick = onOptionClick
                             )
                         },
                         bottomBar = {
                             ConversationDetailBottomBar(
-                                onSendMessageClick = { message ->
-                                    conversationDetailViewModel.sendTextMessage(conversationId, message)
-                                },
+                                onSendMessageClick = onSendMessageClick,
                                 onLikeClick = {
 
                                 },
-                                onFileSelected = { fileInfos ->
-                                    conversationDetailViewModel.sendFileMessage(conversationId, fileInfos)
-                                },
+                                onFileSelected = onFileSelected,
                                 onCameraClick = { },
-                                onMediaSelected = { fileInfos ->
-                                    conversationDetailViewModel.sendMediaMessage(conversationId, fileInfos)
-                                },
-                                onEmojiClick = { }
+                                onMediaSelected = onMediaSelected,
+                                onStickerClick = { }
                             )
                         }
                     ) { innerPadding ->
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(innerPadding),
-                            contentPadding = PaddingValues(
-                                top = AppDimens.Space.Xxl,
-                                bottom = AppDimens.Space.Lg
-                            )
-                        ) {
-                            item {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    AsyncImage(
-                                        model = user.avatarUrl,
-                                        contentDescription = null,
-                                        placeholder = painterResource(R.drawable.account),
-                                        error = painterResource(R.drawable.account),
-                                        modifier = Modifier
-                                            .fillMaxWidth(0.4f)
-                                            .aspectRatio(1f)
-                                            .clip(shape = CircleShape),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                }
-
-                                if(!conversationUiState.isConnected) {
-                                    Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-                                        AppButton(
-                                            modifier = Modifier.fillMaxWidth(0.35f),
-                                            label = if(!conversationUiState.isSentRequest)
-                                                stringResource(R.string.add_friend)
-                                            else
-                                                stringResource(R.string.recall),
-                                            color = if(!conversationUiState.isSentRequest)
-                                                MaterialTheme.colorScheme.primary
-                                            else
-                                                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
-                                            onClick = {
-                                                if(!conversationUiState.isSentRequest) {
-                                                    conversationDetailViewModel
-                                                        .sendFriendRequest(user.id)
-                                                } else {
-                                                    conversationDetailViewModel
-                                                        .recallFriendRequest(user.id)
-                                                }
-                                            }
-                                        )
-                                    }
-                                }
-                                Spacer(modifier = Modifier.height(AppDimens.Space.Xxl))
-                            }
-
-                            items(
-                                count = messages.size,
-                                key = { index -> messages[index].id }
-                            ) { index ->
-                                val message = messages[index]
-                                val prevMessage = if(index != 0) messages[index - 1] else null
-                                val isMine = message.senderId != user.id
-                                when (message) {
-                                    is Message.Text -> {
-                                        TextMessageItem(
-                                            text = message.text,
-                                            isMine = isMine
-                                        )
-                                    }
-
-                                    is Message.Image -> {
-                                        ImageMessageItem(
-                                            fileUrl = message.fileUrl,
-                                            width = message.width,
-                                            height = message.height,
-                                            isMine = isMine,
-                                            onClick = {
-                                                imagePreview = MediaPreview(
-                                                    fileUrl = message.fileUrl,
-                                                    fileName = message.fileName,
-                                                    mimeType = message.mimeType,
-                                                    sentAt = message.createdAt.toRelativeString(),
-                                                    avatarUrl = user.avatarUrl,
-                                                    displayName = user.firstName + " " + user.lastName
-                                                )
-                                            }
-                                        )
-                                    }
-
-                                    is Message.Video -> {
-                                        VideoMessageItem(
-                                            thumbnailUrl = message.thumbnailUrl,
-                                            width = message.width,
-                                            height = message.height,
-                                            isMine = isMine,
-                                            onClick = {
-                                                videoPreview = MediaPreview(
-                                                    fileUrl = message.fileUrl,
-                                                    fileName = message.fileName,
-                                                    mimeType = message.mimeType,
-                                                    sentAt = message.createdAt.toRelativeString(),
-                                                    avatarUrl = user.avatarUrl,
-                                                    displayName = user.firstName + " " + user.lastName
-                                                )
-                                            }
-                                        )
-                                    }
-
-                                    is Message.File -> {
-                                        FileMessageItem(
-                                            fileName = message.fileName,
-                                            fileSize = message.fileSize,
-                                            mimeType = message.mimeType,
-                                            isMine = true,
-                                            onDownloadClick = {
-                                                conversationDetailViewModel.downloadFile(
-                                                    context = context,
-                                                    fileUrl = message.fileUrl,
-                                                    fileName = message.fileName,
-                                                    mimeType = message.mimeType
-                                                )
-                                            },
-                                            onClick = {
-                                                conversationDetailViewModel.openFile(
-                                                    context = context,
-                                                    fileName = message.fileName,
-                                                    mimeType = message.mimeType
-                                                )
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                        ConversationDetailDirect(
+                            user = user,
+                            isConnected = conversationUiState.isConnected,
+                            isSentRequest = conversationUiState.isSentRequest,
+                            messages = messages,
+                            innerPadding = innerPadding,
+                            onSendFriendRequest = { userId ->
+                                conversationDetailViewModel.sendFriendRequest(userId)
+                            },
+                            onRecallFriendRequest = { userId ->
+                                conversationDetailViewModel.recallFriendRequest(userId)
+                            },
+                            onImageClick = onImageClick,
+                            onVideoClick = onVideoClick,
+                            onDownloadFile = onDownloadFile,
+                            onOpenFile = onOpenFile
+                        )
                     }
                 }
 
                 is ConversationDetailData.Group -> {
                     val group = data.group
+                    val messages = conversationUiState.messages
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         topBar = {
@@ -317,72 +194,32 @@ fun ConversationDetailScreen(
                         },
                         bottomBar = {
                             ConversationDetailBottomBar(
-                                onSendMessageClick = { message ->
-                                    conversationDetailViewModel.sendTextMessage(conversationId, message)
-                                },
+                                onSendMessageClick = onSendMessageClick,
                                 onLikeClick = { },
-                                onFileSelected = { fileInfos ->
-                                    conversationDetailViewModel.sendFileMessage(conversationId, fileInfos)
-                                },
+                                onFileSelected = onFileSelected,
                                 onCameraClick = { },
-                                onMediaSelected = { fileInfos ->
-                                    conversationDetailViewModel.sendMediaMessage(conversationId, fileInfos)
-                                },
-                                onEmojiClick = { }
+                                onMediaSelected = onMediaSelected,
+                                onStickerClick = {}
                             )
                         }
                     ) { innerPadding ->
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(innerPadding),
-                            contentPadding = PaddingValues(
-                                vertical = AppDimens.Space.Lg
-                            )
-                        ) {
-                            item {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    AsyncImage(
-                                        model = group.avatarUrl,
-                                        contentDescription = null,
-                                        placeholder = painterResource(R.drawable.account),
-                                        error = painterResource(R.drawable.account),
-                                        modifier = Modifier
-                                            .fillMaxWidth(0.3f)
-                                            .aspectRatio(1f)
-                                            .clip(shape = CircleShape),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
-
-                                AppButton(
-                                    label = stringResource(R.string.send_group_request),
-                                    color = MaterialTheme.colorScheme.primary,
-                                    onClick = {
-
-                                    }
-                                )
-                            }
-
-//                            items(
-//                                count = 30
-//                            ) { index ->
-//                                if (index % 2 == 0) {
-//                                    Message(
-//                                        content = "message",
-//                                        isMine = false
-//                                    )
-//                                } else {
-//                                    Message(
-//                                        content = "message",
-//                                        isMine = true
-//                                    )
-//                                }
-//                            }
-                        }
+                        ConversationDetailGroup(
+                            group = group,
+                            currentUserId = conversationUiState.currentUserId,
+                            members = data.users,
+                            messages = messages,
+                            innerPadding = innerPadding,
+//                            onSendFriendRequest = { userId ->
+//                                conversationDetailViewModel.sendFriendRequest(userId)
+//                            },
+//                            onRecallFriendRequest = { userId ->
+//                                conversationDetailViewModel.recallFriendRequest(userId)
+//                            },
+                            onImageClick = onImageClick,
+                            onVideoClick = onVideoClick,
+                            onDownloadFile = onDownloadFile,
+                            onOpenFile = onOpenFile
+                        )
                     }
                 }
             }

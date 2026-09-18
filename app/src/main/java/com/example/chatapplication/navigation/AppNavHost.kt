@@ -145,10 +145,13 @@ fun AppNavHost(
         }
 
         composable(route = AppRoute.PICK_GROUP_MEMBER_WITH_ARG) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getString("userId")
+            val friendId = backStackEntry.arguments?.getString("userId")
                 ?: return@composable
             PickGroupMemberRoute(
-                userId = userId,
+                friendId = friendId,
+                onNavigationToConversationDetail = { conversationId ->
+                    onNavigationToConversationDetail(conversationId)
+                },
                 onBackClick = onBackClick
             )
         }

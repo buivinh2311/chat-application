@@ -6,7 +6,6 @@ import com.google.firebase.Timestamp
 data class ConversationDto(
     val id: String = "",
     val type: String = "",
-    val displayName: String = "",
     val memberAvatars: List<String> = emptyList(),
     val participants: List<String> = emptyList(),
     val lastMessage: String? = null,

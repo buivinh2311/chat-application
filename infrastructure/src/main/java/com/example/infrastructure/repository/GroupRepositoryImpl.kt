@@ -23,12 +23,16 @@ class GroupRepositoryImpl @Inject constructor(
 
     override suspend fun createGroup(
         name: String,
-        conversationId: String
+        avatarUrl: String?,
+        conversationId: String,
+        leaderId: String
     ): Result<Unit> {
         return try {
             val group = GroupDto(
                 name = name,
+                avatarUrl = avatarUrl,
                 conversationId = conversationId,
+                leaderId = leaderId,
                 createdAt = Timestamp.now()
             )
             firestore
@@ -83,7 +87,9 @@ class GroupRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun changeAvatar(): Result<Unit> {
+    override suspend fun changeAvatar(
+        avatarUrl: String
+    ): Result<Unit> {
         return Result.success(Unit)
     }
 }

@@ -7,5 +7,6 @@ data class GroupDto(
     val name: String = "",
     val avatarUrl: String? = null,
     val conversationId: String = "",
+    val leaderId: String = "",
     val createdAt: Timestamp = Timestamp.now()
 )
