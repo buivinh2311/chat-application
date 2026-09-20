@@ -111,4 +111,5 @@
     <string name="text_turn_off_ultil_turned_back_on">Cho đến khi bật lại</string>
     <string name="text_group_name_can_not_blank">Tên nhóm không được trống</string>
     <string name="text_not_enough_member">Tạo nhóm cần ít nhất 3 thành viên</string>
+    <string name="title_group_member">Thành viên</string>
 </resources>

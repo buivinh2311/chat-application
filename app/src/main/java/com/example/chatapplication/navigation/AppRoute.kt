@@ -21,5 +21,6 @@ object AppRoute {
     const val CHANGE_PASSWORD = "changePassword"
     const val DARK_MODE = "darkMode"
     const val LANGUAGE = "language"
-    const val LOGOUT = "logout"
+    const val VIEW_GROUP_MEMBER = "viewGroupMember"
+    const val VIEW_GROUP_MEMBER_WITH_ARG = "viewGroupMember/{conversationId}"
 }

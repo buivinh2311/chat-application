@@ -8,7 +8,8 @@ import com.example.feature_chat.presentation.screen.ConversationScreen
 fun ConversationOptionRoute(
     conversationId: String,
     onBackClick: () -> Unit,
-    onCreateGroup: (String) -> Unit
+    onCreateGroup: (String) -> Unit,
+    onViewGroupMember: (String) -> Unit
 ) {
     ConversationOptionScreen(
         conversationId = conversationId,
@@ -20,6 +21,7 @@ fun ConversationOptionRoute(
         onDeleteChatHistory = {},
         onTurnOnNotification = {},
         onTurnOffNotification = {},
-        onChangeBackgroundImage = {}
+        onChangeBackgroundImage = {},
+        onViewGroupMember = onViewGroupMember
     )
 }

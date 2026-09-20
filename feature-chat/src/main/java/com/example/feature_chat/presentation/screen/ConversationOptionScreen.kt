@@ -79,6 +79,7 @@ fun ConversationOptionScreen(
     onTurnOnNotification: () -> Unit,
     onViewMedia: () -> Unit,
     onCreateGroup: (String) -> Unit,
+    onViewGroupMember: (String) -> Unit,
     onBlock: () -> Unit,
     onDeleteChatHistory: () -> Unit,
     onUnFriend: () -> Unit
@@ -179,7 +180,10 @@ fun ConversationOptionScreen(
                                         showTurnOffNotification = true
                                     },
                                     onTurnOnNotification = onTurnOnNotification,
-                                    onViewMedia = onViewMedia
+                                    onViewMedia = onViewMedia,
+                                    onViewGroupMember = {
+                                        onViewGroupMember(conversationId)
+                                    }
                                 )
                             }
                         }
@@ -187,7 +191,11 @@ fun ConversationOptionScreen(
                 }
 
                 if(showTurnOffNotification) {
-                    TurnOffNotificationBottomSheet()
+                    TurnOffNotificationBottomSheet(
+                        onDismissRequest = {
+                            showTurnOffNotification = false
+                        }
+                    )
                 }
             }
         }

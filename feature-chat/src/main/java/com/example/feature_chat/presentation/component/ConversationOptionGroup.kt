@@ -52,7 +52,8 @@ fun ConversationOptionGroup(
     onChangeBackgroundImage: () -> Unit,
     onTurnOffNotification: () -> Unit,
     onTurnOnNotification: () -> Unit,
-    onViewMedia: () -> Unit
+    onViewMedia: () -> Unit,
+    onViewGroupMember: () -> Unit
 ) {
     var showChangeGroupNameDialog by remember {
         mutableStateOf(false)
@@ -147,7 +148,7 @@ fun ConversationOptionGroup(
                 ConversationGroupOptionAction.VIEW_MEDIA -> onViewMedia
                 ConversationGroupOptionAction.VIEW_GROUP_CALENDAR -> onChangeBackgroundImage
                 ConversationGroupOptionAction.CREATE_VOTE -> onChangeBackgroundImage
-                ConversationGroupOptionAction.VIEW_MEMBER -> onChangeBackgroundImage
+                ConversationGroupOptionAction.VIEW_MEMBER -> onViewGroupMember
                 ConversationGroupOptionAction.VIEW_GROUP_LINK -> onChangeBackgroundImage
                 ConversationGroupOptionAction.DELETE_CHAT_HISTORY -> onChangeBackgroundImage
                 ConversationGroupOptionAction.LEAVE_THE_GROUP -> onChangeBackgroundImage

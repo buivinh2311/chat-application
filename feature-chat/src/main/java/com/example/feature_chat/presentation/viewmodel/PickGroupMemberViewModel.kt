@@ -3,14 +3,12 @@ package com.example.feature_chat.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
 import com.example.core_model.User
 import com.example.core_ui.state.UiState
 import com.example.feature_chat.domain.usecase.CreateGroupUseCase
 import com.example.feature_chat.domain.usecase.GetFriendsUseCase
-import com.example.feature_chat.domain.usecase.ChangeGroupAvatarUseCase
 import com.example.feature_chat.presentation.event.PickGroupMemberEvent
-import com.example.feature_chat.presentation.uistate.PickGroupMemberState
+import com.example.feature_chat.presentation.uistate.PickGroupMemberUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +24,7 @@ class PickGroupMemberViewModel @Inject constructor(
     private val createGroupUseCase: CreateGroupUseCase,
     private val getFriendsUseCase: GetFriendsUseCase
 ): ViewModel() {
-    private val _uiState = MutableStateFlow<UiState<PickGroupMemberState>>(
+    private val _uiState = MutableStateFlow<UiState<PickGroupMemberUiState>>(
         UiState.Loading
     )
     val uiState = _uiState.asStateFlow()
@@ -39,7 +37,7 @@ class PickGroupMemberViewModel @Inject constructor(
             getFriendsUseCase()
                 .onSuccess { friends ->
                     _uiState.value = UiState.Success(
-                        PickGroupMemberState(
+                        PickGroupMemberUiState(
                             friends = friends,
                             groupMember = friends.filter { it.id == currentFriendId },
                             isGroupNameBlank = false

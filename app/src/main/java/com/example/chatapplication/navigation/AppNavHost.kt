@@ -24,6 +24,7 @@ import com.example.chatapplication.navigation.route.ProfileRoute
 import com.example.chatapplication.navigation.route.RegisterRoute
 import com.example.chatapplication.navigation.route.SearchRoute
 import com.example.chatapplication.navigation.route.SettingsRoute
+import com.example.chatapplication.navigation.route.ViewGroupMemberRoute
 import com.example.core_model.enum.ConversationType
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.feature_settings.presentation.menu.SettingOptionAction
@@ -140,6 +141,9 @@ fun AppNavHost(
                 onBackClick = onBackClick,
                 onCreateGroup = { userId ->
                     navController.navigate("${AppRoute.PICK_GROUP_MEMBER}/${userId}")
+                },
+                onViewGroupMember = { conversationId ->
+                    navController.navigate("${AppRoute.VIEW_GROUP_MEMBER}/${conversationId}")
                 }
             )
         }
@@ -253,6 +257,15 @@ fun AppNavHost(
                 onNavigateToLogin = {
                     navController.navigate("login?showDialog=false")
                 }
+            )
+        }
+
+        composable(route = AppRoute.VIEW_GROUP_MEMBER_WITH_ARG) { backStackEntry ->
+            val conversationId = backStackEntry.arguments?.getString("conversationId")
+                ?: return@composable
+            ViewGroupMemberRoute(
+                conversationId = conversationId,
+                onBackClick = onBackClick
             )
         }
     }

@@ -20,11 +20,11 @@ import com.example.core_resource.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TurnOffNotificationBottomSheet(
-
+    onDismissRequest: () -> Unit
 ) {
     val times = listOf(1, 4, 8, 12, 24)
     ModalBottomSheet(
-        onDismissRequest = { }
+        onDismissRequest = onDismissRequest
     ) {
         Column {
             Text(
