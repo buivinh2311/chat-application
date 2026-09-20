@@ -1,10 +1,12 @@
 package com.example.feature_chat.presentation.viewmodel
 
+import android.R
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_ui.state.UiState
 import com.example.feature_chat.domain.usecase.ChangeGroupAvatarUseCase
+import com.example.feature_chat.domain.usecase.ChangeGroupNameUseCase
 import com.example.feature_chat.domain.usecase.GetConversationByIdUseCase
 import com.example.feature_chat.domain.usecase.ObserveConversationByIdUseCase
 import com.example.feature_chat.presentation.event.ConversationOptionEvent
@@ -22,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ConversationOptionViewModel @Inject constructor(
     private val observeConversationByIdUseCase: ObserveConversationByIdUseCase,
-    private val changeGroupAvatarUseCase: ChangeGroupAvatarUseCase
+    private val changeGroupAvatarUseCase: ChangeGroupAvatarUseCase,
+    private val changeGroupNameUseCase: ChangeGroupNameUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow<UiState<ConversationOptionUiState>>(
         UiState.Loading
@@ -54,6 +57,18 @@ class ConversationOptionViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             changeGroupAvatarUseCase(groupId, file)
+                .onFailure {
+                    _event.emit(ConversationOptionEvent.ShowError)
+                }
+        }
+    }
+
+    fun changeGroupName(
+        groupId: String,
+        groupName: String
+    ) {
+        viewModelScope.launch {
+            changeGroupNameUseCase(groupId, groupName)
                 .onFailure {
                     _event.emit(ConversationOptionEvent.ShowError)
                 }

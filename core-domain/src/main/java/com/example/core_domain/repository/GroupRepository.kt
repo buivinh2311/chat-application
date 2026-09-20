@@ -19,4 +19,6 @@ interface GroupRepository {
 
     suspend fun changeAvatar(groupId: String, avatarUrl: String): Result<Unit>
 
+    suspend fun changeGroupName(groupId: String, groupName: String): Result<Unit>
+
 }

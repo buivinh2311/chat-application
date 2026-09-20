@@ -164,12 +164,15 @@ fun ConversationOptionScreen(
 
                             is ConversationDetailData.Group -> {
                                 val group = data.group
-                                val users = data.users
                                 ConversationOptionGroup(
                                     group = group,
                                     onChangeGroupAvatar = { file ->
                                         conversationOptionViewModel
                                             .changeGroupAvatar(group.id, file)
+                                    },
+                                    onChangeGroupName = { groupId, groupName ->
+                                        conversationOptionViewModel
+                                            .changeGroupName(groupId, groupName)
                                     },
                                     onChangeBackgroundImage = onChangeBackgroundImage,
                                     onTurnOffNotification = {

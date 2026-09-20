@@ -97,12 +97,26 @@ class GroupRepositoryImpl @Inject constructor(
         avatarUrl: String
     ): Result<Unit> {
         return try {
-            Log.d("Firestore", "GROUPS = $GROUPS")
-            Log.d("Firestore", "groupId = '$groupId'")
             firestore
                 .collection(GROUPS)
                 .document(groupId)
                 .update("avatarUrl", avatarUrl)
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun changeGroupName(
+        groupId: String,
+        groupName: String
+    ): Result<Unit> {
+        return try {
+            firestore
+                .collection(GROUPS)
+                .document(groupId)
+                .update("name", groupName)
                 .await()
             Result.success(Unit)
         } catch (e: Exception) {

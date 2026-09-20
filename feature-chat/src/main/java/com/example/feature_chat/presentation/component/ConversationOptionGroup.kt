@@ -48,6 +48,7 @@ import java.io.File
 fun ConversationOptionGroup(
     group: Group,
     onChangeGroupAvatar: (File) -> Unit,
+    onChangeGroupName: (String, String) -> Unit,
     onChangeBackgroundImage: () -> Unit,
     onTurnOffNotification: () -> Unit,
     onTurnOnNotification: () -> Unit,
@@ -113,24 +114,24 @@ fun ConversationOptionGroup(
             )
         }
     }
-    Spacer(modifier = Modifier.height(AppDimens.Space.Md))
+    Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
 
     Row(
         modifier = Modifier.clickable {
-
+            showChangeGroupNameDialog = true
         },
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
             text = group.name,
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.headlineSmall
         )
         Spacer(modifier = Modifier.width(AppDimens.Space.Xs))
 
         Icon(
             painter = AppIcons.Edit,
             contentDescription = null,
-            modifier = Modifier.size(AppDimens.Icon.Md)
+            modifier = Modifier.size(AppDimens.Icon.Sm)
         )
     }
     Spacer(modifier = Modifier.height(AppDimens.Space.Xxl))
@@ -160,8 +161,8 @@ fun ConversationOptionGroup(
                 showChangeGroupNameDialog = false
             },
             onChange = { groupName ->
+                onChangeGroupName(group.id, groupName)
                 showChangeGroupNameDialog = false
-
             }
         )
     }
