@@ -77,6 +77,31 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeUsersByIds(ids: List<String>): Flow<List<User>> = callbackFlow {
+        val listener = firestore
+            .collection(USERS)
+            .whereIn(FieldPath.documentId(), ids)
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    close(exception)
+                    return@addSnapshotListener
+                }
+                val users = snapshot
+                    ?.documents
+                    ?.mapNotNull { document ->
+                        document
+                            .toObject(UserDto::class.java)
+                            ?.toDomain()
+                    }
+                    ?: emptyList()
+
+                trySend(users)
+            }
+        awaitClose {
+            listener.remove()
+        }
+    }
+
     override suspend fun getUsersByIds(ids: List<String>): Result<List<User>> {
         return try {
             if (ids.isEmpty()) {

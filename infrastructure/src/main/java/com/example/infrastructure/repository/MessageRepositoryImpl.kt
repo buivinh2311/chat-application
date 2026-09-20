@@ -80,12 +80,13 @@ class MessageRepositoryImpl @Inject constructor(
             val conversationRef = firestore
                 .collection(CONVERSATIONS)
                 .document(message.conversationId)
+
             val messageRef = conversationRef
                 .collection(MESSAGES)
                 .document()
 
             firestore.runBatch { batch ->
-                batch.set(messageRef, message.toDto())
+                batch.set(messageRef, message.toDto(messageRef.id))
                 batch.update(
                     conversationRef,
                     mapOf(

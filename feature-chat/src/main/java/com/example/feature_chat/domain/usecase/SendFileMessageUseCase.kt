@@ -28,7 +28,6 @@ class SendFileMessageUseCase @Inject constructor(
         val uploadResult = storageRepository
             .upload(fileInfo.file)
             .getOrElse { return Result.failure(it) }
-            ?: return Result.failure(IllegalStateException("Failed to upload file"))
 
         val thumbnailUrl = if (fileInfo.mimeType == "application/pdf") {
             "https://res.cloudinary.com/$CLOUD_NAME/image/upload/pg_1,w_400,h_400,c_fill/${uploadResult.publicId}"
@@ -37,7 +36,7 @@ class SendFileMessageUseCase @Inject constructor(
         }
 
         val message = Message.File(
-            id = UUID.randomUUID().toString(),
+            id = "",
             conversationId = conversationId,
             senderId = senderId,
             fileUrl = uploadResult.url,

@@ -9,7 +9,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class OpenFileUseCase @Inject constructor() {
-    suspend operator fun invoke(
+    operator fun invoke(
         context: Context,
         fileName: String,
         mimeType: String
@@ -20,17 +20,14 @@ class OpenFileUseCase @Inject constructor() {
                 fileName = fileName,
                 mimeType = mimeType
             ) ?: throw IOException("File not found")
-
             val uri = ContentUris.withAppendedId(
                 MediaStore.Downloads.EXTERNAL_CONTENT_URI,
                 mediaStoreId
             )
-
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(uri, mimeType)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-
             context.startActivity(intent)
         }
     }

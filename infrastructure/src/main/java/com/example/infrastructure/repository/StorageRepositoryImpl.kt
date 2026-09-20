@@ -1,5 +1,6 @@
 package com.example.infrastructure.repository
 
+import android.util.Log
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
@@ -16,11 +17,20 @@ class StorageRepositoryImpl @Inject constructor(
 ) : StorageRepository {
     override suspend fun upload(file: File): Result<CloudinaryUploadResult> {
         return try {
+            Log.e(
+                "CloudinaryUpload",
+                file.toString()
+            )
+            val resourceType = when (file.extension.lowercase()) {
+                "jpg", "jpeg", "png", "webp", "gif" -> "image"
+                "mp4", "mov", "avi", "mkv" -> "video"
+                else -> "raw"
+            }
             suspendCancellableCoroutine { continuation ->
                 val requestId = mediaManager
                     .upload(file.absolutePath)
                     .unsigned("chat_media")
-                    .option("resource_type", "auto")
+                    .option("resource_type", resourceType)
                     .callback(object : UploadCallback {
 
                         override fun onStart(
@@ -56,8 +66,20 @@ class StorageRepositoryImpl @Inject constructor(
                             requestId: String,
                             error: ErrorInfo
                         ) {
+//                            continuation.resumeWithException(
+//                                Exception(error.description)
+//                            )
+                            Log.e(
+                                "CloudinaryUpload",
+                                "requestId=$requestId, code=${error.code}, description=${error.description}"
+                            )
+
                             continuation.resumeWithException(
-                                Exception(error.description)
+                                Exception(
+                                    "Cloudinary upload failed: " +
+                                            "code=${error.code}, " +
+                                            "description=${error.description}"
+                                )
                             )
                         }
 

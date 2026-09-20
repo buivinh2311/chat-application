@@ -127,33 +127,38 @@ class ConversationRepositoryImpl @Inject constructor(
         otherUser: List<User>
     ): Result<String> {
         return try {
-            val conversationId = UUID.randomUUID().toString()
             val memberAvatars = buildList {
                 currentUser.photoUrl?.toString()?.let { add(it) }
                 addAll(otherUser.mapNotNull { it.avatarUrl })
             }
+
             val participants = buildList {
                 add(currentUser.uid)
                 addAll(otherUser.map { it.id })
             }
+
             val type = if(otherUser.size < 2) {
                 ConversationType.DIRECT
             } else {
                 ConversationType.GROUP
             }
+
+            val messageRef = firestore
+                .collection(CONVERSATIONS)
+                .document()
             firestore
                 .collection(CONVERSATIONS)
-                .document(conversationId)
+                .document()
                 .set(
                     ConversationDto(
-                        id = conversationId,
+                        id = messageRef.id,
                         type = type.name,
                         memberAvatars = memberAvatars,
                         participants = participants,
                         createdAt = Timestamp.now()
                     )
                 ).await()
-            Result.success(conversationId)
+            Result.success(messageRef.id)
         } catch (e: Exception) {
             Result.failure(e)
         }

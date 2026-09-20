@@ -10,6 +10,7 @@ class ChangeGroupAvatarUseCase @Inject constructor(
     private val groupRepository: GroupRepository
 ) {
     suspend operator fun invoke(
+        groupId: String,
         file: File
     ): Result<Unit> {
         val avatarUrl =  storageRepository
@@ -17,6 +18,6 @@ class ChangeGroupAvatarUseCase @Inject constructor(
             .getOrElse { return Result.failure(it) }
             .url
 
-        return groupRepository.changeAvatar(avatarUrl)
+        return groupRepository.changeAvatar(groupId, avatarUrl)
     }
 }

@@ -26,10 +26,9 @@ class SendImageMessageUseCase @Inject constructor(
         val uploadResult = storageRepository
             .upload(fileInfo.file)
             .getOrElse { return Result.failure(it) }
-            ?: return Result.failure(Exception("Failed to upload file"))
 
         val message = Message.Image(
-            id = UUID.randomUUID().toString(),
+            id = "",
             conversationId = conversationId,
             senderId = senderId,
             fileUrl = uploadResult.url,

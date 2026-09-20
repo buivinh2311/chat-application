@@ -26,14 +26,13 @@ class SendVideoMessageUseCase @Inject constructor(
         val uploadResult = storageRepository
             .upload(fileInfo.file)
             .getOrElse { return Result.failure(it) }
-            ?: return Result.failure(Exception("Failed to upload file"))
 
         val thumbnailUrl = uploadResult.url
             .replace("/video/upload/", "/video/upload/so_0,w_400,h_400,c_fill/")
             .replaceAfterLast(".", "jpg")
 
         val message = Message.Video(
-            id = UUID.randomUUID().toString(),
+            id = "",
             conversationId = conversationId,
             senderId = senderId,
             createdAt = Timestamp.now(),

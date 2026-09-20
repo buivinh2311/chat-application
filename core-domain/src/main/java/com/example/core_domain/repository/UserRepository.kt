@@ -13,6 +13,8 @@ interface UserRepository {
 
     suspend fun getUserById(uid: String): Result<User?>
 
+    fun observeUsersByIds(ids: List<String>): Flow<List<User>>
+
     suspend fun getUsersByIds(ids: List<String>): Result<List<User>>
 
     suspend fun updateUser(

@@ -68,12 +68,12 @@ fun MessageDto.toDomain(): Message {
     }
 }
 
-fun Message.toDto(): MessageDto {
+fun Message.toDto(messageId: String): MessageDto {
     val status = status.toString()
     val timestamp = createdAt
     return when (this) {
         is Message.Text -> MessageDto(
-            id = id,
+            id = messageId,
             conversationId = conversationId,
             senderId = senderId,
             createdAt = timestamp,
@@ -83,7 +83,7 @@ fun Message.toDto(): MessageDto {
         )
 
         is Message.Image -> MessageDto(
-            id = id,
+            id = messageId,
             conversationId = conversationId,
             senderId = senderId,
             createdAt = timestamp,
@@ -98,7 +98,7 @@ fun Message.toDto(): MessageDto {
         )
 
         is Message.Video -> MessageDto(
-            id = id,
+            id = messageId,
             conversationId = conversationId,
             senderId = senderId,
             createdAt = timestamp,
@@ -115,7 +115,7 @@ fun Message.toDto(): MessageDto {
         )
 
         is Message.File -> MessageDto(
-            id = id,
+            id = messageId,
             conversationId = conversationId,
             senderId = senderId,
             createdAt = timestamp,

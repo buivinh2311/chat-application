@@ -1,6 +1,7 @@
 package com.example.feature_chat.presentation.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_ui.state.UiState
@@ -210,6 +211,10 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch {
             fileInfos.forEach { fileInfo ->
                 sendFileMessageUseCase(conversationId, fileInfo)
+                    .onFailure {
+                        Log.d("SENDFILE", it.toString())
+                        _event.emit(ConversationDetailEvent.ShowError)
+                    }
             }
         }
     }

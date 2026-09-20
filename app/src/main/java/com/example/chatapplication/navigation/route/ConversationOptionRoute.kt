@@ -14,7 +14,7 @@ fun ConversationOptionRoute(
         conversationId = conversationId,
         onBackClick = onBackClick,
         onBlock = {},
-        onUnfriend = {},
+        onUnFriend = {},
         onViewMedia = {},
         onCreateGroup = onCreateGroup,
         onDeleteChatHistory = {},

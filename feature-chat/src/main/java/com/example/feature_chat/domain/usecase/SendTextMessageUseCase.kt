@@ -23,7 +23,7 @@ class SendTextMessageUseCase @Inject constructor(
             ?: return Result.failure(IllegalStateException("User not logged in"))
 
         val message = Message.Text(
-            id = UUID.randomUUID().toString(),
+            id = "",
             conversationId = conversationId,
             senderId = senderId,
             createdAt = Timestamp.now(),
