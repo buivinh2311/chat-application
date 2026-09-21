@@ -23,4 +23,5 @@ object AppRoute {
     const val LANGUAGE = "language"
     const val VIEW_GROUP_MEMBER = "viewGroupMember"
     const val VIEW_GROUP_MEMBER_WITH_ARG = "viewGroupMember/{conversationId}"
+    const val CAMERA = "camera"
 }

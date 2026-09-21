@@ -36,7 +36,8 @@ import com.example.feature_chat.presentation.viewmodel.ConversationDetailViewMod
 fun ConversationDetailScreen(
     conversationId: String,
     onBackClick: () -> Unit,
-    onOptionClick: () -> Unit
+    onOptionClick: () -> Unit,
+    onOpenCamera: () -> Unit
 ) {
     val conversationDetailViewModel: ConversationDetailViewModel = hiltViewModel()
     val uiState by conversationDetailViewModel.uiState.collectAsStateWithLifecycle()
@@ -153,7 +154,7 @@ fun ConversationDetailScreen(
 
                                 },
                                 onFileSelected = onFileSelected,
-                                onCameraClick = { },
+                                onOpenCamera = onOpenCamera,
                                 onMediaSelected = onMediaSelected,
                                 onStickerClick = { }
                             )
@@ -197,7 +198,7 @@ fun ConversationDetailScreen(
                                 onSendMessageClick = onSendMessageClick,
                                 onLikeClick = { },
                                 onFileSelected = onFileSelected,
-                                onCameraClick = { },
+                                onOpenCamera = onOpenCamera,
                                 onMediaSelected = onMediaSelected,
                                 onStickerClick = {}
                             )

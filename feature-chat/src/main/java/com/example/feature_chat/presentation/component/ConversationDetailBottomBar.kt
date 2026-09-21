@@ -43,7 +43,7 @@ fun ConversationDetailBottomBar(
     onSendMessageClick: (String) -> Unit,
     onLikeClick: () -> Unit,
     onFileSelected: (fileInfos: List<FileInfo>) -> Unit,
-    onCameraClick: () -> Unit,
+    onOpenCamera: () -> Unit,
     onMediaSelected: (fileInfos: List<FileInfo>) -> Unit,
     onStickerClick: () -> Unit
 ) {
@@ -108,7 +108,7 @@ fun ConversationDetailBottomBar(
         AppIconButton(
             icon = AppIcons.Camera,
             color = MaterialTheme.colorScheme.primary,
-            onClick = { }
+            onClick = onOpenCamera
         )
         Spacer(modifier = Modifier.width(AppDimens.Space.Md))
 

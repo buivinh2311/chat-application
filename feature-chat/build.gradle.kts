@@ -51,6 +51,12 @@ dependencies {
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.ui)
 
+    //camera
+    implementation(libs.camera.core)
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+
     //hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

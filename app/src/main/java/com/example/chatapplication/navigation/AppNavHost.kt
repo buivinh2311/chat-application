@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.chatapplication.navigation.route.CameraRoute
 import com.example.chatapplication.navigation.route.ChangePasswordRoute
 import com.example.chatapplication.navigation.route.ConversationDetailRoute
 import com.example.chatapplication.navigation.route.ConversationOptionRoute
@@ -126,10 +127,13 @@ fun AppNavHost(
                     ?: return@composable
             ConversationDetailRoute(
                 conversationId = conversationId,
-                onBackClick = onBackClick,
                 onOptionClick = {
                     navController.navigate("${AppRoute.CONVERSATION_OPTION}/$conversationId")
-                }
+                },
+                onOpenCamera = {
+                    navController.navigate(AppRoute.CAMERA)
+                },
+                onBackClick = onBackClick
             )
         }
 
@@ -265,6 +269,15 @@ fun AppNavHost(
                 ?: return@composable
             ViewGroupMemberRoute(
                 conversationId = conversationId,
+                onBackClick = onBackClick
+            )
+        }
+
+        composable(route = AppRoute.CAMERA) {
+            CameraRoute(
+                onImageCaptured = { uri ->
+                    // xử lý ảnh
+                },
                 onBackClick = onBackClick
             )
         }

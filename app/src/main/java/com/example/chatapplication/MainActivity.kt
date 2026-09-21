@@ -91,9 +91,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 @Preview
 fun Tmp() {
-    PickGroupMemberScreen(
-        currentFriendId = "1",
-        onNavigationToConversationDetail = { },
-        onBackClick = { }
-    )
+//    PickGroupMemberScreen(
+//        currentFriendId = "1",
+//        onNavigationToConversationDetail = { },
+//        onBackClick = { }
+//    )
 }

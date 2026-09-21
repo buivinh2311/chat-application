@@ -7,12 +7,14 @@ import com.example.feature_chat.presentation.screen.ConversationDetailScreen
 @Composable
 fun ConversationDetailRoute(
     conversationId: String,
-    onBackClick: () -> Unit,
-    onOptionClick: () -> Unit
+    onOptionClick: () -> Unit,
+    onOpenCamera: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     ConversationDetailScreen(
         conversationId = conversationId,
         onBackClick = onBackClick,
-        onOptionClick = onOptionClick
+        onOptionClick = onOptionClick,
+        onOpenCamera = onOpenCamera
     )
 }
