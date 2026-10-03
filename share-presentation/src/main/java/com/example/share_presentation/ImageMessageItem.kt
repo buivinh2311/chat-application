@@ -79,7 +79,7 @@ fun ImageMessageItem(
                         .clickable {
                             onClick()
                         },
-                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.Crop
                 )
             }
         }

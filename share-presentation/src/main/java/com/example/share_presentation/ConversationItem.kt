@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,9 +22,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import com.example.core_model.Conversation
 import com.example.core_model.User
@@ -42,23 +50,29 @@ fun ConversationItem(
     val conversation = conversationWithInfo.conversation
     val displayInfo = conversationWithInfo.displayInfo
     Surface(
+        modifier = modifier
+            .height(AppDimens.Layout.ChatItemHeight)
+            .padding(horizontal = AppDimens.Space.Md)
+            .shadow(
+                elevation = AppDimens.Space.Es,
+                shape = RoundedCornerShape(AppDimens.Space.Lg)
+            ),
         onClick = {
             onClick(conversation.id)
         },
-        color = Color.Transparent,
-        modifier = modifier.height(AppDimens.Layout.ChatItemHeight)
+        shape = RoundedCornerShape(AppDimens.Space.Lg),
+        color = MaterialTheme.colorScheme.surfaceContainerLowest
     ) {
         Row(
             modifier = Modifier
                 .padding(
-                    vertical = AppDimens.Space.Sm,
-                    horizontal = AppDimens.Space.Lg
+                    horizontal = AppDimens.Space.Md
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box {
                 AsyncImage(
-                    model = when(displayInfo) {
+                    model = when (displayInfo) {
                         is ConversationDisplayInfo.Direct -> displayInfo.otherUser.avatarUrl
                         is ConversationDisplayInfo.Group -> displayInfo.group.avatarUrl
                     },
@@ -66,7 +80,6 @@ fun ConversationItem(
                     placeholder = painterResource(R.drawable.account),
                     error = painterResource(R.drawable.account),
                     modifier = Modifier
-                        .fillMaxHeight()
                         .size(AppDimens.ImageSize.Md)
                         .clip(shape = CircleShape),
                     contentScale = ContentScale.Crop
@@ -88,36 +101,65 @@ fun ConversationItem(
 //                    )
 //                }
             }
-            Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+            Spacer(modifier = Modifier.width(AppDimens.Space.Md))
 
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = when(displayInfo) {
-                        is ConversationDisplayInfo.Direct ->
-                            displayInfo.otherUser.firstName + " " + displayInfo.otherUser.lastName
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = when (displayInfo) {
+                            is ConversationDisplayInfo.Direct ->
+                                displayInfo.otherUser.fullName
 
-                        is ConversationDisplayInfo.Group -> displayInfo.group.name
-                    },
-                    style = MaterialTheme.typography.titleMedium
-                )
+                            is ConversationDisplayInfo.Group -> displayInfo.group.name
+                        },
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    conversation.lastMessageTime?.let {
+                        Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSecondary
+                        )
+                    }
+                }
 
                 conversation.lastMessage?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
 
-            conversation.lastMessageTime?.let {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodySmall
-                )
+                        Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
+                        Text(
+                            text = "3",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onError,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(AppDimens.Radius.Lg))
+                                .background(MaterialTheme.colorScheme.error)
+                                .padding(
+                                    vertical = AppDimens.Space.Xs,
+                                    horizontal = AppDimens.Space.Sm
+                                )
+                        )
+                    }
+                }
             }
         }
     }

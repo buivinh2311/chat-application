@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.stringResource
 import com.example.core_resource.R
 import com.example.core_resource.AppDimens
@@ -30,12 +33,25 @@ import com.example.core_ui.menu.AppBottomBarItem
 fun AppBottomBar(
     modifier: Modifier = Modifier,
     selectedAction: AppBottomBarAction,
+    showDivider: Boolean = false,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
+    val gradientColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+    val strokeWidth = AppDimens.Divider.Normal
     BottomAppBar(
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding()
+            .drawBehind {
+                if (showDivider) {
+                    drawLine(
+                        color = gradientColor,
+                        start = Offset(0f, 0f),
+                        end = Offset(size.width, 0f),
+                        strokeWidth = strokeWidth.toPx()
+                    )
+                }
+            }
             .height(AppDimens.Layout.BottomBarHeight),
         containerColor = MaterialTheme.colorScheme.background,
         actions = {
@@ -70,14 +86,14 @@ fun AppBottomBar(
                             painter = item.icon,
                             contentDescription = null,
                             modifier = Modifier.size(AppDimens.Icon.Sm),
-                            tint = if(isSelected) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                            tint = if (isSelected) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onBackground
                         )
                         Text(
                             text = item.title,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = if(isSelected) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                            style = MaterialTheme.typography.titleSmall,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }
@@ -91,18 +107,23 @@ fun appBottomBarItems(): List<AppBottomBarItem> {
     return listOf(
         AppBottomBarItem(
             title = stringResource(R.string.title_chat),
-            icon = AppIcons.Chat,
+            icon = AppIcons.Conversation,
             action = AppBottomBarAction.CHAT
         ),
         AppBottomBarItem(
-            title = stringResource(R.string.title_everybody),
-            icon = AppIcons.Everybody,
-            action = AppBottomBarAction.EVERYBODY
+            title = stringResource(R.string.title_contacts),
+            icon = AppIcons.Contacts,
+            action = AppBottomBarAction.CONTACTS
         ),
         AppBottomBarItem(
-            title = stringResource(R.string.title_settings),
-            icon = AppIcons.Settings,
-            action = AppBottomBarAction.SETTINGS
+            title = stringResource(R.string.title_explore),
+            icon = AppIcons.Explore,
+            action = AppBottomBarAction.EXPLORE
+        ),
+        AppBottomBarItem(
+            title = stringResource(R.string.title_person),
+            icon = AppIcons.Person,
+            action = AppBottomBarAction.PERSON
         )
     )
 }

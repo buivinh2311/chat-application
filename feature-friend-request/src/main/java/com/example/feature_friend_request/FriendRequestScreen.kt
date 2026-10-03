@@ -28,7 +28,7 @@ fun FriendRequestScreen(
         },
         bottomBar = {
             AppBottomBar(
-                selectedAction = AppBottomBarAction.EVERYBODY,
+                selectedAction = AppBottomBarAction.CONTACTS,
                 onBottomActionClick = onBottomActionClick
             )
         }

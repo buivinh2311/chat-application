@@ -10,25 +10,23 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.chatapplication.navigation.route.CameraRoute
 import com.example.chatapplication.navigation.route.ChangePasswordRoute
+import com.example.chatapplication.navigation.route.ContactsRoute
 import com.example.chatapplication.navigation.route.ConversationDetailRoute
 import com.example.chatapplication.navigation.route.ConversationOptionRoute
 import com.example.chatapplication.navigation.route.ConversationRoute
-import com.example.chatapplication.navigation.route.DarkModeRoute
-import com.example.chatapplication.navigation.route.EverybodyRoute
+import com.example.chatapplication.navigation.route.CreateGroupRoute
 import com.example.chatapplication.navigation.route.ForgotPasswordRoute
 import com.example.chatapplication.navigation.route.FriendRequestRoute
 import com.example.chatapplication.navigation.route.FriendSuggestionRoute
 import com.example.chatapplication.navigation.route.LanguageRoute
 import com.example.chatapplication.navigation.route.LoginRoute
-import com.example.chatapplication.navigation.route.PickGroupMemberRoute
 import com.example.chatapplication.navigation.route.ProfileRoute
 import com.example.chatapplication.navigation.route.RegisterRoute
 import com.example.chatapplication.navigation.route.SearchRoute
 import com.example.chatapplication.navigation.route.SettingsRoute
-import com.example.chatapplication.navigation.route.ViewGroupMemberRoute
-import com.example.core_model.enum.ConversationType
+import com.example.chatapplication.navigation.route.ViewMemberRoute
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_settings.presentation.menu.SettingOptionAction
+import com.example.core_model.enum.SettingOptionAction
 
 @Composable
 fun AppNavHost(
@@ -78,18 +76,26 @@ fun AppNavHost(
                 navController.navigate(AppRoute.CONVERSATION)
             }
 
-            AppBottomBarAction.EVERYBODY -> {
-                navController.navigate(AppRoute.EVERYBODY)
+            AppBottomBarAction.CONTACTS -> {
+                navController.navigate(AppRoute.CONTACTS)
             }
 
-            AppBottomBarAction.SETTINGS -> {
-                navController.navigate(AppRoute.SETTINGS)
+            AppBottomBarAction.EXPLORE -> {
+
+            }
+
+            AppBottomBarAction.PERSON -> {
+                navController.navigate(AppRoute.PERSON)
             }
         }
     }
 
     val onSettingOptionClick: (SettingOptionAction) -> Unit = { action ->
         when(action) {
+            SettingOptionAction.QR_CODE -> {
+                navController.navigate(AppRoute.PROFILE)
+            }
+
             SettingOptionAction.PROFILE -> {
                 navController.navigate(AppRoute.PROFILE)
             }
@@ -98,12 +104,20 @@ fun AppNavHost(
                 navController.navigate(AppRoute.CHANGE_PASSWORD)
             }
 
-            SettingOptionAction.DARK_MODE -> {
-                navController.navigate(AppRoute.DARK_MODE)
+            SettingOptionAction.FONT_SIZE -> {
+                navController.navigate(AppRoute.CHANGE_PASSWORD)
             }
 
             SettingOptionAction.LANGUAGE -> {
                 navController.navigate(AppRoute.LANGUAGE)
+            }
+
+            SettingOptionAction.CACHE_MEMORY -> {
+                navController.navigate(AppRoute.CHANGE_PASSWORD)
+            }
+
+            SettingOptionAction.HELP_CENTER -> {
+                navController.navigate(AppRoute.CHANGE_PASSWORD)
             }
 
             SettingOptionAction.LOGOUT -> {
@@ -144,18 +158,18 @@ fun AppNavHost(
                 conversationId = conversationId,
                 onBackClick = onBackClick,
                 onCreateGroup = { userId ->
-                    navController.navigate("${AppRoute.PICK_GROUP_MEMBER}/${userId}")
+                    navController.navigate("${AppRoute.CREATE_GROUP}/${userId}")
                 },
                 onViewGroupMember = { conversationId ->
-                    navController.navigate("${AppRoute.VIEW_GROUP_MEMBER}/${conversationId}")
+                    navController.navigate("${AppRoute.VIEW_MEMBER}/${conversationId}")
                 }
             )
         }
 
-        composable(route = AppRoute.PICK_GROUP_MEMBER_WITH_ARG) { backStackEntry ->
+        composable(route = AppRoute.CREATE_GROUP_WITH_ARG) { backStackEntry ->
             val friendId = backStackEntry.arguments?.getString("userId")
                 ?: return@composable
-            PickGroupMemberRoute(
+            CreateGroupRoute(
                 friendId = friendId,
                 onNavigationToConversationDetail = { conversationId ->
                     onNavigationToConversationDetail(conversationId)
@@ -173,8 +187,8 @@ fun AppNavHost(
             )
         }
 
-        composable(route = AppRoute.EVERYBODY) {
-            EverybodyRoute(
+        composable(route = AppRoute.CONTACTS) {
+            ContactsRoute(
                 onSearchClick = onSearchClick,
                 onViewAllClick = onViewAllClick,
                 onViewMoreClick = onViewMoreClick,
@@ -196,7 +210,7 @@ fun AppNavHost(
             )
         }
 
-        composable(route = AppRoute.SETTINGS) {
+        composable(route = AppRoute.PERSON) {
             SettingsRoute(
                 onSearchClick = onSearchClick,
                 onSettingOptionClick = onSettingOptionClick,
@@ -213,13 +227,6 @@ fun AppNavHost(
 
         composable(route = AppRoute.CHANGE_PASSWORD) {
             ChangePasswordRoute (
-                onBackClick = onBackClick,
-                onBottomActionClick = onBottomActionClick
-            )
-        }
-
-        composable(route = AppRoute.DARK_MODE) {
-            DarkModeRoute(
                 onBackClick = onBackClick,
                 onBottomActionClick = onBottomActionClick
             )
@@ -264,10 +271,10 @@ fun AppNavHost(
             )
         }
 
-        composable(route = AppRoute.VIEW_GROUP_MEMBER_WITH_ARG) { backStackEntry ->
+        composable(route = AppRoute.VIEW_MEMBER_WITH_ARG) { backStackEntry ->
             val conversationId = backStackEntry.arguments?.getString("conversationId")
                 ?: return@composable
-            ViewGroupMemberRoute(
+            ViewMemberRoute(
                 conversationId = conversationId,
                 onBackClick = onBackClick
             )

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,12 +21,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.chatapplication.navigation.AppNavHost
 import com.example.chatapplication.navigation.AppRoute
+import com.example.core_resource.LocalAppDimens
+import com.example.core_resource.dimens
 import com.example.core_resource.ui.theme.ChatApplicationTheme
 import com.example.core_ui.state.UiState
-import com.example.feature_auth.presentation.screen.LoginScreen
-import com.example.feature_chat.presentation.component.TurnOffNotificationBottomSheet
-import com.example.feature_chat.presentation.screen.ConversationOptionScreen
-import com.example.feature_chat.presentation.screen.PickGroupMemberScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -55,23 +54,27 @@ class MainActivity : ComponentActivity() {
                     ChatApplicationTheme(
                         themeState = state.data
                     ) {
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
+                        CompositionLocalProvider(
+                            LocalAppDimens provides dimens()
                         ) {
-                            when (startupState) {
-                                StartupState.Loading -> {}
+                            Surface(
+                                modifier = Modifier.fillMaxSize(),
+                                color = MaterialTheme.colorScheme.background
+                            ) {
+                                when (startupState) {
+                                    StartupState.Loading -> {}
 
-                                StartupState.Login -> {
-                                    AppNavHost(
-                                        startDestination = "login?showDialog=false"
-                                    )
-                                }
+                                    StartupState.Login -> {
+                                        AppNavHost(
+                                            startDestination = "login?showDialog=false"
+                                        )
+                                    }
 
-                                StartupState.Chat -> {
-                                    AppNavHost(
-                                        startDestination = AppRoute.CONVERSATION
-                                    )
+                                    StartupState.Chat -> {
+                                        AppNavHost(
+                                            startDestination = AppRoute.CONVERSATION
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -86,14 +89,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
-
-@Composable
-@Preview
-fun Tmp() {
-//    PickGroupMemberScreen(
-//        currentFriendId = "1",
-//        onNavigationToConversationDetail = { },
-//        onBackClick = { }
-//    )
 }

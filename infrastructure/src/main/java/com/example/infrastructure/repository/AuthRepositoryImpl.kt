@@ -1,5 +1,6 @@
 package com.example.infrastructure.repository
 
+import android.util.Log
 import com.example.core_domain.repository.AuthRepository
 import com.example.core_model.result.LoginResult
 import com.example.core_model.result.RegisterResult
@@ -44,7 +45,7 @@ class AuthRepositoryImpl @Inject constructor(
             LoginResult.Failure.Network
         } catch (_: FirebaseTooManyRequestsException) {
             LoginResult.Failure.TooManyRequests
-        } catch (_: Exception) {
+        } catch (e: Exception) {
             LoginResult.Failure.Unknown
         }
     }

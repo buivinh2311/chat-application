@@ -18,18 +18,20 @@ import com.example.core_resource.AppDimens
 
 @Composable
 fun AppIconButton(
+    modifier: Modifier = Modifier,
     icon: Painter,
-    color: Color,
+    color: Color? = null,
     iconSize: Dp? = null,
     onClick: () -> Unit
 ) {
     Box(
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         Icon(
             painter = icon,
             contentDescription = null,
-            tint = color,
+            tint = color ?: MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .size(iconSize ?: AppDimens.Icon.Md)
                 .clickable(

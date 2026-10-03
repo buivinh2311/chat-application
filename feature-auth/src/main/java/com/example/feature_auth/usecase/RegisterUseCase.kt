@@ -15,8 +15,7 @@ class RegisterUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(
-        firstName: String,
-        lastName: String,
+        fullName: String,
         email: String,
         password: String
     ): RegisterResult {
@@ -26,8 +25,7 @@ class RegisterUseCase @Inject constructor(
                     val user = User(
                         id = result.user.uid,
                         email = result.user.email.orEmpty(),
-                        firstName = firstName,
-                        lastName = lastName,
+                        fullName = fullName,
                         status = UserStatus.ONLINE,
                         createdAt = Timestamp.now()
                     )

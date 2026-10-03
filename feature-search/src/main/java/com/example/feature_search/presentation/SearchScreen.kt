@@ -89,12 +89,6 @@ fun SearchScreen (
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        bottomBar = {
-            AppBottomBar(
-                selectedAction = selectedAction,
-                onBottomActionClick = onBottomActionClick
-            )
-        },
         topBar = {
             SearchTopBar(
                 onBackClick = {
@@ -149,7 +143,7 @@ fun SearchScreen (
                             val user = users[index]
                             SearchItem(
                                 id = user.id,
-                                name = user.firstName + " " + user.lastName,
+                                name = user.fullName,
                                 avatarUrl = user.avatarUrl,
                                 status = user.status,
                                 onClick = {

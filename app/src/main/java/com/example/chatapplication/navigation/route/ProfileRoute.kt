@@ -2,7 +2,7 @@ package com.example.chatapplication.navigation.route
 
 import androidx.compose.runtime.Composable
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_settings.presentation.screen.ProfileScreen
+import com.example.feature_profile.presentation.profile.ProfileScreen
 
 @Composable
 fun ProfileRoute(

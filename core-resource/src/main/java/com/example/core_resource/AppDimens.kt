@@ -1,72 +1,189 @@
 package com.example.core_resource
 
+import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-object AppDimens {
+data class Dimens(
+    val Space: SpaceDimen,
+    val ButtonSize: ButtonSizeDimen,
+    val ImageSize: ImageSizeDimen,
+    val Radius: RadiusDimen,
+    val Ripple: RippleDimen,
+    val Layout: LayoutDimen,
+    val Icon: IconDimen,
+    val Divider: DividerDimen,
+    val Border: BorderDimen
+) {
 
-    object Space {
-        val Xxs = 2.dp
-        val Xs = 4.dp
-        val Sm = 8.dp
-        val Md = 12.dp
-        val Lg = 16.dp
-        val Xl = 24.dp
-        val Xxl = 48.dp
-    }
+    data class SpaceDimen(
+        val Es: Dp,
+        val Xxs: Dp,
+        val Xs: Dp,
+        val Sm: Dp,
+        val Md: Dp,
+        val Lg: Dp,
+        val Xl: Dp,
+        val Xxl: Dp,
+        val El: Dp
+    )
 
-    object ButtonSize {
-        val Xs = 16.dp
-        val Sm = 32.dp
-        val Md = 48.dp
-    }
+    data class ButtonSizeDimen(
+        val Xs: Dp,
+        val Sm: Dp,
+        val Md: Dp
+    )
 
-    object ImageSize {
-        val Sm = 48.dp
-        val Md = 56.dp
-        val Lg = 64.dp
-        val Xl = 72.dp
-    }
+    data class ImageSizeDimen(
+        val Xs: Dp,
+        val Sm: Dp,
+        val Md: Dp,
+        val Lg: Dp,
+        val Xl: Dp,
+        val Xxl: Dp
+    )
 
-    object Radius {
-        val Xs = 4.dp
-        val Sm = 8.dp
-        val Md = 12.dp
-        val Lg = 16.dp
-        val Xl = 24.dp
-    }
+    data class RadiusDimen(
+        val Xs: Dp,
+        val Sm: Dp,
+        val Md: Dp,
+        val Lg: Dp,
+        val Xl: Dp
+    )
 
-    object Ripple {
-        val Sm = 20.dp
-        val Md = 30.dp
-        val Lg = 40.dp
-        val Xl = 56.dp
-    }
+    data class RippleDimen(
+        val Sm: Dp,
+        val Md: Dp,
+        val Lg: Dp,
+        val Xl: Dp
+    )
 
-    object Layout {
-        val TopBarHeight = 48.dp
-        val BottomBarHeight = 56.dp
-        val ChatItemHeight = 72.dp
-        val ButtonHeight = 56.dp
-    }
+    data class LayoutDimen(
+        val TopBarHeight: Dp,
+        val BottomBarHeight: Dp,
+        val SearchBarHeight: Dp,
+        val ChatItemHeight: Dp,
+        val ButtonHeight: Dp,
+        val StatusWidth: Dp,
+        val IconButtonSize: Dp,
+        val TextFieldHeight: Dp,
+        val CoverPhotoHeight: Dp
+    )
 
-    object Icon {
-        val Xxs = 18.dp
-        val Xs = 22.dp
-        val Sm = 26.dp
-        val Md = 30.dp
-        val Lg = 32.dp
-        val Xl = 40.dp
-    }
+    data class IconDimen(
+        val Xxs: Dp,
+        val Xs: Dp,
+        val Sm: Dp,
+        val Md: Dp,
+        val Lg: Dp,
+        val Xl: Dp
+    )
 
-    object Divider {
-        val Thin = 0.5.dp
-        val Normal = 1.dp
-        val Thick = 2.dp
-    }
+    data class DividerDimen(
+        val Thin: Dp,
+        val Normal: Dp,
+        val Thick: Dp
+    )
 
-    object Border {
-        val Thin = 0.5.dp
-        val Normal = 1.dp
-        val Thick = 2.dp
-    }
+    data class BorderDimen(
+        val Thin: Dp,
+        val Normal: Dp,
+        val Thick: Dp
+    )
 }
+
+@SuppressLint("ConfigurationScreenWidthHeight")
+@Composable
+fun dimens(): Dimens {
+    val width = LocalConfiguration.current.screenWidthDp
+    val scale = width / 390f
+
+    return Dimens(
+        Space = Dimens.SpaceDimen(
+            Es = (1 * scale).dp,
+            Xxs = (2 * scale).dp,
+            Xs = (4 * scale).dp,
+            Sm = (8 * scale).dp,
+            Md = (12 * scale).dp,
+            Lg = (16 * scale).dp,
+            Xl = (24 * scale).dp,
+            Xxl = (48 * scale).dp,
+            El = (56 * scale).dp
+        ),
+
+        ButtonSize = Dimens.ButtonSizeDimen(
+            Xs = (16 * scale).dp,
+            Sm = (32 * scale).dp,
+            Md = (48 * scale).dp
+        ),
+
+        ImageSize = Dimens.ImageSizeDimen(
+            Xs = (40 * scale).dp,
+            Sm = (48 * scale).dp,
+            Md = (56 * scale).dp,
+            Lg = (64 * scale).dp,
+            Xl = (72 * scale).dp,
+            Xxl = (112 * scale).dp
+        ),
+
+        Radius = Dimens.RadiusDimen(
+            Xs = (4 * scale).dp,
+            Sm = (8 * scale).dp,
+            Md = (12 * scale).dp,
+            Lg = (16 * scale).dp,
+            Xl = (24 * scale).dp
+        ),
+
+        Ripple = Dimens.RippleDimen(
+            Sm = (20 * scale).dp,
+            Md = (30 * scale).dp,
+            Lg = (40 * scale).dp,
+            Xl = (56 * scale).dp
+        ),
+
+        Layout = Dimens.LayoutDimen(
+            TopBarHeight = (48 * scale).dp,
+            BottomBarHeight = (64 * scale).dp,
+            SearchBarHeight = (48 * scale).dp,
+            ChatItemHeight = (72 * scale).dp,
+            ButtonHeight = (56 * scale).dp,
+            StatusWidth = (80 * scale).dp,
+            IconButtonSize = (36 * scale).dp,
+            TextFieldHeight = (48 * scale).dp,
+            CoverPhotoHeight = (180 * scale).dp
+        ),
+
+        Icon = Dimens.IconDimen(
+            Xxs = (18 * scale).dp,
+            Xs = (22 * scale).dp,
+            Sm = (26 * scale).dp,
+            Md = (30 * scale).dp,
+            Lg = (32 * scale).dp,
+            Xl = (40 * scale).dp
+        ),
+
+        Divider = Dimens.DividerDimen(
+            Thin = (0.5 * scale).dp,
+            Normal = (1 * scale).dp,
+            Thick = (2 * scale).dp
+        ),
+
+        Border = Dimens.BorderDimen(
+            Thin = (0.5 * scale).dp,
+            Normal = (1 * scale).dp,
+            Thick = (3 * scale).dp
+        )
+    )
+}
+
+val LocalAppDimens = staticCompositionLocalOf<Dimens> {
+    error("AppDimens has not been provided")
+}
+
+val AppDimens: Dimens
+    @Composable
+    get() = LocalAppDimens.current

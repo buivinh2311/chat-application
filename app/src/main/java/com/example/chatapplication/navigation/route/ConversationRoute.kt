@@ -1,9 +1,8 @@
 package com.example.chatapplication.navigation.route
 
 import androidx.compose.runtime.Composable
-import com.example.core_model.enum.ConversationType
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_chat.presentation.screen.ConversationScreen
+import com.example.feature_conversation.presentation.conversation.ConversationScreen
 
 @Composable
 fun ConversationRoute(

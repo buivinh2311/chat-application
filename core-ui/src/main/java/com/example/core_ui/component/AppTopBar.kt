@@ -1,7 +1,10 @@
 package com.example.core_ui.component
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,13 +14,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
 import com.example.core_resource.R
@@ -26,80 +41,71 @@ import com.example.core_resource.R
 fun AppTopBar(
     modifier: Modifier = Modifier,
     title: String,
+    titleColor: Color? = null,
     subTitle: String? = null,
-    onSearchClick: (() -> Unit)? = null,
-    onScannerClick: (() -> Unit)? = null,
-    onBackClick: (() -> Unit)? = null
+    isScrolled: Boolean = false,
+    onBackClick: (() -> Unit)? = null,
+    onScan: (() -> Unit)? = null
 ) {
+    val gradientColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+    val strokeWidth = AppDimens.Divider.Normal
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .statusBarsPadding()
             .height(AppDimens.Layout.TopBarHeight)
-            .background(MaterialTheme.colorScheme.primary)
-            .padding(horizontal = AppDimens.Space.Lg),
+            .background(color = MaterialTheme.colorScheme.background)
+            .drawBehind(
+                onDraw = {
+                    if (isScrolled) {
+                        drawLine(
+                            color = gradientColor,
+                            start = Offset(0f, size.height),
+                            end = Offset(size.width, size.height),
+                            strokeWidth = strokeWidth.toPx()
+                        )
+                    }
+                }
+            )
+            .padding(horizontal = AppDimens.Space.Md),
         verticalAlignment = Alignment.CenterVertically
     ) {
         onBackClick?.let {
             AppIconButton(
                 icon = AppIcons.Back,
-                color = MaterialTheme.colorScheme.onPrimary,
                 onClick = onBackClick
             )
             Spacer(modifier = Modifier.width(AppDimens.Space.Md))
         }
 
-        if(onSearchClick != null) {
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable {
-                        onSearchClick()
-                    }
-                    .padding(vertical = AppDimens.Space.Sm),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = AppIcons.Search,
-                    contentDescription = stringResource(R.string.title_search),
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(AppDimens.Icon.Md)
-                )
-                Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = title,
+                style = if (onBackClick == null) MaterialTheme.typography.headlineLarge
+                else MaterialTheme.typography.titleLarge,
+                color = titleColor ?: MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.width(AppDimens.Space.Xxs))
 
+            subTitle?.let {
                 Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f)
+                    text = subTitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f)
                 )
             }
+        }
 
-            onScannerClick?.let {
-                Spacer(modifier = Modifier.width(AppDimens.Space.Md))
-                AppIconButton(
-                    icon = AppIcons.Scanner,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    iconSize = AppDimens.Icon.Sm,
-                    onClick = onScannerClick
-                )
-            }
-        } else {
-            Column {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-                Spacer(modifier = Modifier.width(AppDimens.Space.Xxs))
-
-                subTitle?.let {
-                    Text(
-                        text = subTitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f)
-                    )
-                }
-            }
+        onScan?.let {
+            AppIconButton(
+                icon = AppIcons.Scanner,
+                color = MaterialTheme.colorScheme.onBackground,
+                iconSize = AppDimens.Icon.Sm,
+                onClick = onScan
+            )
         }
     }
 }

@@ -2,8 +2,8 @@ package com.example.chatapplication.navigation.route
 
 import androidx.compose.runtime.Composable
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.feature_settings.presentation.menu.SettingOptionAction
-import com.example.feature_settings.presentation.screen.SettingsScreen
+import com.example.core_model.enum.SettingOptionAction
+import com.example.feature_settings.presentation.settings.SettingsScreen
 
 @Composable
 fun SettingsRoute(

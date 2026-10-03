@@ -2,7 +2,7 @@ package com.example.chatapplication.navigation.route
 
 import android.net.Uri
 import androidx.compose.runtime.Composable
-import com.example.feature_chat.presentation.screen.CameraScreen
+import com.example.feature_conversation.presentation.camera.CameraScreen
 
 @Composable
 fun CameraRoute(
@@ -11,6 +11,6 @@ fun CameraRoute(
 ) {
     CameraScreen(
         onSend = {},
-        onBack = onBackClick
+        onBackClick = onBackClick
     )
 }

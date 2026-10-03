@@ -1,7 +1,7 @@
 package com.example.chatapplication.navigation.route
 
 import androidx.compose.runtime.Composable
-import com.example.feature_auth.presentation.screen.RegisterScreen
+import com.example.feature_auth.presentation.register.RegisterScreen
 
 @Composable
 fun RegisterRoute(

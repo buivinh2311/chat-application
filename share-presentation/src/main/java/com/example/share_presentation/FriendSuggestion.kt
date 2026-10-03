@@ -98,19 +98,19 @@ fun FriendSuggestion(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Md)
                 ) {
-                    AppButton(
-                        modifier = Modifier.weight(1f),
-                        label = stringResource(R.string.add_friend),
-                        color = MaterialTheme.colorScheme.primary,
-                        onClick = { }
-                    )
-
-                    AppButton(
-                        modifier = Modifier.weight(1f),
-                        label = stringResource(R.string.label_remove),
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
-                        onClick = { }
-                    )
+//                    AppButton(
+//                        modifier = Modifier.weight(1f),
+//                        label = stringResource(R.string.add_friend),
+//                        color = MaterialTheme.colorScheme.primary,
+//                        onClick = { }
+//                    )
+//
+//                    AppButton(
+//                        modifier = Modifier.weight(1f),
+//                        label = stringResource(R.string.label_remove),
+//                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+//                        onClick = { }
+//                    )
                 }
             }
         }

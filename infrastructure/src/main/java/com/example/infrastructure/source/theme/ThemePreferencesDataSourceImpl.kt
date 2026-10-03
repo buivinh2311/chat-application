@@ -16,7 +16,7 @@ class ThemePreferencesDataSourceImpl @Inject constructor(
     override fun getDarkModeStatus(): Flow<DarkModeState> {
         return dataStore.data.map { preferences ->
             DarkModeState.valueOf(
-                preferences[darkThemeKey] ?: DarkModeState.DEFAULT.name
+                preferences[darkThemeKey] ?: DarkModeState.OFF.name
             )
         }
     }

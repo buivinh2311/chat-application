@@ -124,9 +124,8 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun updateUser(
         uid: String,
-        firstName: String,
-        lastName: String,
-        address: String?,
+        fullName: String,
+        bio: String?,
         dateOfBirth: Timestamp?,
         gender: Gender?
     ): Result<Unit> {
@@ -136,9 +135,8 @@ class UserRepositoryImpl @Inject constructor(
                 .document(uid)
                 .update(
                     mapOf(
-                        "firstName" to firstName,
-                        "lastName" to lastName,
-                        "address" to address,
+                        "fullName" to fullName,
+                        "bio" to bio,
                         "dateOfBirth" to dateOfBirth,
                         "gender" to gender
                     )
@@ -159,6 +157,22 @@ class UserRepositoryImpl @Inject constructor(
                 .collection(USERS)
                 .document(uid)
                 .update("avatarUrl", imageUrl)
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun uploadCoverPhoto(
+        uid: String,
+        imageUrl: String
+    ): Result<Unit> {
+        return try {
+            firestore
+                .collection(USERS)
+                .document(uid)
+                .update("coverPhotoUrl", imageUrl)
                 .await()
             Result.success(Unit)
         } catch (e: Exception) {

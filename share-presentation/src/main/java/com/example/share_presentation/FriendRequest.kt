@@ -90,7 +90,7 @@ fun FriendRequest(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = user.firstName + " " + user.lastName,
+                    text = user.fullName,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
@@ -105,23 +105,23 @@ fun FriendRequest(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Sm)
                 ) {
-                    AppButton(
-                        modifier = Modifier.weight(1f),
-                        label = stringResource(R.string.label_confirm),
-                        color = MaterialTheme.colorScheme.primary,
-                        onClick = {
-                            onAcceptClick(request)
-                        }
-                    )
-
-                    AppButton(
-                        modifier = Modifier.weight(1f),
-                        label = stringResource(R.string.label_delete),
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
-                        onClick = {
-                            onRejectClick(request)
-                        }
-                    )
+//                    AppButton(
+//                        modifier = Modifier.weight(1f),
+//                        label = stringResource(R.string.label_confirm),
+//                        color = MaterialTheme.colorScheme.primary,
+//                        onClick = {
+//                            onAcceptClick(request)
+//                        }
+//                    )
+//
+//                    AppButton(
+//                        modifier = Modifier.weight(1f),
+//                        label = stringResource(R.string.label_delete),
+//                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+//                        onClick = {
+//                            onRejectClick(request)
+//                        }
+//                    )
                 }
             }
         }

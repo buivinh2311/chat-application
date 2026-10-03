@@ -19,14 +19,18 @@ interface UserRepository {
 
     suspend fun updateUser(
         uid: String,
-        firstName: String,
-        lastName: String,
-        address: String?,
+        fullName: String,
+        bio: String?,
         dateOfBirth: Timestamp?,
         gender: Gender?
     ): Result<Unit>
 
     suspend fun uploadAvatar(
+        uid: String,
+        imageUrl: String
+    ): Result<Unit>
+
+    suspend fun uploadCoverPhoto(
         uid: String,
         imageUrl: String
     ): Result<Unit>

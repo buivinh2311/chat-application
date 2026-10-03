@@ -90,14 +90,13 @@ private val darkScheme = darkColorScheme(
 
 @Composable
 fun ChatApplicationTheme(
-    themeState: DarkModeState = DarkModeState.DEFAULT,
+    themeState: DarkModeState = DarkModeState.OFF,
     dynamicColor: Boolean = false,
     content: @Composable() () -> Unit
 ) {
     val darkTheme = when(themeState) {
         DarkModeState.OFF -> false
         DarkModeState.ON -> true
-        DarkModeState.DEFAULT -> isSystemInDarkTheme()
     }
 
     val colorScheme = when {

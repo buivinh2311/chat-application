@@ -79,7 +79,7 @@ fun VideoMessageItem(
                             alignment = if (isMine) Alignment.CenterEnd
                             else Alignment.CenterStart
                         ),
-                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.Crop
                 )
             }
         }
