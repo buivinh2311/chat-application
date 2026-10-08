@@ -1,5 +1,6 @@
 package com.example.core_ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -53,7 +54,7 @@ fun AppBottomBar(
                 }
             }
             .height(AppDimens.Layout.BottomBarHeight),
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.surface,
         actions = {
             appBottomBarItems().forEach { item ->
                 val isSelected = item.action == selectedAction
@@ -87,13 +88,13 @@ fun AppBottomBar(
                             contentDescription = null,
                             modifier = Modifier.size(AppDimens.Icon.Sm),
                             tint = if (isSelected) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onBackground
+                            else MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = item.title,
                             style = MaterialTheme.typography.titleSmall,
                             color = if (isSelected) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onBackground
+                            else MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }

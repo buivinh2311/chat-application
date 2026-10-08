@@ -47,7 +47,7 @@ fun ContactsSearchBar(
             .padding(horizontal = AppDimens.Space.Md)
             .height(AppDimens.Layout.SearchBarHeight)
             .clip(RoundedCornerShape(AppDimens.Radius.Lg))
-            .background(MaterialTheme.colorScheme.secondary)
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(horizontal = AppDimens.Space.Lg),
         verticalAlignment = Alignment.CenterVertically
     ) {

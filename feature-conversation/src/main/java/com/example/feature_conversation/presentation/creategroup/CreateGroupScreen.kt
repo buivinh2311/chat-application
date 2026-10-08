@@ -31,11 +31,10 @@ import com.example.core_ui.component.ErrorScreen
 import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.component.showToast
 import com.example.core_ui.state.UiState
-import com.example.core_utils.isAtBottom
 import com.example.core_utils.isScrolled
 import com.example.core_utils.uriToFile
+import com.example.feature_conversation.presentation.creategroup.component.CreateGroupInfo
 import com.example.feature_conversation.presentation.creategroup.component.PickGroupMemberBottomBar
-import com.example.feature_conversation.presentation.creategroup.component.PickGroupMemberGroupInfo
 import com.example.feature_conversation.presentation.creategroup.component.PickGroupMemberItem
 import com.example.feature_conversation.presentation.creategroup.component.PickGroupMemberSearchBar
 
@@ -96,7 +95,7 @@ fun CreateGroupScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
-                title = stringResource(R.string.title_pick_group_member),
+                title = stringResource(R.string.title_create_group),
                 subTitle = stringResource(
                     R.string.title_quantity_choose, groupMember.size
                 ),
@@ -134,7 +133,7 @@ fun CreateGroupScreen(
                         )
                     ) {
                         item {
-                            PickGroupMemberGroupInfo(
+                            CreateGroupInfo(
                                 selectedAvatarUri = selectedAvatarUri?.toString(),
                                 groupName = groupName,
                                 isGroupNameBlank = data.isGroupNameBlank,

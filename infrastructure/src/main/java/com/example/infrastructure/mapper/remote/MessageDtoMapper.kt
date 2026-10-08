@@ -18,6 +18,7 @@ fun MessageDto.toDomain(): Message {
             senderId = senderId,
             createdAt = timestamp,
             status = status,
+            reactions = reactions,
             text = text.orEmpty()
         )
 
@@ -27,6 +28,7 @@ fun MessageDto.toDomain(): Message {
             senderId = senderId,
             createdAt = timestamp,
             status = status,
+            reactions = reactions,
             fileUrl = fileUrl.orEmpty(),
             fileName = fileName.orEmpty(),
             fileSize = fileSize ?: 0,
@@ -41,6 +43,7 @@ fun MessageDto.toDomain(): Message {
             senderId = senderId,
             createdAt = timestamp,
             status = status,
+            reactions = reactions,
             fileUrl = fileUrl.orEmpty(),
             thumbnailUrl = thumbnailUrl.orEmpty(),
             fileName = fileName.orEmpty(),
@@ -57,6 +60,7 @@ fun MessageDto.toDomain(): Message {
             senderId = senderId,
             createdAt = timestamp,
             status = status,
+            reactions = reactions,
             fileUrl = fileUrl.orEmpty(),
             thumbnailUrl = thumbnailUrl.orEmpty(),
             fileName = fileName.orEmpty(),
@@ -78,6 +82,7 @@ fun Message.toDto(messageId: String): MessageDto {
             senderId = senderId,
             createdAt = timestamp,
             status = status,
+            reactions = reactions,
             type = MessageType.TEXT.name,
             text = text
         )
@@ -88,6 +93,7 @@ fun Message.toDto(messageId: String): MessageDto {
             senderId = senderId,
             createdAt = timestamp,
             status = status,
+            reactions = reactions,
             type = MessageType.IMAGE.name,
             fileUrl = fileUrl,
             fileName = fileName,
@@ -103,6 +109,7 @@ fun Message.toDto(messageId: String): MessageDto {
             senderId = senderId,
             createdAt = timestamp,
             status = status,
+            reactions = reactions,
             type = MessageType.VIDEO.name,
             fileUrl = fileUrl,
             thumbnailUrl = thumbnailUrl,
@@ -120,6 +127,7 @@ fun Message.toDto(messageId: String): MessageDto {
             senderId = senderId,
             createdAt = timestamp,
             status = status,
+            reactions = reactions,
             type = MessageType.FILE.name,
             fileUrl = fileUrl,
             fileName = fileName,

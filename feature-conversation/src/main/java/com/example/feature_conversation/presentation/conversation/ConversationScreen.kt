@@ -108,80 +108,82 @@ fun ConversationScreen(
                 val conversations = data.conversationWithInfos
                 LazyColumn(
                     modifier = Modifier.padding(innerPadding),
-                    state = listState
+                    state = listState,
+                    contentPadding = PaddingValues(
+                        vertical = AppDimens.Space.Md
+                    )
                 ) {
                     stickyHeader {
                         Column {
                             ConversationSearchBar()
-                            Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
-
-                            LazyRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Sm),
-                                contentPadding = PaddingValues(
-                                    start = AppDimens.Space.Md,
-                                    end = AppDimens.Space.Md,
-                                    bottom = AppDimens.Space.Xl
-                                )
-                            ) {
-                                item {
-                                    Text(
-                                        text = stringResource(R.string.label_all),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(AppDimens.Space.Xl))
-                                            .clickable {
-
-                                            }
-                                            .background(MaterialTheme.colorScheme.primary)
-                                            .padding(
-                                                vertical = AppDimens.Space.Sm,
-                                                horizontal = AppDimens.Space.Lg
-                                            )
-                                    )
-                                    Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
-
-                                    Text(
-                                        text = stringResource(R.string.label_not_read),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.onSecondary,
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(AppDimens.Space.Lg))
-                                            .clickable {
-
-                                            }
-                                            .background(MaterialTheme.colorScheme.secondary)
-                                            .padding(
-                                                vertical = AppDimens.Space.Sm,
-                                                horizontal = AppDimens.Space.Lg
-                                            )
-                                    )
-                                    Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
-
-                                    Text(
-                                        text = stringResource(R.string.label_group),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.onSecondary,
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(AppDimens.Space.Lg))
-                                            .clickable {
-
-                                            }
-                                            .background(MaterialTheme.colorScheme.secondary)
-                                            .padding(
-                                                vertical = AppDimens.Space.Sm,
-                                                horizontal = AppDimens.Space.Lg
-                                            )
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
+//                            Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
+//
+//                            LazyRow(
+//                                modifier = Modifier.fillMaxWidth(),
+//                                horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Sm),
+//                                contentPadding = PaddingValues(
+//                                    start = AppDimens.Space.Md,
+//                                    end = AppDimens.Space.Md,
+//                                    bottom = AppDimens.Space.Xl
+//                                )
+//                            ) {
+//                                item {
+//                                    Text(
+//                                        text = stringResource(R.string.label_all),
+//                                        style = MaterialTheme.typography.titleMedium,
+//                                        color = MaterialTheme.colorScheme.onPrimary,
+//                                        modifier = Modifier
+//                                            .clip(RoundedCornerShape(AppDimens.Space.Xl))
+//                                            .clickable {
+//
+//                                            }
+//                                            .background(MaterialTheme.colorScheme.primary)
+//                                            .padding(
+//                                                vertical = AppDimens.Space.Sm,
+//                                                horizontal = AppDimens.Space.Lg
+//                                            )
+//                                    )
+//                                    Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+//
+//                                    Text(
+//                                        text = stringResource(R.string.label_not_read),
+//                                        style = MaterialTheme.typography.titleMedium,
+//                                        color = MaterialTheme.colorScheme.onSecondary,
+//                                        modifier = Modifier
+//                                            .clip(RoundedCornerShape(AppDimens.Space.Lg))
+//                                            .clickable {
+//
+//                                            }
+//                                            .background(MaterialTheme.colorScheme.secondary)
+//                                            .padding(
+//                                                vertical = AppDimens.Space.Sm,
+//                                                horizontal = AppDimens.Space.Lg
+//                                            )
+//                                    )
+//                                    Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+//
+//                                    Text(
+//                                        text = stringResource(R.string.label_group),
+//                                        style = MaterialTheme.typography.titleMedium,
+//                                        color = MaterialTheme.colorScheme.onSecondary,
+//                                        modifier = Modifier
+//                                            .clip(RoundedCornerShape(AppDimens.Space.Lg))
+//                                            .clickable {
+//
+//                                            }
+//                                            .background(MaterialTheme.colorScheme.secondary)
+//                                            .padding(
+//                                                vertical = AppDimens.Space.Sm,
+//                                                horizontal = AppDimens.Space.Lg
+//                                            )
+//                                    )
+//                                }
+//                            }
                         }
                     }
 
                     item {
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Md))
                         Text(
                             text = stringResource(R.string.title_online),
                             style = MaterialTheme.typography.titleLarge,

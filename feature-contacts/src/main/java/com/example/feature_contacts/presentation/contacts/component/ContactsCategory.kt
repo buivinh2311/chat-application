@@ -47,14 +47,14 @@ fun ContactsCategory(
         Text(
             text = stringResource(R.string.label_group),
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSecondary,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier
                 .weight(1f)
                 .clip(RoundedCornerShape(AppDimens.Space.Lg))
                 .clickable {
 
                 }
-                .background(MaterialTheme.colorScheme.secondary)
+                .background(MaterialTheme.colorScheme.primaryContainer)
                 .padding(
                     vertical = AppDimens.Space.Sm,
                     horizontal = AppDimens.Space.Lg

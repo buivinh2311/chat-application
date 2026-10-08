@@ -6,6 +6,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,7 +39,7 @@ import com.example.core_resource.R
 import com.example.core_ui.component.AppIconButton
 
 @Composable
-fun PickGroupMemberGroupInfo(
+fun CreateGroupInfo(
     selectedAvatarUri: String?,
     groupName: String,
     isGroupNameBlank: Boolean,
@@ -58,16 +60,21 @@ fun PickGroupMemberGroupInfo(
             .padding(horizontal = AppDimens.Space.Lg),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if(selectedAvatarUri != null) {
+        Box {
             AsyncImage(
                 model = selectedAvatarUri,
                 contentDescription = null,
-                placeholder = painterResource(R.drawable.account),
-                error = painterResource(R.drawable.account),
+                placeholder = painterResource(R.drawable.group),
+                error = painterResource(R.drawable.group),
                 modifier = Modifier
-                    .size(AppDimens.ImageSize.Sm)
+                    .size(AppDimens.ImageSize.Xl)
                     .aspectRatio(1f)
                     .clip(shape = CircleShape)
+                    .border(
+                        width = AppDimens.Border.Thick,
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CircleShape
+                    )
                     .clickable {
                         launcher.launch(
                             PickVisualMediaRequest(
@@ -77,18 +84,25 @@ fun PickGroupMemberGroupInfo(
                     },
                 contentScale = ContentScale.Crop
             )
-        } else {
-            AppIconButton(
-                icon = AppIcons.CameraFilled,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                onClick = {
-                    launcher.launch(
-                        PickVisualMediaRequest(
-                            ActivityResultContracts.PickVisualMedia.ImageOnly
-                        )
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(AppDimens.Layout.IconButtonSize)
+                    .background(
+                        MaterialTheme.colorScheme.primary,
+                        shape = CircleShape
                     )
-                }
-            )
+            ) {
+                Icon(
+                    painter = AppIcons.Camera,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(AppDimens.Icon.Xs)
+                        .align(Alignment.Center),
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
         }
         Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
 

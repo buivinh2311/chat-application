@@ -9,6 +9,7 @@ sealed class Message {
     abstract val senderId: String
     abstract val createdAt: Timestamp
     abstract val status: MessageStatus
+    abstract val reactions: Map<String, String>
 
     data class Text(
         override val id: String,
@@ -16,6 +17,7 @@ sealed class Message {
         override val senderId: String,
         override val createdAt: Timestamp,
         override val status: MessageStatus,
+        override val reactions: Map<String, String>,
         val text: String
     ) : Message()
 
@@ -25,6 +27,7 @@ sealed class Message {
         override val senderId: String,
         override val createdAt: Timestamp,
         override val status: MessageStatus,
+        override val reactions: Map<String, String>,
         val fileUrl: String,
         val fileName: String,
         val fileSize: Long,
@@ -39,6 +42,7 @@ sealed class Message {
         override val senderId: String,
         override val createdAt: Timestamp,
         override val status: MessageStatus,
+        override val reactions: Map<String, String>,
         val fileUrl: String,
         val thumbnailUrl: String,
         val fileName: String,
@@ -55,6 +59,7 @@ sealed class Message {
         override val senderId: String,
         override val createdAt: Timestamp,
         override val status: MessageStatus,
+        override val reactions: Map<String, String>,
         val fileUrl: String,
         val thumbnailUrl: String?,
         val fileName: String,

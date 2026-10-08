@@ -130,14 +130,14 @@ val AppTypography = Typography(
     bodyLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
+        fontSize = 18.sp,
         lineHeight = 20.sp
     ),
 
     bodyMedium = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Normal,
-        fontSize = 13.sp,
+        fontSize = 14.sp,
         lineHeight = 16.sp
     ),
 
@@ -162,7 +162,7 @@ val AppTypography = Typography(
     labelMedium = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
+        fontSize = 12.5.sp,
         lineHeight = 16.sp
     ),
 

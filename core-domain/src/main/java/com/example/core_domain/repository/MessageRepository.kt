@@ -23,4 +23,17 @@ interface MessageRepository {
         conversationId: String,
         messageId: String, uid: String
     ): Result<Unit>
+
+    suspend fun reactToMessage(
+        conversationId: String,
+        messageId: String,
+        userId: String,
+        emoji: String
+    ): Result<Unit>
+
+    suspend fun removeReaction(
+        conversationId: String,
+        messageId: String,
+        userId: String
+    ): Result<Unit>
 }

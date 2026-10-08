@@ -4,20 +4,23 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core_model.User
 import com.example.core_ui.state.UiState
 import com.example.feature_conversation.domain.model.FileInfo
 import com.example.feature_conversation.domain.usecase.DownloadFileUseCase
 import com.example.feature_conversation.domain.usecase.DownloadImageUseCase
 import com.example.feature_conversation.domain.usecase.DownloadVideoUseCase
 import com.example.feature_conversation.domain.usecase.GetConversationByIdUseCase
-import com.example.feature_conversation.domain.usecase.GetCurrentUserIdUseCase
+import com.example.feature_conversation.domain.usecase.GetCurrentUserUseCase
 import com.example.feature_conversation.domain.usecase.LoadMoreMessagesUseCase
 import com.example.feature_conversation.domain.usecase.MarkMessageAsReadUseCase
 import com.example.feature_conversation.domain.usecase.ObserveFriendRequestUseCase
 import com.example.feature_conversation.domain.usecase.ObserveFriendshipUseCase
 import com.example.feature_conversation.domain.usecase.ObserveMessagesByIdUseCase
 import com.example.feature_conversation.domain.usecase.OpenFileUseCase
+import com.example.feature_conversation.domain.usecase.ReactToMessageUseCase
 import com.example.feature_conversation.domain.usecase.RecallFriendRequestUseCase
+import com.example.feature_conversation.domain.usecase.RemoveReactionUseCase
 import com.example.feature_conversation.domain.usecase.SendFileMessageUseCase
 import com.example.feature_conversation.domain.usecase.SendFriendRequestUseCase
 import com.example.feature_conversation.domain.usecase.SendImageMessageUseCase
@@ -33,10 +36,11 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.onFailure
 
 @HiltViewModel
 class ConversationDetailViewModel @Inject constructor(
-    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val observeFriendRequestUseCase: ObserveFriendRequestUseCase,
     private val sendFriendRequestUseCase: SendFriendRequestUseCase,
     private val getConversationByIdUseCase: GetConversationByIdUseCase,
@@ -52,7 +56,9 @@ class ConversationDetailViewModel @Inject constructor(
     private val downloadImageUseCase: DownloadImageUseCase,
     private val downloadVideoUseCase: DownloadVideoUseCase,
     private val downloadFileUseCase: DownloadFileUseCase,
-    private val openFileUseCase: OpenFileUseCase
+    private val openFileUseCase: OpenFileUseCase,
+    private val reactToMessageUseCase: ReactToMessageUseCase,
+    private val removeReactionUseCase: RemoveReactionUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState<ConversationDetailUiState>>(
         UiState.Loading
@@ -64,7 +70,7 @@ class ConversationDetailViewModel @Inject constructor(
 
     fun loadConversation(conversationId: String) {
         viewModelScope.launch {
-            val currentUserId = getCurrentUserIdUseCase()
+            val currentUser = getCurrentUserUseCase()
                 .getOrElse {
                     _uiState.value = UiState.Error
                     return@launch
@@ -73,11 +79,11 @@ class ConversationDetailViewModel @Inject constructor(
                 .onSuccess { data ->
                     when (data) {
                         is ConversationDetailData.Direct -> {
-                            observeDirectConversation(data, currentUserId)
+                            observeDirectConversation(data, currentUser)
                         }
 
                         is ConversationDetailData.Group -> {
-                            observeGroupConversation(data, currentUserId)
+                            observeGroupConversation(data, currentUser)
                         }
                     }
                 }
@@ -89,7 +95,7 @@ class ConversationDetailViewModel @Inject constructor(
 
     private suspend fun observeDirectConversation(
         data: ConversationDetailData.Direct,
-        currentUserId: String
+        currentUser: User
     ) {
         combine(
             observeFriendshipUseCase(data.user.id),
@@ -98,7 +104,7 @@ class ConversationDetailViewModel @Inject constructor(
         ) { isFriend, isSentRequest, messages ->
             ConversationDetailUiState(
                 conversationDetailData = data,
-                currentUserId = currentUserId,
+                currentUser = currentUser,
                 isConnected = isFriend,
                 isSentRequest = isSentRequest,
                 messages = messages
@@ -114,7 +120,7 @@ class ConversationDetailViewModel @Inject constructor(
 
     private suspend fun observeGroupConversation(
         data: ConversationDetailData.Group,
-        currentUserId: String
+        currentUser: User
     ) {
         combine(
 //            observeFriendshipUseCase(data.group.id),
@@ -123,7 +129,7 @@ class ConversationDetailViewModel @Inject constructor(
         ) { messages ->
             ConversationDetailUiState(
                 conversationDetailData = data,
-                currentUserId = currentUserId,
+                currentUser = currentUser,
                 isConnected = false,
                 isSentRequest = false,
                 messages = messages[0]
@@ -301,6 +307,38 @@ class ConversationDetailViewModel @Inject constructor(
                 context = context,
                 fileName = fileName,
                 mimeType = mimeType
+            )
+                .onFailure {
+                    _event.emit(ConversationDetailEvent.OpenFileFailed)
+                }
+        }
+    }
+
+    fun reactToMessage(
+        conversationId: String,
+        messageId: String,
+        emoji: String
+    ) {
+        viewModelScope.launch {
+            reactToMessageUseCase(
+                conversationId = conversationId,
+                messageId = messageId,
+                emoji = emoji
+            )
+                .onFailure {
+                    _event.emit(ConversationDetailEvent.OpenFileFailed)
+                }
+        }
+    }
+
+    fun removeReaction(
+        conversationId: String,
+        messageId: String
+    ) {
+        viewModelScope.launch {
+            removeReactionUseCase(
+                conversationId = conversationId,
+                messageId = messageId
             )
                 .onFailure {
                     _event.emit(ConversationDetailEvent.OpenFileFailed)

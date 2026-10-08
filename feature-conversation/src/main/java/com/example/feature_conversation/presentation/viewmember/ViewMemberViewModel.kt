@@ -3,7 +3,7 @@ package com.example.feature_conversation.presentation.viewmember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_ui.state.UiState
-import com.example.feature_conversation.domain.usecase.GetCurrentUserIdUseCase
+import com.example.feature_conversation.domain.usecase.GetCurrentUserUseCase
 import com.example.feature_conversation.domain.usecase.ObserveConversationByIdUseCase
 import com.example.feature_conversation.presentation.conversationdetail.ConversationDetailData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ViewMemberViewModel @Inject constructor(
     private val observeConversationByIdUseCase: ObserveConversationByIdUseCase,
-    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase
+    private val getCurrentUserUseCase: GetCurrentUserUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow<UiState<ViewMemberUiState>>(
         UiState.Loading
@@ -25,7 +25,7 @@ class ViewMemberViewModel @Inject constructor(
 
     fun loadConversation(conversationId: String) {
         viewModelScope.launch {
-            val currentUserId = getCurrentUserIdUseCase()
+            val currentUser = getCurrentUserUseCase()
                 .getOrElse {
                     _uiState.value = UiState.Error
                     return@launch
@@ -44,7 +44,7 @@ class ViewMemberViewModel @Inject constructor(
                             _uiState.value = UiState.Success(
                                 ViewMemberUiState(
                                     conversationData = data,
-                                    currentUserId = currentUserId
+                                    currentUserId = currentUser.id
                                 )
                             )
                         }

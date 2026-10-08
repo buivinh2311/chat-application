@@ -61,7 +61,7 @@ fun ConversationItem(
             onClick(conversation.id)
         },
         shape = RoundedCornerShape(AppDimens.Space.Lg),
-        color = MaterialTheme.colorScheme.surfaceContainerLowest
+        color = MaterialTheme.colorScheme.surface
     ) {
         Row(
             modifier = Modifier

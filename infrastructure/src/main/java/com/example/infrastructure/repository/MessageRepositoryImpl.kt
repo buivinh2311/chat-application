@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.collections.emptyList
+import kotlin.collections.mutableMapOf
 
 class MessageRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
@@ -115,6 +116,85 @@ class MessageRepositoryImpl @Inject constructor(
             messagesRef(conversationId).document(messageId)
                 .update("readBy", FieldValue.arrayUnion(uid))
                 .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun reactToMessage(
+        conversationId: String,
+        messageId: String,
+        userId: String,
+        emoji: String
+    ): Result<Unit> {
+        return try {
+            val messageRef = firestore
+                .collection("conversations")
+                .document(conversationId)
+                .collection("messages")
+                .document(messageId)
+
+            firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(messageRef)
+                val reactions = mutableMapOf<String, String>()
+                val data = snapshot.get("reactions") as? Map<*, *>
+
+                data?.forEach { (key, value) ->
+                    if (key is String && value is String) {
+                        reactions[key] = value
+                    }
+                }
+
+                val currentReaction = reactions[userId]
+                if (currentReaction == emoji) {
+                    reactions.remove(userId)
+                } else {
+                    reactions[userId] = emoji
+                }
+
+                transaction.update(
+                    messageRef,
+                    "reactions",
+                    reactions
+                )
+            }.await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun removeReaction(
+        conversationId: String,
+        messageId: String,
+        userId: String
+    ): Result<Unit> {
+        return try {
+            val messageRef = firestore
+                .collection("conversations")
+                .document(conversationId)
+                .collection("messages")
+                .document(messageId)
+
+            firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(messageRef)
+                val reactions = mutableMapOf<String, String>()
+
+                (snapshot.get("reactions") as? Map<*, *>)?.forEach { (key, value) ->
+                    if (key is String && value is String) {
+                        reactions[key] = value
+                    }
+                }
+
+                reactions.remove(userId)
+
+                transaction.update(
+                    messageRef,
+                    "reactions",
+                    reactions
+                )
+            }.await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

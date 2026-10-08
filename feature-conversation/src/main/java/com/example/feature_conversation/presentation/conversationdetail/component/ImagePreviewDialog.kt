@@ -7,19 +7,27 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,31 +49,45 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import androidx.core.view.WindowCompat
 import coil.compose.AsyncImage
+import com.example.core_model.Message
+import com.example.core_model.User
+import com.example.core_model.composite.MediaPreview
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
 import com.example.core_resource.R
+import com.example.core_utils.getReactionCount
 import com.example.core_utils.hideSystemBars
 import com.example.core_utils.showSystemBars
+import com.example.core_utils.toRelativeString
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 @Composable
 fun ImagePreviewDialog(
-    fileUrl: String,
-    sentAt: String,
-    avatarUrl: String?,
-    senderName: String,
+    imageMessage: Message.Image,
+    imagePreview: MediaPreview,
     onDismiss: () -> Unit,
-    onDownload: () -> Unit
+    onDownload: () -> Unit,
+    onReactToMessage: (String) -> Unit,
+    onRemoveReaction: () -> Unit
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     var isVisible by remember { mutableStateOf(false) }
+    val emojis = listOf("❤️", "👍", "😂", "😮", "😢", "😡")
+
+    var showReaction by remember {
+        mutableStateOf(false)
+    }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -87,6 +109,7 @@ fun ImagePreviewDialog(
                 }
             }
         }
+        val sender = imagePreview.sender
 
         Box(
             modifier = Modifier
@@ -94,7 +117,7 @@ fun ImagePreviewDialog(
                 .background(Color.Black)
         ) {
             AsyncImage(
-                model = fileUrl,
+                model = imageMessage.fileUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
@@ -188,7 +211,7 @@ fun ImagePreviewDialog(
                     Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
                     AsyncImage(
-                        model = avatarUrl,
+                        model = sender?.avatarUrl,
                         contentDescription = null,
                         placeholder = painterResource(R.drawable.account),
                         error = painterResource(R.drawable.account),
@@ -203,7 +226,7 @@ fun ImagePreviewDialog(
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
-                            text = senderName,
+                            text = sender?.fullName.orEmpty(),
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.White,
                             maxLines = 1,
@@ -211,7 +234,7 @@ fun ImagePreviewDialog(
                         )
 
                         Text(
-                            text = sentAt,
+                            text = imageMessage.createdAt.toRelativeString(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White
                         )
@@ -256,35 +279,86 @@ fun ImagePreviewDialog(
                     targetOffsetY = { it },
                     animationSpec = tween(200)
                 ),
-                modifier = Modifier.align(Alignment.BottomStart)
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .fillMaxWidth()
+                    .background(color = Color.Black.copy(alpha = 0.7f))
+                    .navigationBarsPadding()
+                    .padding(AppDimens.Space.Md)
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = Color.Black.copy(alpha = 0.7f)
-                        )
-                        .navigationBarsPadding()
-                        .padding(
-                            top = AppDimens.Space.Xs,
-                            bottom = AppDimens.Space.Xs,
-                            start = AppDimens.Space.Xs,
-                            end = AppDimens.Space.Xs
-                        ),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    IconButton(
-                        onClick = { }
-                    ) {
-                        Icon(
-                            painter = AppIcons.More,
-                            contentDescription = "More",
-                            tint = Color.White,
-                            modifier = Modifier.size(AppDimens.Icon.Md)
+                    if(imageMessage.reactions.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier
+                                .clickable {
+                                    showReaction = true
+                                },
+                            horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Xs)
+                        ) {
+                            imageMessage.getReactionCount().forEach { (emoji, count) ->
+                                Text(
+                                    text = "$emoji $count",
+                                    fontSize = 16.sp,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Md))
+
+                        HorizontalDivider(
+                            thickness = AppDimens.Divider.Normal,
+                            color = Color.White.copy(alpha = 0.2f)
                         )
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Md))
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Md)
+                    ) {
+                        emojis.forEach { emoji ->
+                            Text(
+                                text = emoji,
+                                fontSize = 24.sp,
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .background(color = Color.White.copy(alpha = 0.1f))
+                                    .clickable {
+                                        onReactToMessage(emoji)
+                                    }
+                                    .border(
+                                        width = AppDimens.Border.Thin,
+                                        color = MaterialTheme.colorScheme.outline,
+                                        shape = CircleShape
+                                    )
+                                    .padding(AppDimens.Space.Xs),
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
             }
         }
+    }
+
+    if(showReaction) {
+        val reactionUsers = imageMessage.reactions.mapNotNull { (userId, emoji) ->
+            imagePreview.users.find { it.id == userId }?.let { user ->
+                user to emoji
+            }
+        }
+        ReactionBottomSheet(
+            currentUserId = imagePreview.currentUser.id,
+            reactionUsers = reactionUsers,
+            onDismissRequest = {
+                showReaction = false
+            },
+            onRemoveReaction = onRemoveReaction
+        )
     }
 }

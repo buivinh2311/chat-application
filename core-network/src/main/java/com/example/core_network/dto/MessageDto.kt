@@ -19,6 +19,7 @@ data class MessageDto(
     val fileSize: Long? = null,
     val mimeType: String? = null,
     val status: String = MessageStatus.SENT.name,
+    val reactions: Map<String, String> = emptyMap(),
     val createdAt: Timestamp? = null,
     val readBy: List<String> = emptyList()
 )

@@ -43,6 +43,7 @@ class SendFileMessageUseCase @Inject constructor(
             fileSize = uploadResult.bytes,
             createdAt = Timestamp.now(),
             status = MessageStatus.DELIVERED,
+            reactions = emptyMap(),
             width = uploadResult.width ?: 0,
             height = uploadResult.height ?: 0,
             mimeType = fileInfo.mimeType

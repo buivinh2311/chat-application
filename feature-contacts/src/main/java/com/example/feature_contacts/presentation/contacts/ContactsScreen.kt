@@ -19,6 +19,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -92,86 +93,73 @@ fun ContactsScreen(
             is UiState.Success -> {
                 val data = state.data
                 val friendRequestReceived = data.friendRequestReceived
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
+                LazyColumn(
+                    modifier = Modifier.padding(innerPadding),
+                    contentPadding = PaddingValues(
+                        vertical = AppDimens.Space.Md
+                    ),
+                    state = listState,
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.background)
-                    ) {
+                    item {
                         ContactsSearchBar()
                         Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
+
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
+                        ContactsFriendRequest(
+                            onClick = {}
+                        )
+                        Spacer(
+                            modifier = Modifier.height(
+                                AppDimens.Space.Xs + AppDimens.Space.Xxs
+                            )
+                        )
+
+                        ContactsFriendSent(
+                            onClick = {}
+                        )
+                        Spacer(
+                            modifier = Modifier.height(
+                                AppDimens.Space.Xs + AppDimens.Space.Xxs
+                            )
+                        )
+
+                        ContactsFriendSuggest(
+                            onClick = {}
+                        )
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.background)
+                        ) {
+                            ContactsCategory()
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
+                        }
                     }
 
-                    LazyColumn(
-                        contentPadding = PaddingValues(
-                            bottom = AppDimens.Space.Xl
-                        ),
-                        state = listState
+                    item {
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
+                        Text(
+                            text = "H",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier
+                                .padding(horizontal = AppDimens.Space.Md)
+                        )
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
+                    }
+
+                    items(
+                        count = 20
                     ) {
-                        item {
-                            Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
-                            ContactsFriendRequest(
-                                onClick = {}
+                        ContactsItem(
+                            onClick = { }
+                        )
+                        Spacer(
+                            modifier = Modifier.height(
+                                AppDimens.Space.Xs + AppDimens.Space.Xxs
                             )
-                            Spacer(
-                                modifier = Modifier.height(
-                                    AppDimens.Space.Xs + AppDimens.Space.Xxs
-                                )
-                            )
-
-                            ContactsFriendSent(
-                                onClick = {}
-                            )
-                            Spacer(
-                                modifier = Modifier.height(
-                                    AppDimens.Space.Xs + AppDimens.Space.Xxs
-                                )
-                            )
-
-                            ContactsFriendSuggest(
-                                onClick = {}
-                            )
-                            Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
-                        }
-
-                        stickyHeader {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(MaterialTheme.colorScheme.background)
-                            ) {
-                                ContactsCategory()
-                                Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
-                            }
-                        }
-
-                        item {
-                            Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
-                            Text(
-                                text = "H",
-                                style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier
-                                    .padding(horizontal = AppDimens.Space.Md)
-                            )
-                            Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
-                        }
-
-                        items(
-                            count = 20
-                        ) {
-                            ContactsItem(
-                                onClick = { }
-                            )
-                            Spacer(
-                                modifier = Modifier.height(
-                                    AppDimens.Space.Xs + AppDimens.Space.Xxs
-                                )
-                            )
-                        }
+                        )
                     }
                 }
             }

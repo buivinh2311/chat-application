@@ -55,7 +55,7 @@ fun AppTopBar(
             .fillMaxWidth()
             .statusBarsPadding()
             .height(AppDimens.Layout.TopBarHeight)
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(color = MaterialTheme.colorScheme.surface)
             .drawBehind(
                 onDraw = {
                     if (isScrolled) {

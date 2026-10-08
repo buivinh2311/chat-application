@@ -27,6 +27,7 @@ class SendTextMessageUseCase @Inject constructor(
             senderId = senderId,
             createdAt = Timestamp.now(),
             status = MessageStatus.DELIVERED,
+            reactions = emptyMap(),
             text = text
         )
 

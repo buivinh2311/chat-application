@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,8 +23,10 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,8 +50,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -61,29 +66,41 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
+import com.example.core_model.Message
+import com.example.core_model.User
+import com.example.core_model.composite.MediaPreview
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
 import com.example.core_resource.R
+import com.example.core_utils.getReactionCount
 import com.example.core_utils.hideSystemBars
 import com.example.core_utils.showSystemBars
+import com.example.core_utils.toRelativeString
 import kotlinx.coroutines.delay
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 @OptIn(UnstableApi::class)
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VideoPreviewDialog (
-    fileUrl: String,
-    sentAt: String,
-    avatarUrl: String?,
-    senderName: String,
+    videoMessage: Message.Video,
+    videoPreview: MediaPreview,
     onDismiss: () -> Unit,
-    onDownload: () -> Unit
+    onDownload: () -> Unit,
+    onReactToMessage: (String) -> Unit,
+    onRemoveReaction: () -> Unit
 ) {
     var isVisible by remember { mutableStateOf(false) }
     var currentPosition by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(0L) }
     var isSeeking by remember { mutableStateOf(false) }
     var seekPosition by remember { mutableLongStateOf(0L) }
+    val emojis = listOf("❤️", "👍", "😂", "😮", "😢", "😡")
+
+    var showReaction by remember {
+        mutableStateOf(false)
+    }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -92,13 +109,14 @@ fun VideoPreviewDialog (
             decorFitsSystemWindows = false
         )
     ) {
+        val sender = videoPreview.sender
         val window = (LocalView.current.parent as? DialogWindowProvider)?.window
         val context = LocalContext.current
-        val exoPlayer = remember(fileUrl) {
+        val exoPlayer = remember(videoMessage.fileUrl) {
             ExoPlayer.Builder(context)
                 .build()
                 .apply {
-                    setMediaItem(MediaItem.fromUri(fileUrl))
+                    setMediaItem(MediaItem.fromUri(videoMessage.fileUrl))
                     prepare()
                     playWhenReady = true
                 }
@@ -221,7 +239,7 @@ fun VideoPreviewDialog (
                     Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
                     AsyncImage(
-                        model = avatarUrl,
+                        model = sender?.avatarUrl,
                         contentDescription = null,
                         placeholder = painterResource(R.drawable.account),
                         error = painterResource(R.drawable.account),
@@ -236,7 +254,7 @@ fun VideoPreviewDialog (
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
-                            text = senderName,
+                            text = sender?.fullName.orEmpty(),
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.White,
                             maxLines = 1,
@@ -245,7 +263,7 @@ fun VideoPreviewDialog (
                         Spacer(modifier = Modifier.height(AppDimens.Space.Xxs))
 
                         Text(
-                            text = sentAt,
+                            text = videoMessage.createdAt.toRelativeString(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White
                         )
@@ -351,30 +369,64 @@ fun VideoPreviewDialog (
                         )
                     }
 
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(
-                                color = Color.Black.copy(alpha = 0.7f)
-                            )
+                            .background(color = Color.Black.copy(alpha = 0.7f))
                             .navigationBarsPadding()
-                            .padding(
-                                top = AppDimens.Space.Xs,
-                                bottom = AppDimens.Space.Xs,
-                                start = AppDimens.Space.Xs,
-                                end = AppDimens.Space.Xs
-                            ),
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(AppDimens.Space.Md)
                     ) {
-                        IconButton(
-                            onClick = { }
-                        ) {
-                            Icon(
-                                painter = AppIcons.More,
-                                contentDescription = "More",
-                                tint = Color.White,
-                                modifier = Modifier.size(AppDimens.Icon.Md)
+                        if(videoMessage.reactions.isNotEmpty()) {
+                            Row(
+                                modifier = Modifier
+                                    .clickable {
+                                        showReaction = true
+                                    },
+                                horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Xs)
+                            ) {
+                                videoMessage.getReactionCount().forEach { (emoji, count) ->
+                                    Text(
+                                        text = "$emoji $count",
+                                        fontSize = 16.sp,
+                                        color = Color.White
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Md))
+
+                            HorizontalDivider(
+                                thickness = AppDimens.Divider.Normal,
+                                color = Color.White.copy(alpha = 0.2f)
                             )
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Md))
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Md)
+                        ) {
+                            emojis.forEach { emoji ->
+                                Text(
+                                    text = emoji,
+                                    fontSize = 24.sp,
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .background(color = Color.White.copy(alpha = 0.1f))
+                                        .clickable {
+                                            onReactToMessage(emoji)
+                                        }
+                                        .border(
+                                            width = AppDimens.Border.Thin,
+                                            color = MaterialTheme.colorScheme.outline,
+                                            shape = CircleShape
+                                        )
+                                        .padding(AppDimens.Space.Xs),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                     }
                 }
@@ -410,6 +462,22 @@ fun VideoPreviewDialog (
                 }
             }
         }
+    }
+
+    if(showReaction) {
+        val reactionUsers = videoMessage.reactions.mapNotNull { (userId, emoji) ->
+            videoPreview.users.find { it.id == userId }?.let { user ->
+                user to emoji
+            }
+        }
+        ReactionBottomSheet(
+            currentUserId = videoPreview.currentUser.id,
+            reactionUsers = reactionUsers,
+            onDismissRequest = {
+                showReaction = false
+            },
+            onRemoveReaction = onRemoveReaction
+        )
     }
 }
 

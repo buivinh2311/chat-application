@@ -54,6 +54,7 @@ fun ConversationDetailTopBar(
         modifier = modifier
             .fillMaxWidth()
             .statusBarsPadding()
+            .background(MaterialTheme.colorScheme.surface)
             .drawBehind(
                 onDraw = {
                     drawLine(

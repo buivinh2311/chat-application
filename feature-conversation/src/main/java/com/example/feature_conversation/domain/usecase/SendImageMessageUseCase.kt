@@ -36,6 +36,7 @@ class SendImageMessageUseCase @Inject constructor(
             height = uploadResult.height ?: 0,
             createdAt = Timestamp.now(),
             status = MessageStatus.DELIVERED,
+            reactions = emptyMap(),
             mimeType = fileInfo.mimeType
         )
 

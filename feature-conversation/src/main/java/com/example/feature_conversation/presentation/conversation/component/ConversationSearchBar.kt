@@ -48,7 +48,7 @@ fun ConversationSearchBar(
             .padding(horizontal = AppDimens.Space.Md)
             .height(AppDimens.Layout.SearchBarHeight)
             .clip(RoundedCornerShape(AppDimens.Radius.Lg))
-            .background(MaterialTheme.colorScheme.secondary)
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(horizontal = AppDimens.Space.Lg),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -68,7 +68,7 @@ fun ConversationSearchBar(
             },
             singleLine = true,
             textStyle = MaterialTheme.typography.bodyLarge.copy(
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             ),
             cursorBrush = SolidColor(
                 MaterialTheme.colorScheme.primary

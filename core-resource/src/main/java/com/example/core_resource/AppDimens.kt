@@ -52,7 +52,8 @@ data class Dimens(
         val Sm: Dp,
         val Md: Dp,
         val Lg: Dp,
-        val Xl: Dp
+        val Xl: Dp,
+        val Xxl: Dp
     )
 
     data class RippleDimen(
@@ -71,7 +72,8 @@ data class Dimens(
         val StatusWidth: Dp,
         val IconButtonSize: Dp,
         val TextFieldHeight: Dp,
-        val CoverPhotoHeight: Dp
+        val CoverPhotoHeight: Dp,
+        val MinTextMessageWidth: Dp
     )
 
     data class IconDimen(
@@ -135,7 +137,8 @@ fun dimens(): Dimens {
             Sm = (8 * scale).dp,
             Md = (12 * scale).dp,
             Lg = (16 * scale).dp,
-            Xl = (24 * scale).dp
+            Xl = (24 * scale).dp,
+            Xxl = (32 * scale).dp
         ),
 
         Ripple = Dimens.RippleDimen(
@@ -154,7 +157,8 @@ fun dimens(): Dimens {
             StatusWidth = (80 * scale).dp,
             IconButtonSize = (36 * scale).dp,
             TextFieldHeight = (48 * scale).dp,
-            CoverPhotoHeight = (180 * scale).dp
+            CoverPhotoHeight = (180 * scale).dp,
+            MinTextMessageWidth = (80 * scale).dp
         ),
 
         Icon = Dimens.IconDimen(

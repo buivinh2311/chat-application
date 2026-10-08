@@ -93,6 +93,7 @@ fun ConversationDetailBottomBar(
         modifier = modifier
             .navigationBarsPadding()
             .imePadding()
+            .background(MaterialTheme.colorScheme.surface)
             .drawBehind {
                 if (showDivider) {
                     drawLine(

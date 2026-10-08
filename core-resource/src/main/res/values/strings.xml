@@ -212,4 +212,5 @@
     <string name="title_change_leader">Chuyển quyền nhóm trưởng</string>
     <string name="description_change_leader">Chuyển quyền quản lý nhóm</string>
     <string name="title_info">Thông tin</string>
+    <string name="text_tap_to_remove">Nhấn để gỡ</string>
 </resources>

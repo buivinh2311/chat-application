@@ -110,12 +110,7 @@ fun SettingsScreen(
                 }
                 LazyColumn(
                     modifier = Modifier.padding(innerPadding),
-                    contentPadding = PaddingValues(
-                        start = AppDimens.Space.Md,
-                        end = AppDimens.Space.Md,
-                        top = AppDimens.Space.Sm,
-                        bottom = AppDimens.Space.Xl
-                    ),
+                    contentPadding = PaddingValues(AppDimens.Space.Md),
                     state = listState
                 ) {
                     item {
@@ -132,7 +127,7 @@ fun SettingsScreen(
                                 onSettingOptionClick(SettingOptionAction.PROFILE)
                             }
                         )
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Md))
 
                         SettingsPersonalAndSecurity(
                             onNavigateToPassword = {
@@ -141,14 +136,14 @@ fun SettingsScreen(
                             onToggleMarkAsRead = { },
                             onToggleOnlineStatus = { }
                         )
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Md))
 
                         SettingsNotificationAndSound(
                             onTogglePushNotification = { },
                             onTogglePreview = { },
                             onToggleNotDisturb = { }
                         )
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Md))
 
                         SettingsInterfaceAndExperience(
                             isDarkMode = isDarkMode,
@@ -166,7 +161,7 @@ fun SettingsScreen(
                                 onSettingOptionClick(SettingOptionAction.LANGUAGE)
                             }
                         )
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Md))
 
                         SettingsStorageAndData(
                             onNavigateToCacheMemory = {
@@ -174,7 +169,7 @@ fun SettingsScreen(
                             },
                             onToggleManagerFile = {}
                         )
-                        Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
+                        Spacer(modifier = Modifier.height(AppDimens.Space.Md))
 
                         SettingsHelpAndLogout(
                             onNavigateToHelpCenter = {

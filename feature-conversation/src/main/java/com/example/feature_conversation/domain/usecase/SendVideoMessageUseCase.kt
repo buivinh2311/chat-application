@@ -35,6 +35,7 @@ class SendVideoMessageUseCase @Inject constructor(
             senderId = senderId,
             createdAt = Timestamp.now(),
             status = MessageStatus.DELIVERED,
+            reactions = emptyMap(),
             fileUrl = uploadResult.url,
             thumbnailUrl = thumbnailUrl,
             fileName = fileInfo.file.name,
