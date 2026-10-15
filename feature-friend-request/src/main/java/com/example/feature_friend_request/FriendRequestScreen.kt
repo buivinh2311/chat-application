@@ -16,14 +16,14 @@ import com.example.share_presentation.FriendRequest
 
 @Composable
 fun FriendRequestScreen(
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     Scaffold(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.title_friend_request),
-                onBackClick = onBackClick
+                onBack = onBack
             )
         },
         bottomBar = {

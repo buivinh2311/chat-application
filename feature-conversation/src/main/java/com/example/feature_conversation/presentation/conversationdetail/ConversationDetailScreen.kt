@@ -2,32 +2,32 @@ package com.example.feature_conversation.presentation.conversationdetail
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.Message
+import com.example.core_model.ReplyPreview
 import com.example.core_model.composite.MediaPreview
+import com.example.core_model.enum.MessageType
 import com.example.core_resource.R
 import com.example.core_ui.component.ErrorScreen
 import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.component.showToast
 import com.example.core_ui.state.UiState
-import com.example.core_utils.isAtBottom
-import com.example.core_utils.isScrolled
-import com.example.feature_conversation.domain.model.FileInfo
+import com.example.feature_conversation.domain.model.ConversationDetailAction
+import com.example.feature_conversation.domain.model.MessageAction
 import com.example.feature_conversation.presentation.conversationdetail.component.ConversationDetailBottomBar
-import com.example.feature_conversation.presentation.conversationdetail.component.ConversationDetailDirect
-import com.example.feature_conversation.presentation.conversationdetail.component.ConversationDetailGroup
+import com.example.feature_conversation.presentation.conversationdetail.component.ConversationDetailContent
 import com.example.feature_conversation.presentation.conversationdetail.component.ConversationDetailTopBar
 import com.example.feature_conversation.presentation.conversationdetail.component.ImagePreviewDialog
 import com.example.feature_conversation.presentation.conversationdetail.component.VideoPreviewDialog
@@ -36,8 +36,8 @@ import com.example.feature_conversation.presentation.conversationdetail.componen
 @Composable
 fun ConversationDetailScreen(
     conversationId: String,
-    onBackClick: () -> Unit,
-    onOptionClick: () -> Unit,
+    onBack: () -> Unit,
+    onOption: () -> Unit,
     onOpenCamera: () -> Unit
 ) {
     val conversationDetailViewModel: ConversationDetailViewModel = hiltViewModel()
@@ -84,53 +84,165 @@ fun ConversationDetailScreen(
     var mediaPreview: MediaPreview? by remember {
         mutableStateOf(null)
     }
-    val listState = rememberLazyListState()
-    val isScrolled by remember {
-        derivedStateOf { listState.isScrolled }
-    }
-    val isAtBottom by remember {
-        derivedStateOf { listState.isAtBottom }
+
+    var replyPreview: ReplyPreview? by remember {
+        mutableStateOf(null)
     }
 
-    val onSendMessageClick: (String) -> Unit = { message ->
-        conversationDetailViewModel.sendTextMessage(conversationId, message)
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    LaunchedEffect(replyPreview) {
+        if (replyPreview != null) {
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        }
     }
-    val onFileSelected: (List<FileInfo>) -> Unit = { fileInfos ->
-        conversationDetailViewModel.sendFileMessage(conversationId, fileInfos)
+
+    val onAction: (ConversationDetailAction) -> Unit = { action ->
+        when(action) {
+            // Media
+            is ConversationDetailAction.DownloadImage -> {
+                val imageMessage = action.imageMessage
+                conversationDetailViewModel.downloadImage(
+                    context = context,
+                    imageUrl = imageMessage.fileUrl,
+                    fileName = imageMessage.fileName,
+                    mimeType = imageMessage.mimeType
+                )
+            }
+
+            is ConversationDetailAction.DownloadVideo -> {
+                val videoMessage = action.videoMessage
+                conversationDetailViewModel.downloadVideo(
+                    context = context,
+                    videoUrl = videoMessage.fileUrl,
+                    fileName = videoMessage.fileName,
+                    mimeType = videoMessage.mimeType
+                )
+            }
+
+            is ConversationDetailAction.FileSelected -> {
+                conversationDetailViewModel.sendFileMessage(
+                    conversationId,
+                    action.fileInfos
+                )
+            }
+
+            is ConversationDetailAction.MediaSelected -> {
+                conversationDetailViewModel.sendMediaMessage(
+                    conversationId,
+                    action.fileInfos
+                )
+            }
+
+            is ConversationDetailAction.OpenMedia -> {
+                mediaPreview = action.mediaPreview
+            }
+
+            is ConversationDetailAction.DownloadFile -> {
+                val fileMessage = action.fileMessage
+                conversationDetailViewModel.downloadFile(
+                    context = context,
+                    fileUrl = fileMessage.fileUrl,
+                    fileName = fileMessage.fileName,
+                    mimeType = fileMessage.mimeType
+                )
+            }
+
+            is ConversationDetailAction.OpenFile -> {
+                val fileMessage = action.fileMessage
+                conversationDetailViewModel.openFile(
+                    context = context,
+                    fileName = fileMessage.fileName,
+                    mimeType = fileMessage.mimeType
+                )
+            }
+
+            // Message
+            is ConversationDetailAction.SendMessage -> {
+                conversationDetailViewModel.sendTextMessage(
+                    conversationId,
+                    action.message
+                )
+            }
+
+            is ConversationDetailAction.SendReplyMessage -> {
+                conversationDetailViewModel.replyMessage(
+                    conversationId = conversationId,
+                    text = action.text,
+                    replyPreview = action.replyPreview
+                )
+                replyPreview = null
+            }
+
+            is ConversationDetailAction.ReactToMessage -> {
+                conversationDetailViewModel.reactToMessage(
+                    conversationId = conversationId,
+                    messageId = action.messageId,
+                    emoji = action.emoji
+                )
+            }
+
+            is ConversationDetailAction.RemoveReaction -> {
+                conversationDetailViewModel.removeReaction(
+                    conversationId = conversationId,
+                    messageId = action.messageId
+                )
+            }
+            is ConversationDetailAction.Reply -> {
+                val message = action.message
+                replyPreview = ReplyPreview(
+                    messageId = message.id,
+                    senderId = message.senderId,
+                    senderName = action.senderName,
+                    type = when (message) {
+                        is Message.Text -> MessageType.TEXT
+                        is Message.File -> MessageType.FILE
+                        is Message.Video -> MessageType.VIDEO
+                        is Message.Image -> MessageType.IMAGE
+                    },
+                    mimeType = when(message) {
+                        is Message.Text -> null
+                        is Message.File -> message.mimeType
+                        is Message.Image -> message.mimeType
+                        is Message.Video -> message.mimeType
+                    },
+                    contentPreview = when (message) {
+                        is Message.Text -> message.text
+                        is Message.File -> message.fileName
+                        is Message.Video -> message.thumbnailUrl
+                        is Message.Image -> message.fileUrl
+                    }
+                )
+            }
+
+            is ConversationDetailAction.CloseReplyPreview -> {
+                replyPreview = null
+            }
+
+            // Request
+            is ConversationDetailAction.SendFriendRequest -> {
+
+            }
+
+            is ConversationDetailAction.RecallFriendRequest -> {
+
+            }
+
+            is ConversationDetailAction.StickerSelected -> {
+
+            }
+        }
     }
-    val onMediaSelected: (List<FileInfo>) -> Unit = { fileInfos ->
-        conversationDetailViewModel.sendMediaMessage(conversationId, fileInfos)
-    }
-    val onMediaClick: (MediaPreview) -> Unit = { preview ->
-        mediaPreview = preview
-    }
-    val onDownloadFile: (Message.File) -> Unit = { file ->
-        conversationDetailViewModel.downloadFile(
-            context = context,
-            fileUrl = file.fileUrl,
-            fileName = file.fileName,
-            mimeType = file.mimeType
-        )
-    }
-    val onOpenFile: (Message.File) -> Unit = { file ->
-        conversationDetailViewModel.openFile(
-            context = context,
-            fileName = file.fileName,
-            mimeType = file.mimeType
-        )
-    }
-    val onReactToMessage: (String, String) -> Unit = { messageId, emoji ->
-        conversationDetailViewModel.reactToMessage(
-            conversationId = conversationId,
-            messageId = messageId,
-            emoji = emoji
-        )
-    }
-    val onRemoveReaction: (String) -> Unit = { messageId ->
-        conversationDetailViewModel.removeReaction(
-            conversationId = conversationId,
-            messageId = messageId
-        )
+
+    val onMessageAction: (MessageAction, Message, String) -> Unit = { action, message, senderName ->
+        when (action) {
+            MessageAction.REPLY -> {
+
+            }
+
+            else -> {}
+        }
     }
 
     when (val state = uiState) {
@@ -149,106 +261,53 @@ fun ConversationDetailScreen(
         is UiState.Success -> {
             val conversationUiState = state.data
             val messages = conversationUiState.messages
-            when(val data = conversationUiState.conversationDetailData) {
-                is ConversationDetailData.Direct -> {
-                    val user = data.user
-                    Scaffold(
-                        modifier = Modifier.fillMaxSize(),
-                        topBar = {
-                            ConversationDetailTopBar(
-                                imageUrl = user.avatarUrl,
-                                name = user.fullName,
-                                isScrolled = isScrolled,
-                                onBackClick = onBackClick,
-                                onOptionClick = onOptionClick
-                            )
-                        },
-                        bottomBar = {
-                            ConversationDetailBottomBar(
-                                showDivider = !isAtBottom,
-                                onSendMessageClick = onSendMessageClick,
-                                onLikeClick = {
+            val conversationDetailData = conversationUiState.conversationDetailData
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                topBar = {
+                    ConversationDetailTopBar(
+                        imageUrl = when (conversationDetailData) {
+                            is ConversationDetailData.Direct
+                                -> conversationDetailData.user.avatarUrl
 
-                                },
-                                onFileSelected = onFileSelected,
-                                onOpenCamera = onOpenCamera,
-                                onMediaSelected = onMediaSelected,
-                                onStickerClick = { }
-                            )
-                        }
-                    ) { innerPadding ->
-                        ConversationDetailDirect(
-                            user = user,
-                            currentUser = conversationUiState.currentUser,
-                            isConnected = conversationUiState.isConnected,
-                            isSentRequest = conversationUiState.isSentRequest,
-                            messages = messages,
-                            innerPadding = innerPadding,
-                            onSendFriendRequest = { userId ->
-                                conversationDetailViewModel.sendFriendRequest(userId)
-                            },
-                            onRecallFriendRequest = { userId ->
-                                conversationDetailViewModel.recallFriendRequest(userId)
-                            },
-                            onMediaClick = onMediaClick,
-                            onDownloadFile = onDownloadFile,
-                            onOpenFile = onOpenFile,
-                            onReactToMessage = onReactToMessage,
-                            onRemoveReaction = onRemoveReaction
-                        )
-                    }
-                }
-
-                is ConversationDetailData.Group -> {
-                    val group = data.group
-                    Scaffold(
-                        modifier = Modifier.fillMaxSize(),
-                        topBar = {
-                            ConversationDetailTopBar(
-                                imageUrl = group.avatarUrl,
-                                name = group.name,
-                                isScrolled = isScrolled,
-                                onBackClick = onBackClick,
-                                onOptionClick = onOptionClick
-                            )
+                            is ConversationDetailData.Group
+                                -> conversationDetailData.group.avatarUrl
                         },
-                        bottomBar = {
-                            ConversationDetailBottomBar(
-                                showDivider = !isAtBottom,
-                                onSendMessageClick = onSendMessageClick,
-                                onLikeClick = { },
-                                onFileSelected = onFileSelected,
-                                onOpenCamera = onOpenCamera,
-                                onMediaSelected = onMediaSelected,
-                                onStickerClick = {}
-                            )
-                        }
-                    ) { innerPadding ->
-                        ConversationDetailGroup(
-                            group = group,
-                            currentUser = conversationUiState.currentUser,
-                            members = data.users,
-                            messages = messages,
-                            innerPadding = innerPadding,
-//                            onSendFriendRequest = { userId ->
-//                                conversationDetailViewModel.sendFriendRequest(userId)
-//                            },
-//                            onRecallFriendRequest = { userId ->
-//                                conversationDetailViewModel.recallFriendRequest(userId)
-//                            },
-                            onMediaClick = onMediaClick,
-                            onDownloadFile = onDownloadFile,
-                            onOpenFile = onOpenFile,
-                            onReactToMessage = onReactToMessage,
-                            onRemoveReaction = onRemoveReaction
-                        )
-                    }
+                        name = when (conversationDetailData) {
+                            is ConversationDetailData.Direct
+                                -> conversationDetailData.user.fullName
+
+                            is ConversationDetailData.Group
+                                -> conversationDetailData.group.name
+                        },
+                        onBack = onBack,
+                        onOption = onOption
+                    )
+                },
+                bottomBar = {
+                    ConversationDetailBottomBar(
+                        context = context,
+                        replyPreview = replyPreview,
+                        focusRequester = focusRequester,
+                        onAction = onAction,
+                        onOpenCamera = onOpenCamera
+                    )
                 }
+            ) { innerPadding ->
+                ConversationDetailContent(
+                    data = conversationDetailData,
+                    currentUser = conversationUiState.currentUser,
+                    isConnected = false,
+                    isSentRequest = true,
+                    messages = messages,
+                    innerPadding = innerPadding,
+                    onAction = onAction
+                )
             }
 
             mediaPreview?.let { preview ->
                 val message = messages.find { it.id == preview.messageId }
-                when(message) {
+                when (message) {
                     is Message.Image -> {
                         ImagePreviewDialog(
                             imageMessage = message,
@@ -256,20 +315,7 @@ fun ConversationDetailScreen(
                             onDismiss = {
                                 mediaPreview = null
                             },
-                            onDownload = {
-                                conversationDetailViewModel.downloadImage(
-                                    context = context,
-                                    imageUrl = message.fileUrl,
-                                    fileName = message.fileName,
-                                    mimeType = message.mimeType
-                                )
-                            },
-                            onReactToMessage = { emoji ->
-                                onReactToMessage(message.id, emoji)
-                            },
-                            onRemoveReaction = {
-                                onRemoveReaction(message.id)
-                            }
+                            onAction = onAction
                         )
                     }
 
@@ -280,20 +326,7 @@ fun ConversationDetailScreen(
                             onDismiss = {
                                 mediaPreview = null
                             },
-                            onDownload = {
-                                conversationDetailViewModel.downloadImage(
-                                    context = context,
-                                    imageUrl = message.fileUrl,
-                                    fileName = message.fileName,
-                                    mimeType = message.mimeType
-                                )
-                            },
-                            onReactToMessage = { emoji ->
-                                onReactToMessage(message.id, emoji)
-                            },
-                            onRemoveReaction = {
-                                onRemoveReaction(message.id)
-                            }
+                            onAction = onAction
                         )
                     }
 

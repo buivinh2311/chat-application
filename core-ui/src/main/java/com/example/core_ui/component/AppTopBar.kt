@@ -43,11 +43,10 @@ fun AppTopBar(
     title: String,
     titleColor: Color? = null,
     subTitle: String? = null,
-    isScrolled: Boolean = false,
-    onBackClick: (() -> Unit)? = null,
+    onBack: (() -> Unit)? = null,
     onScan: (() -> Unit)? = null
 ) {
-    val gradientColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+    val gradientColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)
     val strokeWidth = AppDimens.Divider.Normal
 
     Row(
@@ -58,23 +57,21 @@ fun AppTopBar(
             .background(color = MaterialTheme.colorScheme.surface)
             .drawBehind(
                 onDraw = {
-                    if (isScrolled) {
-                        drawLine(
-                            color = gradientColor,
-                            start = Offset(0f, size.height),
-                            end = Offset(size.width, size.height),
-                            strokeWidth = strokeWidth.toPx()
-                        )
-                    }
+                    drawLine(
+                        color = gradientColor,
+                        start = Offset(0f, size.height),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = strokeWidth.toPx()
+                    )
                 }
             )
             .padding(horizontal = AppDimens.Space.Md),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        onBackClick?.let {
+        onBack?.let {
             AppIconButton(
                 icon = AppIcons.Back,
-                onClick = onBackClick
+                onClick = onBack
             )
             Spacer(modifier = Modifier.width(AppDimens.Space.Md))
         }
@@ -84,7 +81,7 @@ fun AppTopBar(
         ) {
             Text(
                 text = title,
-                style = if (onBackClick == null) MaterialTheme.typography.headlineLarge
+                style = if (onBack == null) MaterialTheme.typography.headlineLarge
                 else MaterialTheme.typography.titleLarge,
                 color = titleColor ?: MaterialTheme.colorScheme.onBackground
             )

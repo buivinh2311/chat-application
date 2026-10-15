@@ -67,7 +67,6 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import com.example.core_model.Message
-import com.example.core_model.User
 import com.example.core_model.composite.MediaPreview
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
@@ -76,9 +75,8 @@ import com.example.core_utils.getReactionCount
 import com.example.core_utils.hideSystemBars
 import com.example.core_utils.showSystemBars
 import com.example.core_utils.toRelativeString
+import com.example.feature_conversation.domain.model.ConversationDetailAction
 import kotlinx.coroutines.delay
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 @OptIn(UnstableApi::class)
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
@@ -87,9 +85,7 @@ fun VideoPreviewDialog (
     videoMessage: Message.Video,
     videoPreview: MediaPreview,
     onDismiss: () -> Unit,
-    onDownload: () -> Unit,
-    onReactToMessage: (String) -> Unit,
-    onRemoveReaction: () -> Unit
+    onAction: (ConversationDetailAction) -> Unit
 ) {
     var isVisible by remember { mutableStateOf(false) }
     var currentPosition by remember { mutableLongStateOf(0L) }
@@ -185,9 +181,9 @@ fun VideoPreviewDialog (
                             onTap = {
                                 isVisible = !isVisible
                                 window?.let {
-                                    if(isVisible) {
+                                    if (isVisible) {
                                         showSystemBars(it)
-                                    } else{
+                                    } else {
                                         hideSystemBars(it)
                                     }
                                 }
@@ -270,7 +266,11 @@ fun VideoPreviewDialog (
                     }
 
                     IconButton(
-                        onClick = onDownload
+                        onClick = {
+                            onAction(
+                                ConversationDetailAction.DownloadVideo(videoMessage)
+                            )
+                        }
                     ) {
                         Icon(
                             painter = AppIcons.Download,
@@ -416,7 +416,12 @@ fun VideoPreviewDialog (
                                         .clip(CircleShape)
                                         .background(color = Color.White.copy(alpha = 0.1f))
                                         .clickable {
-                                            onReactToMessage(emoji)
+                                            onAction(
+                                                ConversationDetailAction.ReactToMessage(
+                                                    messageId = videoMessage.id,
+                                                    emoji = emoji
+                                                )
+                                            )
                                         }
                                         .border(
                                             width = AppDimens.Border.Thin,
@@ -476,7 +481,11 @@ fun VideoPreviewDialog (
             onDismissRequest = {
                 showReaction = false
             },
-            onRemoveReaction = onRemoveReaction
+            onRemoveReaction = {
+                onAction(
+                    ConversationDetailAction.RemoveReaction(videoMessage.id)
+                )
+            }
         )
     }
 }

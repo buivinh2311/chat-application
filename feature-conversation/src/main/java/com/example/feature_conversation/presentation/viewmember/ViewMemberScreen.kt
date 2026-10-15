@@ -22,7 +22,7 @@ import com.example.core_ui.state.UiState
 @Composable
 fun ViewMemberScreen(
     conversationId: String,
-    onBackClick: () -> Unit
+    onBack: () -> Unit
 ) {
     val viewMemberViewModel: ViewMemberViewModel = hiltViewModel()
     val uiState by viewMemberViewModel.uiState.collectAsStateWithLifecycle()
@@ -35,7 +35,7 @@ fun ViewMemberScreen(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.title_group_member),
-                onBackClick = onBackClick
+                onBack = onBack
             )
         }
     ) { innerPadding ->

@@ -66,7 +66,7 @@ fun AppNavHost(
         navController.navigate(AppRoute.LOGIN)
     }
 
-    val onBackClick: () -> Unit = {
+    val onBack: () -> Unit = {
         navController.navigateUp()
     }
 
@@ -141,13 +141,13 @@ fun AppNavHost(
                     ?: return@composable
             ConversationDetailRoute(
                 conversationId = conversationId,
-                onOptionClick = {
+                onOption = {
                     navController.navigate("${AppRoute.CONVERSATION_OPTION}/$conversationId")
                 },
                 onOpenCamera = {
                     navController.navigate(AppRoute.CAMERA)
                 },
-                onBackClick = onBackClick
+                onBack = onBack
             )
         }
 
@@ -156,7 +156,7 @@ fun AppNavHost(
                     ?: return@composable
             ConversationOptionRoute(
                 conversationId = conversationId,
-                onBackClick = onBackClick,
+                onBack = onBack,
                 onCreateGroup = { userId ->
                     navController.navigate("${AppRoute.CREATE_GROUP}/${userId}")
                 },
@@ -174,14 +174,14 @@ fun AppNavHost(
                 onNavigationToConversationDetail = { conversationId ->
                     onNavigationToConversationDetail(conversationId)
                 },
-                onBackClick = onBackClick
+                onBack = onBack
             )
         }
 
         composable(route = AppRoute.SEARCH) {
             SearchRoute(
                 selectedAction = selectedAction,
-                onBackClick = onBackClick,
+                onBack = onBack,
                 onNavigationToConversationDetail = onNavigationToConversationDetail,
                 onBottomActionClick = onBottomActionClick
             )
@@ -198,14 +198,14 @@ fun AppNavHost(
 
         composable(route = AppRoute.FRIEND_REQUEST) {
             FriendRequestRoute(
-                onBackClick = onBackClick,
+                onBack = onBack,
                 onBottomActionClick = onBottomActionClick
             )
         }
 
         composable(route = AppRoute.FRIEND_SUGGESTION) {
             FriendSuggestionRoute(
-                onBackClick = onBackClick,
+                onBack = onBack,
                 onBottomActionClick = onBottomActionClick
             )
         }
@@ -220,21 +220,21 @@ fun AppNavHost(
 
         composable(route = AppRoute.PROFILE) {
             ProfileRoute(
-                onBackClick = onBackClick,
+                onBack = onBack,
                 onBottomActionClick = onBottomActionClick
             )
         }
 
         composable(route = AppRoute.CHANGE_PASSWORD) {
             ChangePasswordRoute (
-                onBackClick = onBackClick,
+                onBack = onBack,
                 onBottomActionClick = onBottomActionClick
             )
         }
 
         composable(route = AppRoute.LANGUAGE) {
             LanguageRoute(
-                onBackClick = onBackClick,
+                onBack = onBack,
                 onBottomActionClick = onBottomActionClick
             )
         }
@@ -276,7 +276,7 @@ fun AppNavHost(
                 ?: return@composable
             ViewMemberRoute(
                 conversationId = conversationId,
-                onBackClick = onBackClick
+                onBack = onBack
             )
         }
 
@@ -285,7 +285,7 @@ fun AppNavHost(
                 onImageCaptured = { uri ->
                     // xử lý ảnh
                 },
-                onBackClick = onBackClick
+                onBack = onBack
             )
         }
     }

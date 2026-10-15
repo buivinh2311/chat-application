@@ -1,13 +1,11 @@
 package com.example.share_presentation
 
-import android.text.format.Formatter.formatFileSize
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,33 +21,27 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
+import com.example.core_model.Message
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
 import com.example.core_resource.R
 import com.example.core_utils.formatFileSize
-import java.util.Locale
 
 @Composable
 fun FileMessageItem(
-    fileName: String,
-    fileSize: Long,
-    mimeType: String,
+    fileMessage: Message.File,
     reactionCounts: Map<String, Int>,
     isMine: Boolean,
     onDownloadClick: () -> Unit,
@@ -62,7 +54,7 @@ fun FileMessageItem(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth(0.8f)
+                .fillMaxWidth(0.75f)
                 .align(
                     alignment = if (isMine) Alignment.CenterEnd
                     else Alignment.CenterStart
@@ -76,7 +68,7 @@ fun FileMessageItem(
             ) {
                 Row(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(AppDimens.Radius.Md))
+                        .clip(RoundedCornerShape(AppDimens.Radius.Sm))
                         .border(
                             width = AppDimens.Border.Thin,
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
@@ -86,24 +78,34 @@ fun FileMessageItem(
                             alignment = if (isMine) Alignment.CenterEnd
                             else Alignment.CenterStart
                         )
-                        .background(
-                            if (isMine)
-                                MaterialTheme.colorScheme.primaryContainer
-                            else
-                                MaterialTheme.colorScheme.surfaceVariant
+                        .then(
+                            if (isMine) {
+                                Modifier.background(
+                                    brush = Brush.linearGradient(
+                                        colors = listOf(
+                                            Color(0xFF0073DF),
+                                            MaterialTheme.colorScheme.primary
+                                        )
+                                    )
+                                )
+                            } else {
+                                Modifier.background(MaterialTheme.colorScheme.surface)
+                            }
                         )
                         .combinedClickable(
                             onClick = onClick,
                             onLongClick = onLongClick
                         )
-                        .padding(AppDimens.Space.Md)
-                        .widthIn(max = 280.dp),
+                        .padding(
+                            vertical = AppDimens.Space.Md,
+                            horizontal = AppDimens.Space.Sm
+                        ),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(getFileImage(mimeType)),
+                        painter = painterResource(getFileImage(fileMessage.mimeType)),
                         contentDescription = "file image",
-                        modifier = Modifier.size(AppDimens.ImageSize.Sm)
+                        modifier = Modifier.size(AppDimens.ImageSize.Xs)
                     )
                     Spacer(modifier = Modifier.width(AppDimens.Space.Xs))
 
@@ -111,17 +113,18 @@ fun FileMessageItem(
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
-                            text = fileName,
+                            text = fileMessage.fileName,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.titleSmall
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                         Spacer(modifier = Modifier.height(AppDimens.Space.Xxs))
 
                         Text(
-                            text = formatFileSize(fileSize),
+                            text = formatFileSize(fileMessage.fileSize),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                         Spacer(modifier = Modifier.height(AppDimens.Space.Xxs))
                         Row(
@@ -130,24 +133,24 @@ fun FileMessageItem(
 
                         }
                     }
-                    Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
-
-                    Box(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(AppDimens.Ripple.Lg)
-                            .background(Color.Gray.copy(alpha = 0.3f))
-                            .clickable {
-                                onDownloadClick()
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = AppIcons.Down,
-                            contentDescription = "Download file",
-                            modifier = Modifier.size(AppDimens.Icon.Sm)
-                        )
-                    }
+//                    Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+//
+//                    Box(
+//                        modifier = Modifier
+//                            .clip(CircleShape)
+//                            .size(AppDimens.Ripple.Lg)
+//                            .background(Color.Gray.copy(alpha = 0.3f))
+//                            .clickable {
+//                                onDownloadClick()
+//                            },
+//                        contentAlignment = Alignment.Center
+//                    ) {
+//                        Icon(
+//                            painter = AppIcons.Down,
+//                            contentDescription = "Download file",
+//                            modifier = Modifier.size(AppDimens.Icon.Sm)
+//                        )
+//                    }
                 }
 
                 if(reactionCounts.isNotEmpty()) {
@@ -168,15 +171,21 @@ fun FileMessageItem(
                             .clickable {
                                 onReactionClick()
                             }
-                            .padding(
-                                vertical = AppDimens.Space.Es,
-                                horizontal = AppDimens.Space.Xs + AppDimens.Space.Xxs
-                            ),
-                        horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Xs)
+                            .padding(horizontal = AppDimens.Space.Xs + AppDimens.Space.Xxs),
+                        horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Xxs)
                     ) {
+                        var value = 0
                         reactionCounts.forEach { (emoji, count) ->
+                            value += count
                             Text(
-                                text = "$emoji $count",
+                                text = emoji,
+                                fontSize = 12.5.sp,
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                        }
+                        if(value != 0) {
+                            Text(
+                                text = value.toString(),
                                 fontSize = 12.5.sp,
                                 color = MaterialTheme.colorScheme.outline
                             )

@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,7 +29,6 @@ import com.example.core_ui.component.ErrorScreen
 import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.component.showToast
 import com.example.core_ui.state.UiState
-import com.example.core_utils.isScrolled
 import com.example.core_utils.uriToFile
 import com.example.feature_conversation.presentation.creategroup.component.CreateGroupInfo
 import com.example.feature_conversation.presentation.creategroup.component.PickGroupMemberBottomBar
@@ -43,7 +40,7 @@ import com.example.feature_conversation.presentation.creategroup.component.PickG
 fun CreateGroupScreen(
     currentFriendId: String,
     onNavigationToConversationDetail: (String) -> Unit,
-    onBackClick: () -> Unit
+    onBack: () -> Unit
 ) {
     var groupMember: List<User> by remember {
         mutableStateOf(emptyList())
@@ -86,11 +83,6 @@ fun CreateGroupScreen(
         }
     }
 
-    val listState = rememberLazyListState()
-    val isScrolled by remember {
-        derivedStateOf { listState.isScrolled }
-    }
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -99,8 +91,7 @@ fun CreateGroupScreen(
                 subTitle = stringResource(
                     R.string.title_quantity_choose, groupMember.size
                 ),
-                isScrolled = isScrolled,
-                onBackClick = onBackClick
+                onBack = onBack
             )
         }
     ) { innerPadding ->

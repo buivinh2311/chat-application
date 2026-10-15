@@ -139,7 +139,7 @@ fun ConversationItem(
                     ) {
                         Text(
                             text = it,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f)
@@ -148,7 +148,7 @@ fun ConversationItem(
                         Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
                         Text(
                             text = "3",
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.onError,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(AppDimens.Radius.Lg))

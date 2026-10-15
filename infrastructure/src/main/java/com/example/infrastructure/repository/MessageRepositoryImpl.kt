@@ -1,8 +1,11 @@
 package com.example.infrastructure.repository
 
+import androidx.compose.ui.res.stringResource
 import com.example.core_domain.repository.MessageRepository
 import com.example.core_model.Message
+import com.example.core_model.ReplyPreview
 import com.example.core_network.dto.MessageDto
+import com.example.core_resource.R
 import com.example.infrastructure.mapper.remote.toDomain
 import com.example.infrastructure.mapper.remote.toDto
 import com.google.firebase.Timestamp
@@ -93,8 +96,8 @@ class MessageRepositoryImpl @Inject constructor(
                     mapOf(
                         "lastMessage" to when(message) {
                             is Message.Text -> message.text
-                            is Message.Image -> "Hình ảnh"
-                            is Message.Video -> "Video"
+                            is Message.Image -> R.string.text_image
+                            is Message.Video -> R.string.text_video
                             is Message.File -> message.fileName
                         },
                         "lastMessageTime" to message.createdAt
@@ -129,12 +132,7 @@ class MessageRepositoryImpl @Inject constructor(
         emoji: String
     ): Result<Unit> {
         return try {
-            val messageRef = firestore
-                .collection("conversations")
-                .document(conversationId)
-                .collection("messages")
-                .document(messageId)
-
+            val messageRef = messagesRef(conversationId).document(messageId)
             firestore.runTransaction { transaction ->
                 val snapshot = transaction.get(messageRef)
                 val reactions = mutableMapOf<String, String>()
@@ -171,12 +169,7 @@ class MessageRepositoryImpl @Inject constructor(
         userId: String
     ): Result<Unit> {
         return try {
-            val messageRef = firestore
-                .collection("conversations")
-                .document(conversationId)
-                .collection("messages")
-                .document(messageId)
-
+            val messageRef = messagesRef(conversationId).document(messageId)
             firestore.runTransaction { transaction ->
                 val snapshot = transaction.get(messageRef)
                 val reactions = mutableMapOf<String, String>()

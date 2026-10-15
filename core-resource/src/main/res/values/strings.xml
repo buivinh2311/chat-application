@@ -5,7 +5,7 @@
     <string name="title_menu">Menu</string>
     <string name="add_friend">Thêm bạn bè</string>
     <string name="title_settings">Cài đặt</string>
-    <string name="hint_message">Nhắn tin</string>
+    <string name="hint_message">Tin nhắn</string>
     <string name="label_delete">Xóa</string>
     <string name="label_confirm">Xác nhận</string>
     <string name="title_friend_request">Lời mời kết bạn</string>
@@ -213,4 +213,9 @@
     <string name="description_change_leader">Chuyển quyền quản lý nhóm</string>
     <string name="title_info">Thông tin</string>
     <string name="text_tap_to_remove">Nhấn để gỡ</string>
+    <string name="text_email_can_not_blank">Email không được trống</string>
+    <string name="text_image">[Hình ảnh]</string>
+    <string name="text_video">[Video]</string>
+    <string name="label_reply">Trả lời</string>
+    <string name="text_file">[File] %s</string>
 </resources>

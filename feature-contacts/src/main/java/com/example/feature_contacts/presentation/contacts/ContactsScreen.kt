@@ -4,22 +4,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,15 +26,12 @@ import com.example.core_ui.component.ErrorScreen
 import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
-import com.example.core_utils.isAtBottom
-import com.example.core_utils.isScrolled
 import com.example.feature_contacts.presentation.contacts.component.ContactsCategory
 import com.example.feature_contacts.presentation.contacts.component.ContactsFriendRequest
 import com.example.feature_contacts.presentation.contacts.component.ContactsFriendSent
 import com.example.feature_contacts.presentation.contacts.component.ContactsFriendSuggest
 import com.example.feature_contacts.presentation.contacts.component.ContactsItem
 import com.example.feature_contacts.presentation.contacts.component.ContactsSearchBar
-import com.example.feature_contacts.presentation.contacts.ContactsViewModel
 
 @Composable
 fun ContactsScreen(
@@ -54,25 +46,15 @@ fun ContactsScreen(
         contactsViewModel.loadEverybody()
     }
 
-    val listState = rememberLazyListState()
-    val isScrolled by remember {
-        derivedStateOf { listState.isScrolled }
-    }
-    val isAtBottom by remember {
-        derivedStateOf { listState.isAtBottom }
-    }
-
     Scaffold(
         topBar = {
             AppTopBar(
-                title = stringResource(R.string.title_everybody),
-                isScrolled = isScrolled
+                title = stringResource(R.string.title_everybody)
             )
         },
         bottomBar = {
             AppBottomBar(
                 selectedAction = AppBottomBarAction.CONTACTS,
-                showDivider = !isAtBottom,
                 onBottomActionClick = onBottomActionClick
             )
         }
@@ -97,8 +79,7 @@ fun ContactsScreen(
                     modifier = Modifier.padding(innerPadding),
                     contentPadding = PaddingValues(
                         vertical = AppDimens.Space.Md
-                    ),
-                    state = listState,
+                    )
                 ) {
                     item {
                         ContactsSearchBar()

@@ -31,6 +31,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.core_resource.AppDimens
@@ -43,9 +44,8 @@ fun ConversationDetailTopBar(
     modifier: Modifier = Modifier,
     imageUrl: String?,
     name: String,
-    isScrolled: Boolean,
-    onBackClick: () -> Unit,
-    onOptionClick: () -> Unit
+    onBack: () -> Unit,
+    onOption: () -> Unit
 ) {
     val gradientColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
     val strokeWidth = AppDimens.Divider.Normal
@@ -66,7 +66,7 @@ fun ConversationDetailTopBar(
                 }
             )
             .padding(
-                vertical = AppDimens.Space.Sm,
+                vertical = AppDimens.Space.Xs,
                 horizontal = AppDimens.Space.Md,
             )
             .height(AppDimens.Layout.TopBarHeight),
@@ -74,10 +74,10 @@ fun ConversationDetailTopBar(
     ) {
         AppIconButton(
             icon = AppIcons.Back,
-            color = MaterialTheme.colorScheme.primary,
-            onClick = onBackClick
+            color = MaterialTheme.colorScheme.onSurface,
+            onClick = onBack
         )
-        Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
+        Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
         Box {
             AsyncImage(
@@ -86,7 +86,7 @@ fun ConversationDetailTopBar(
                 placeholder = painterResource(R.drawable.account),
                 error = painterResource(R.drawable.account),
                 modifier = Modifier
-                    .size(AppDimens.ImageSize.Sm)
+                    .size(AppDimens.ImageSize.Xs)
                     .clip(shape = CircleShape),
                 contentScale = ContentScale.Crop
             )
@@ -94,7 +94,7 @@ fun ConversationDetailTopBar(
             Box(
                 modifier = Modifier
                     .align(alignment = Alignment.BottomEnd)
-                    .size(14.dp)
+                    .size(12.dp)
                     .clip(shape = CircleShape)
                     .background(color = Color(0xFF31A24C))
                     .border(
@@ -104,14 +104,15 @@ fun ConversationDetailTopBar(
                     )
             )
         }
-        Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
+        Spacer(modifier = Modifier.width(AppDimens.Space.Md))
 
         Column(
             modifier = Modifier.weight(1f)
         ) {
             Text(
                 text = name,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                overflow = TextOverflow.Ellipsis
             )
 
 //            Text(
@@ -119,25 +120,26 @@ fun ConversationDetailTopBar(
 //                style = MaterialTheme.typography.bodyMedium
 //            )
         }
+        Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
 
         AppIconButton(
             icon = AppIcons.Call,
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.onSecondary,
             onClick = { }
         )
         Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
 
         AppIconButton(
             icon = AppIcons.VideoCall,
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.onSecondary,
             onClick = { }
         )
         Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
 
         AppIconButton(
             icon = AppIcons.Option,
-            color = MaterialTheme.colorScheme.primary,
-            onClick = onOptionClick
+            color = MaterialTheme.colorScheme.onSecondary,
+            onClick = onOption
         )
     }
 }

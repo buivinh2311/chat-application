@@ -6,11 +6,11 @@ import com.example.feature_settings.presentation.changepassword.ChangePasswordSc
 
 @Composable
 fun ChangePasswordRoute(
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     ChangePasswordScreen(
-        onBackClick = onBackClick,
+        onBack = onBack,
         onBottomActionClick = onBottomActionClick
     )
 }

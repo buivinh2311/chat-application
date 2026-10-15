@@ -1,5 +1,6 @@
 package com.example.core_network.dto
 
+import com.example.core_model.ReplyPreview
 import com.example.core_model.enum.MessageStatus
 import com.example.core_model.enum.MessageType
 import com.google.firebase.Timestamp
@@ -20,6 +21,7 @@ data class MessageDto(
     val mimeType: String? = null,
     val status: String = MessageStatus.SENT.name,
     val reactions: Map<String, String> = emptyMap(),
+    val replyPreview: ReplyPreviewDto? = null,
     val createdAt: Timestamp? = null,
     val readBy: List<String> = emptyList()
 )

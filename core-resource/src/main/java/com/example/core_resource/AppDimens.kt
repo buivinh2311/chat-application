@@ -150,7 +150,7 @@ fun dimens(): Dimens {
 
         Layout = Dimens.LayoutDimen(
             TopBarHeight = (48 * scale).dp,
-            BottomBarHeight = (64 * scale).dp,
+            BottomBarHeight = (56 * scale).dp,
             SearchBarHeight = (48 * scale).dp,
             ChatItemHeight = (72 * scale).dp,
             ButtonHeight = (56 * scale).dp,
@@ -158,7 +158,7 @@ fun dimens(): Dimens {
             IconButtonSize = (36 * scale).dp,
             TextFieldHeight = (48 * scale).dp,
             CoverPhotoHeight = (180 * scale).dp,
-            MinTextMessageWidth = (80 * scale).dp
+            MinTextMessageWidth = (56 * scale).dp
         ),
 
         Icon = Dimens.IconDimen(
@@ -173,7 +173,7 @@ fun dimens(): Dimens {
         Divider = Dimens.DividerDimen(
             Thin = (0.5 * scale).dp,
             Normal = (1 * scale).dp,
-            Thick = (2 * scale).dp
+            Thick = (3 * scale).dp
         ),
 
         Border = Dimens.BorderDimen(

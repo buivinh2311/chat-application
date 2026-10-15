@@ -8,13 +8,13 @@ import com.example.feature_search.presentation.SearchScreen
 @Composable
 fun SearchRoute(
     selectedAction: AppBottomBarAction,
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onNavigationToConversationDetail: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     SearchScreen(
         selectedAction = selectedAction,
-        onBackClick = onBackClick,
+        onBack = onBack,
         onNavigateToConversationDetail = onNavigationToConversationDetail,
         onBottomActionClick = onBottomActionClick
     )

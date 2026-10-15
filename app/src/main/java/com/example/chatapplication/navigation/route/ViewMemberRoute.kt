@@ -6,10 +6,10 @@ import com.example.feature_conversation.presentation.viewmember.ViewMemberScreen
 @Composable
 fun ViewMemberRoute(
     conversationId: String,
-    onBackClick: () -> Unit
+    onBack: () -> Unit
 ) {
     ViewMemberScreen(
         conversationId = conversationId,
-        onBackClick = onBackClick
+        onBack = onBack
     )
 }

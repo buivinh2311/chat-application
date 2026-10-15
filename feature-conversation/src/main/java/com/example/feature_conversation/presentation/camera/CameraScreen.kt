@@ -21,7 +21,7 @@ import com.example.feature_conversation.presentation.camera.component.CameraPrev
 @Composable
 fun CameraScreen(
     onSend: (Uri) -> Unit,
-    onBackClick: () -> Unit
+    onBack: () -> Unit
 ) {
     var capturedImage by remember {
         mutableStateOf<CapturedImage?>(null)
@@ -71,7 +71,7 @@ fun CameraScreen(
             onImageCaptured = { image ->
                 capturedImage = image
             },
-            onBackClick = onBackClick
+            onBack = onBack
         )
     } else {
         CameraPermission(
@@ -80,7 +80,7 @@ fun CameraScreen(
                     Manifest.permission.CAMERA
                 )
             },
-            onBackClick = onBackClick
+            onBack = onBack
         )
     }
 }

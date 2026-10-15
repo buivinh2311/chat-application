@@ -6,11 +6,11 @@ import com.example.feature_friend_request.FriendRequestScreen
 
 @Composable
 fun FriendRequestRoute(
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     FriendRequestScreen(
-        onBackClick = onBackClick,
+        onBack = onBack,
         onBottomActionClick = onBottomActionClick
     )
 }

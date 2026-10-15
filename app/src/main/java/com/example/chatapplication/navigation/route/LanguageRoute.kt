@@ -6,11 +6,11 @@ import com.example.feature_settings.presentation.language.LanguageScreen
 
 @Composable
 fun LanguageRoute(
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     LanguageScreen(
-        onBackClick = onBackClick,
+        onBack = onBack,
         onBottomActionClick = onBottomActionClick
     )
 }

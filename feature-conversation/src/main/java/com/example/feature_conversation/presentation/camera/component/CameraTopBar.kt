@@ -15,7 +15,7 @@ import com.example.core_resource.AppIcons
 
 @Composable
 fun CameraTopBar(
-    onBackClick: () -> Unit
+    onBack: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -29,7 +29,7 @@ fun CameraTopBar(
     ) {
 
         IconButton(
-            onClick = onBackClick
+            onClick = onBack
         ) {
             Icon(
                 painter = AppIcons.Close,

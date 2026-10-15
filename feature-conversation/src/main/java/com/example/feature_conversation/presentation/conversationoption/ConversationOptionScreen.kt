@@ -10,11 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,8 +30,6 @@ import com.example.core_ui.component.ErrorScreen
 import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.component.showToast
 import com.example.core_ui.state.UiState
-import com.example.core_utils.isAtBottom
-import com.example.core_utils.isScrolled
 import com.example.feature_conversation.presentation.conversationdetail.ConversationDetailData
 import com.example.feature_conversation.presentation.conversationoption.component.ConversationOptionConnect
 import com.example.feature_conversation.presentation.conversationoption.component.ConversationOptionDirectAction
@@ -49,7 +45,7 @@ import com.example.feature_conversation.presentation.conversationoption.componen
 @Composable
 fun ConversationOptionScreen(
     conversationId: String,
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onChangeBackgroundImage: () -> Unit,
     onTurnOffNotification: () -> Unit,
     onTurnOnNotification: () -> Unit,
@@ -84,18 +80,12 @@ fun ConversationOptionScreen(
         mutableStateOf(false)
     }
 
-    val listState = rememberLazyListState()
-    val isScrolled by remember {
-        derivedStateOf { listState.isScrolled }
-    }
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.title_option),
-                isScrolled = isScrolled,
-                onBackClick = onBackClick
+                onBack = onBack
             )
         }
     ) { innerPadding ->

@@ -1,5 +1,6 @@
 package com.example.feature_conversation.presentation.conversationdetail.component
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,42 +23,42 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
-import com.example.core_model.Group
 import com.example.core_model.Message
 import com.example.core_model.User
 import com.example.core_model.composite.MediaPreview
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import com.example.core_utils.getReactionCount
+import com.example.feature_conversation.domain.model.ConversationDetailAction
+import com.example.feature_conversation.presentation.conversationdetail.ConversationDetailData
 import com.example.share_presentation.FileMessageItem
 import com.example.share_presentation.ImageMessageItem
 import com.example.share_presentation.TextMessageItem
 import com.example.share_presentation.VideoMessageItem
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 @Composable
-fun ConversationDetailGroup(
-    group: Group,
+fun ConversationDetailContent(
+    data: ConversationDetailData,
     currentUser: User,
-    members: Map<String, User>,
+    isConnected: Boolean,
+    isSentRequest: Boolean,
     messages: List<Message>,
     innerPadding: PaddingValues,
-//    onSendFriendRequest: ,
-//    onRecallFriendRequest = ,
-    onMediaClick: (MediaPreview) -> Unit,
-    onDownloadFile: (Message.File) -> Unit,
-    onOpenFile: (Message.File) -> Unit,
-    onReactToMessage: (String, String) -> Unit,
-    onRemoveReaction: (String) -> Unit
+    onAction: (ConversationDetailAction) -> Unit
 ) {
     var selectedMessage by remember {
         mutableStateOf<Message?>(null)
     }
-
     var reactionMessage by remember {
         mutableStateOf<Message?>(null)
     }
 
-    val users = members.values.toList()
+    val users = when (data) {
+        is ConversationDetailData.Direct -> listOf(data.user, currentUser)
+        is ConversationDetailData.Group -> data.users.values.toList()
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -66,15 +68,20 @@ fun ConversationDetailGroup(
                 .fillMaxSize()
                 .padding(innerPadding),
             contentPadding = PaddingValues(
-                vertical = AppDimens.Space.Lg
+                top = AppDimens.Space.Xxl,
+                bottom = AppDimens.Space.Lg
             )
         ) {
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
                 ) {
                     AsyncImage(
-                        model = group.avatarUrl,
+                        model = when (data) {
+                            is ConversationDetailData.Direct -> data.user.avatarUrl
+                            is ConversationDetailData.Group -> data.group.avatarUrl
+                        },
                         contentDescription = null,
                         placeholder = painterResource(R.drawable.account),
                         error = painterResource(R.drawable.account),
@@ -85,15 +92,34 @@ fun ConversationDetailGroup(
                         contentScale = ContentScale.Crop
                     )
                 }
-                Spacer(modifier = Modifier.height(AppDimens.Space.Lg))
 
-//            AppButton(
-//                label = stringResource(R.string.send_group_request),
-//                color = MaterialTheme.colorScheme.primary,
-//                onClick = {
-//
-//                }
-//            )
+                if (isConnected) {
+                    Spacer(modifier = Modifier.height(AppDimens.Space.Xl))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+//                    AppButton(
+//                        modifier = Modifier.fillMaxWidth(0.35f),
+//                        label = if(!isSentRequest)
+//                            stringResource(R.string.add_friend)
+//                        else
+//                            stringResource(R.string.recall),
+//                        color = if(!isSentRequest)
+//                            MaterialTheme.colorScheme.primary
+//                        else
+//                            MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+//                        onClick = {
+//                            if(isSentRequest) {
+//                                onSendFriendRequest(user.id)
+//                            } else {
+//                                onRecallFriendRequest(user.id)
+//                            }
+//                        }
+//                    )
+                    }
+                }
+                Spacer(modifier = Modifier.height(AppDimens.Space.Xxl))
             }
 
             items(
@@ -101,22 +127,13 @@ fun ConversationDetailGroup(
                 key = { index -> messages[index].id }
             ) { index ->
                 val message = messages[index]
-                val prevMessage = if(index != 0) messages[index - 1] else null
+                val prevMessage = if (index != 0) messages[index - 1] else null
                 val isMine = message.senderId == currentUser.id
-                val sender = members[message.senderId]
+                val sender = users.find { it.id == message.senderId }
                 when (message) {
                     is Message.Text -> {
-                        prevMessage?.let {
-                            if(prevMessage.senderId != message.senderId) {
-                                Spacer(modifier = Modifier.height(AppDimens.Space.Md))
-                            } else {
-                                Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
-                            }
-                        }
-
                         TextMessageItem(
-                            reactionCounts = message.getReactionCount(),
-                            text = message.text,
+                            textMessage = message,
                             isMine = isMine,
                             onLongClick = {
                                 selectedMessage = message
@@ -138,7 +155,9 @@ fun ConversationDetailGroup(
                                     sender = sender,
                                     users = users
                                 )
-                                onMediaClick(mediaPreview)
+                                onAction(
+                                    ConversationDetailAction.OpenMedia(mediaPreview)
+                                )
                             },
                             onLongClick = {
                                 selectedMessage = message
@@ -151,9 +170,7 @@ fun ConversationDetailGroup(
 
                     is Message.Video -> {
                         VideoMessageItem(
-                            thumbnailUrl = message.thumbnailUrl,
-                            width = message.width,
-                            height = message.height,
+                            videoMessage = message,
                             reactionCounts = message.getReactionCount(),
                             isMine = isMine,
                             onClick = {
@@ -163,7 +180,9 @@ fun ConversationDetailGroup(
                                     sender = sender,
                                     users = users
                                 )
-                                onMediaClick(mediaPreview)
+                                onAction(
+                                    ConversationDetailAction.OpenMedia(mediaPreview)
+                                )
                             },
                             onLongClick = {
                                 selectedMessage = message
@@ -175,26 +194,19 @@ fun ConversationDetailGroup(
                     }
 
                     is Message.File -> {
-                        prevMessage?.let {
-                            if(prevMessage.senderId != message.senderId) {
-                                Spacer(modifier = Modifier.height(AppDimens.Space.Md))
-                            } else {
-                                Spacer(modifier = Modifier.height(AppDimens.Space.Xs))
-                            }
-                        }
-
-
                         FileMessageItem(
-                            fileName = message.fileName,
-                            fileSize = message.fileSize,
-                            mimeType = message.mimeType,
+                            fileMessage = message,
                             reactionCounts = message.getReactionCount(),
                             isMine = true,
                             onDownloadClick = {
-                                onDownloadFile(message)
+                                onAction(
+                                    ConversationDetailAction.DownloadFile(message)
+                                )
                             },
                             onClick = {
-                                onOpenFile(message)
+                                onAction(
+                                    ConversationDetailAction.OpenFile(message)
+                                )
                             },
                             onLongClick = {
                                 selectedMessage = message
@@ -209,13 +221,15 @@ fun ConversationDetailGroup(
         }
 
         selectedMessage?.let { message ->
+            val sender = users.find { it.id == message.senderId }
             MessagePopup(
                 message = message,
+                senderName = sender?.fullName.orEmpty(),
                 isMine = message.senderId == currentUser.id,
                 onDismiss = {
                     selectedMessage = null
                 },
-                onReactToMessage = onReactToMessage
+                onAction = onAction
             )
         }
 
@@ -232,7 +246,9 @@ fun ConversationDetailGroup(
                     reactionMessage = null
                 },
                 onRemoveReaction = {
-                    onRemoveReaction(message.id)
+                    onAction(
+                        ConversationDetailAction.RemoveReaction(message.id)
+                    )
                 }
             )
         }

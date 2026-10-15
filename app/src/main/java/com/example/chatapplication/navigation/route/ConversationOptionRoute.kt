@@ -6,13 +6,13 @@ import com.example.feature_conversation.presentation.conversationoption.Conversa
 @Composable
 fun ConversationOptionRoute(
     conversationId: String,
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onCreateGroup: (String) -> Unit,
     onViewGroupMember: (String) -> Unit
 ) {
     ConversationOptionScreen(
         conversationId = conversationId,
-        onBackClick = onBackClick,
+        onBack = onBack,
         onBlock = {},
         onUnFriend = {},
         onViewMedia = {},

@@ -38,7 +38,7 @@ import com.example.core_ui.menu.AppBottomBarAction
 
 @Composable
 fun ChangePasswordScreen(
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     var oldPassword by remember {
@@ -70,7 +70,7 @@ fun ChangePasswordScreen(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.title_password),
-                onBackClick = onBackClick
+                onBack = onBack
             )
         }
     ) { innerPadding ->

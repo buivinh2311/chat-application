@@ -29,7 +29,7 @@ import java.io.File
 @Composable
 fun CameraPreview(
     onImageCaptured: (CapturedImage) -> Unit,
-    onBackClick: () -> Unit
+    onBack: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -112,7 +112,7 @@ fun CameraPreview(
             modifier = Modifier.fillMaxSize()
         )
         CameraTopBar(
-            onBackClick = onBackClick
+            onBack = onBack
         )
         CameraBottomBar(
             enabled = !isCapturing,

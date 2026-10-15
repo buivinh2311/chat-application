@@ -65,7 +65,7 @@ fun ImageMessageItem(
         val imageHeight = (originalHeight * scale).dp
         Row(
             modifier = Modifier
-                .fillMaxWidth(0.6f)
+                .fillMaxWidth(0.75f)
                 .align(
                     alignment = if (isMine) Alignment.CenterEnd
                     else Alignment.CenterStart
@@ -74,9 +74,11 @@ fun ImageMessageItem(
                     horizontal = AppDimens.Space.Md
                 )
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            if(isMine) {
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            Box {
                 AsyncImage(
                     model = imageMessage.fileUrl,
                     contentDescription = null,
@@ -87,7 +89,7 @@ fun ImageMessageItem(
                             width = imageWidth,
                             height = imageHeight
                         )
-                        .clip(RoundedCornerShape(AppDimens.Radius.Md))
+                        .clip(RoundedCornerShape(AppDimens.Radius.Sm))
                         .border(
                             width = AppDimens.Border.Thin,
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
@@ -122,15 +124,21 @@ fun ImageMessageItem(
                             .clickable {
                                 onReactionClick()
                             }
-                            .padding(
-                                vertical = AppDimens.Space.Es,
-                                horizontal = AppDimens.Space.Xs + AppDimens.Space.Xxs
-                            ),
-                        horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Xs)
+                            .padding(horizontal = AppDimens.Space.Xs + AppDimens.Space.Xxs),
+                        horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Xxs)
                     ) {
+                        var value = 0
                         imageMessage.getReactionCount().forEach { (emoji, count) ->
+                            value += count
                             Text(
-                                text = "$emoji $count",
+                                text = emoji,
+                                fontSize = 12.5.sp,
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                        }
+                        if(value != 0) {
+                            Text(
+                                text = value.toString(),
                                 fontSize = 12.5.sp,
                                 color = MaterialTheme.colorScheme.outline
                             )

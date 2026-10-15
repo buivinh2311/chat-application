@@ -20,13 +20,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,7 +57,6 @@ import androidx.compose.ui.window.DialogWindowProvider
 import androidx.core.view.WindowCompat
 import coil.compose.AsyncImage
 import com.example.core_model.Message
-import com.example.core_model.User
 import com.example.core_model.composite.MediaPreview
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
@@ -68,17 +65,14 @@ import com.example.core_utils.getReactionCount
 import com.example.core_utils.hideSystemBars
 import com.example.core_utils.showSystemBars
 import com.example.core_utils.toRelativeString
-import kotlin.collections.component1
-import kotlin.collections.component2
+import com.example.feature_conversation.domain.model.ConversationDetailAction
 
 @Composable
 fun ImagePreviewDialog(
     imageMessage: Message.Image,
     imagePreview: MediaPreview,
     onDismiss: () -> Unit,
-    onDownload: () -> Unit,
-    onReactToMessage: (String) -> Unit,
-    onRemoveReaction: () -> Unit
+    onAction: (ConversationDetailAction) -> Unit
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
@@ -241,7 +235,11 @@ fun ImagePreviewDialog(
                     }
 
                     IconButton(
-                        onClick = onDownload
+                        onClick = {
+                            onAction(
+                                ConversationDetailAction.DownloadImage(imageMessage)
+                            )
+                        }
                     ) {
                         Icon(
                             painter = AppIcons.Download,
@@ -329,7 +327,12 @@ fun ImagePreviewDialog(
                                     .clip(CircleShape)
                                     .background(color = Color.White.copy(alpha = 0.1f))
                                     .clickable {
-                                        onReactToMessage(emoji)
+                                        onAction(
+                                            ConversationDetailAction.ReactToMessage(
+                                                messageId = imageMessage.id,
+                                                emoji = emoji
+                                            )
+                                        )
                                     }
                                     .border(
                                         width = AppDimens.Border.Thin,
@@ -358,7 +361,11 @@ fun ImagePreviewDialog(
             onDismissRequest = {
                 showReaction = false
             },
-            onRemoveReaction = onRemoveReaction
+            onRemoveReaction = {
+                onAction(
+                    ConversationDetailAction.RemoveReaction(imageMessage.id)
+                )
+            }
         )
     }
 }

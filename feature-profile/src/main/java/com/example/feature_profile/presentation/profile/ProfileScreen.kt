@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +23,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,16 +38,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
 import com.example.core_resource.R
-import com.example.core_ui.component.AppBottomBar
-import com.example.core_ui.component.AppTopBar
-import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.component.AppIconTextButton
+import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.ErrorScreen
 import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.component.showToast
+import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
-import com.example.core_utils.isAtBottom
-import com.example.core_utils.isScrolled
 import com.example.feature_profile.presentation.profile.component.ProfileAvatar
 import com.example.feature_profile.presentation.profile.component.ProfileInfo
 
@@ -57,7 +52,7 @@ import com.example.feature_profile.presentation.profile.component.ProfileInfo
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     val profileViewModel: ProfileViewModel = hiltViewModel()
@@ -85,11 +80,6 @@ fun ProfileScreen(
         }
     }
 
-    val listState = rememberLazyListState()
-    val isScrolled by remember {
-        derivedStateOf { listState.isScrolled }
-    }
-
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -97,8 +87,7 @@ fun ProfileScreen(
             topBar = {
                 AppTopBar(
                     title = stringResource(R.string.title_edit_profile),
-                    isScrolled = isScrolled,
-                    onBackClick = onBackClick
+                    onBack = onBack
                 )
             }
         ) { innerPadding ->

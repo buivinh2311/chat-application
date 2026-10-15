@@ -8,14 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,25 +24,16 @@ import androidx.compose.ui.res.stringResource
 import com.example.core_model.enum.Language
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
-import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.menu.AppBottomBarAction
-import com.example.core_utils.isAtBottom
-import com.example.core_utils.isScrolled
-import com.example.feature_settings.presentation.language.LanguageOptionItem
 
 @Composable
 fun LanguageScreen(
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     var selectedLanguage by remember {
         mutableStateOf(Language.ENGLISH)
-    }
-
-    val listState = rememberLazyListState()
-    val isScrolled by remember {
-        derivedStateOf { listState.isScrolled }
     }
 
     Scaffold(
@@ -52,8 +41,7 @@ fun LanguageScreen(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.title_language),
-                isScrolled = isScrolled,
-                onBackClick = onBackClick
+                onBack = onBack
             )
         }
     ) { innerPadding ->

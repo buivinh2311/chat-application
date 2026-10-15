@@ -2,6 +2,7 @@ package com.example.core_domain.repository
 
 import android.net.Uri
 import com.example.core_model.Message
+import com.example.core_model.ReplyPreview
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.Flow
 

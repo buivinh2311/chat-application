@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":core-network"))
     implementation(project(":core-domain"))
     implementation(project(":core-utils"))
+    implementation(project(":core-resource"))
 
     implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.androidx.datastore.preferences)

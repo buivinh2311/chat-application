@@ -6,11 +6,11 @@ import com.example.feature_friend_suggestion.FriendSuggestionScreen
 
 @Composable
 fun FriendSuggestionRoute(
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     FriendSuggestionScreen(
-        onBackClick = onBackClick,
+        onBack = onBack,
         onBottomActionClick = onBottomActionClick
     )
 }

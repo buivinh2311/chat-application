@@ -7,10 +7,10 @@ import com.example.feature_conversation.presentation.camera.CameraScreen
 @Composable
 fun CameraRoute(
     onImageCaptured: (Uri) -> Unit,
-    onBackClick: () -> Unit
+    onBack: () -> Unit
 ) {
     CameraScreen(
         onSend = {},
-        onBackClick = onBackClick
+        onBack = onBack
     )
 }

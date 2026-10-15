@@ -107,7 +107,7 @@ object AppIcons {
 
     val File
         @Composable
-        get() = painterResource(R.drawable.ic_link)
+        get() = painterResource(R.drawable.ic_file)
 
     val FontSize
         @Composable
@@ -224,6 +224,10 @@ object AppIcons {
     val QRCode
         @Composable
         get() = painterResource(R.drawable.ic_qr_code)
+
+    val Reply
+        @Composable
+        get() = painterResource(R.drawable.ic_reply)
 
     val Report
         @Composable

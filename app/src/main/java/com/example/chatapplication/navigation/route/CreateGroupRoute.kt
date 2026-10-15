@@ -7,11 +7,11 @@ import com.example.feature_conversation.presentation.creategroup.CreateGroupScre
 fun CreateGroupRoute(
     friendId: String,
     onNavigationToConversationDetail: (String) -> Unit,
-    onBackClick: () -> Unit
+    onBack: () -> Unit
 ) {
     CreateGroupScreen(
         currentFriendId = friendId,
         onNavigationToConversationDetail = onNavigationToConversationDetail,
-        onBackClick = onBackClick
+        onBack = onBack
     )
 }

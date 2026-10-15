@@ -6,11 +6,11 @@ import com.example.feature_profile.presentation.profile.ProfileScreen
 
 @Composable
 fun ProfileRoute(
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     ProfileScreen(
-        onBackClick = onBackClick,
+        onBack = onBack,
         onBottomActionClick = onBottomActionClick
     )
 }

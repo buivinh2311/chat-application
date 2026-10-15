@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CameraPermission(
     onRequestPermission: () -> Unit,
-    onBackClick: () -> Unit
+    onBack: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -46,7 +46,7 @@ fun CameraPermission(
         )
 
         TextButton(
-            onClick = onBackClick
+            onClick = onBack
         ) {
             Text("Cancel")
         }

@@ -117,6 +117,7 @@ fun ProfileInfo(
                 field = stringResource(R.string.title_email),
                 value = email,
                 hint = stringResource(R.string.hint_email),
+                error = stringResource(R.string.text_email_can_not_blank),
                 enable = false,
                 onValueChange = {}
             )

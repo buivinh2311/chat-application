@@ -31,14 +31,18 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.core_model.Message
+import com.example.core_model.User
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
+import com.example.core_resource.R
 import com.example.core_utils.getReactionCount
+import com.example.feature_conversation.domain.model.ConversationDetailAction
 import com.example.feature_conversation.domain.model.MessageAction
 import com.example.feature_conversation.domain.model.MessageActionItem
 import com.example.share_presentation.TextMessageItem
@@ -46,15 +50,16 @@ import com.example.share_presentation.TextMessageItem
 @Composable
 fun MessagePopup(
     message: Message,
+    senderName: String,
     isMine: Boolean,
     onDismiss: () -> Unit,
-    onReactToMessage: (String, String) -> Unit
+    onAction: (ConversationDetailAction) -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                Color.Black.copy(alpha = 0.2f)
+                Color.Black.copy(alpha = 0.4f)
             )
             .clickable(
                 indication = null,
@@ -83,13 +88,23 @@ fun MessagePopup(
 
             ReactionBar(
                 onReactionClick = { emoji ->
-                    onReactToMessage(message.id, emoji)
+                    onAction(
+                        ConversationDetailAction.ReactToMessage(
+                            messageId = message.id,
+                            emoji = emoji
+                        )
+                    )
                     onDismiss()
                 }
             )
             Spacer(modifier = Modifier.height(AppDimens.Space.Md))
 
-            ActionBar()
+            ActionBar(
+                message = message,
+                onAction = onAction,
+                senderName = senderName,
+                onDismiss = onDismiss
+            )
         }
     }
 }
@@ -102,8 +117,7 @@ private fun SelectedMessage(
     when (message) {
         is Message.Text -> {
             TextMessageItem(
-                reactionCounts = message.getReactionCount(),
-                text = message.text,
+                textMessage = message,
                 isMine = isMine,
                 onLongClick = {},
                 onReactionClick = {}
@@ -149,13 +163,17 @@ fun ReactionBar(
 
 @Composable
 fun ActionBar(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    message: Message,
+    senderName: String,
+    onDismiss: () -> Unit,
+    onAction: (ConversationDetailAction) -> Unit
 ) {
     val actions = listOf(
         MessageActionItem(
-            icon = AppIcons.Report,
-            tint = MaterialTheme.colorScheme.primary,
-            title = "chia se",
+            icon = AppIcons.Reply,
+            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+            title = stringResource(R.string.label_reply),
             action = MessageAction.REPLY
         ),
         MessageActionItem(
@@ -207,10 +225,38 @@ fun ActionBar(
                 modifier = modifier
                     .clip(RoundedCornerShape(AppDimens.Space.Sm))
                     .clickable {
-                        when (item.action) {
-                            MessageAction.REPLY -> {}
-                            else -> {}
+                        when(item.action) {
+                            MessageAction.REPLY -> {
+                                onAction(
+                                    ConversationDetailAction.Reply(message, senderName)
+                                )
+                            }
+
+                            MessageAction.FORWARD -> {
+                                onAction(
+                                    ConversationDetailAction.Reply(message, senderName)
+                                )
+                            }
+
+                            MessageAction.COPY -> {
+                                onAction(
+                                    ConversationDetailAction.Reply(message, senderName)
+                                )
+                            }
+
+                            MessageAction.RECALL -> {
+
+                            }
+
+                            MessageAction.PIN -> {
+
+                            }
+
+                            MessageAction.DELETE -> {
+
+                            }
                         }
+                        onDismiss()
                     }
                     .padding(AppDimens.Space.Md),
                 verticalArrangement = Arrangement.spacedBy(AppDimens.Space.Xs),

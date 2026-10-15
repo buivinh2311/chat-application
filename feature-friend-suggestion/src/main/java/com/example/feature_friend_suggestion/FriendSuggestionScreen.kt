@@ -17,14 +17,14 @@ import com.example.share_presentation.FriendSuggestion
 
 @Composable
 fun FriendSuggestionScreen(
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
     Scaffold(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.title_friend_suggetion),
-                onBackClick = onBackClick
+                onBack = onBack
             )
         },
         bottomBar = {

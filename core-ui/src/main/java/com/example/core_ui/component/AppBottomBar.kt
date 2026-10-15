@@ -34,24 +34,21 @@ import com.example.core_ui.menu.AppBottomBarItem
 fun AppBottomBar(
     modifier: Modifier = Modifier,
     selectedAction: AppBottomBarAction,
-    showDivider: Boolean = false,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
-    val gradientColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+    val gradientColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)
     val strokeWidth = AppDimens.Divider.Normal
     BottomAppBar(
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding()
             .drawBehind {
-                if (showDivider) {
-                    drawLine(
-                        color = gradientColor,
-                        start = Offset(0f, 0f),
-                        end = Offset(size.width, 0f),
-                        strokeWidth = strokeWidth.toPx()
-                    )
-                }
+                drawLine(
+                    color = gradientColor,
+                    start = Offset(0f, 0f),
+                    end = Offset(size.width, 0f),
+                    strokeWidth = strokeWidth.toPx()
+                )
             }
             .height(AppDimens.Layout.BottomBarHeight),
         containerColor = MaterialTheme.colorScheme.surface,

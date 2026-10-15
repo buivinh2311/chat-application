@@ -83,7 +83,7 @@ fun ButtonToggleItem(
 
             Text(
                 text = text,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodySmall
             )
         }
 

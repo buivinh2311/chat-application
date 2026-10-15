@@ -43,7 +43,7 @@ import com.example.share_presentation.SearchItem
 @Composable
 fun SearchScreen (
     selectedAction: AppBottomBarAction,
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onNavigateToConversationDetail: (String) -> Unit,
     onBottomActionClick: (AppBottomBarAction) -> Unit
 ) {
@@ -91,9 +91,9 @@ fun SearchScreen (
         modifier = Modifier.fillMaxSize(),
         topBar = {
             SearchTopBar(
-                onBackClick = {
+                onBack = {
                     keyboardController?.hide()
-                    onBackClick()
+                    onBack()
                 },
                 onQueryChange = {
                     keyword = it

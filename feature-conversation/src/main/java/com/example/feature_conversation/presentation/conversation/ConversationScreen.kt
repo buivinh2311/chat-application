@@ -2,7 +2,6 @@ package com.example.feature_conversation.presentation.conversation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,17 +15,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,8 +41,6 @@ import com.example.core_ui.component.ErrorScreen
 import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
-import com.example.core_utils.isAtBottom
-import com.example.core_utils.isScrolled
 import com.example.feature_conversation.presentation.conversation.component.ConversationSearchBar
 import com.example.share_presentation.ConversationItem
 
@@ -64,28 +57,18 @@ fun ConversationScreen(
         conversationViewModel.loadConversations()
     }
 
-    val listState = rememberLazyListState()
-    val isScrolled by remember {
-        derivedStateOf { listState.isScrolled }
-    }
-    val isAtBottom by remember {
-        derivedStateOf { listState.isAtBottom }
-    }
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.title_app_name),
                 titleColor = MaterialTheme.colorScheme.primary,
-                isScrolled = isScrolled,
                 onScan = { }
             )
         },
         bottomBar = {
             AppBottomBar(
                 selectedAction = AppBottomBarAction.CHAT,
-                showDivider = !isAtBottom,
                 onBottomActionClick = onBottomActionClick
             )
         }
@@ -108,7 +91,6 @@ fun ConversationScreen(
                 val conversations = data.conversationWithInfos
                 LazyColumn(
                     modifier = Modifier.padding(innerPadding),
-                    state = listState,
                     contentPadding = PaddingValues(
                         vertical = AppDimens.Space.Md
                     )

@@ -36,7 +36,7 @@ import com.example.core_ui.component.AppIconButton
 
 @Composable
 fun SearchTopBar(
-    onBackClick: () -> Unit,
+    onBack: () -> Unit,
     onQueryChange: (String) -> Unit
 ) {
     var keyword by remember {
@@ -65,7 +65,7 @@ fun SearchTopBar(
         AppIconButton(
             icon = AppIcons.Back,
             color = MaterialTheme.colorScheme.onPrimary,
-            onClick = onBackClick
+            onClick = onBack
         )
         Spacer(modifier = Modifier.width(AppDimens.Space.Md))
 

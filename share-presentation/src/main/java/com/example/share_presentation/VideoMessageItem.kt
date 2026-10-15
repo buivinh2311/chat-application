@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.core_model.Message
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import kotlin.collections.component1
@@ -35,9 +36,7 @@ import kotlin.collections.component2
 
 @Composable
 fun VideoMessageItem(
-    thumbnailUrl: String,
-    width: Int,
-    height: Int,
+    videoMessage: Message.Video,
     reactionCounts: Map<String, Int>,
     isMine: Boolean,
     onClick: () -> Unit,
@@ -47,11 +46,11 @@ fun VideoMessageItem(
     BoxWithConstraints(
         modifier = Modifier.fillMaxWidth()
     ) {
-        val maxImageWidth = maxWidth * 0.7f
+        val maxImageWidth = maxWidth * 0.75f
         val maxImageHeight = 400.dp
 
-        val originalWidth = width.toFloat()
-        val originalHeight = height.toFloat()
+        val originalWidth = videoMessage.width.toFloat()
+        val originalHeight = videoMessage.height.toFloat()
 
         val widthRatio = maxImageWidth.value / originalWidth
         val heightRatio = maxImageHeight.value / originalHeight
@@ -66,7 +65,7 @@ fun VideoMessageItem(
         val imageHeight = (originalHeight * scale).dp
         Row(
             modifier = Modifier
-                .fillMaxWidth(0.6f)
+                .fillMaxWidth(0.7f)
                 .align(
                     alignment = if (isMine) Alignment.CenterEnd
                     else Alignment.CenterStart
@@ -75,11 +74,13 @@ fun VideoMessageItem(
                     horizontal = AppDimens.Space.Md
                 )
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            if(isMine) {
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            Box {
                 AsyncImage(
-                    model = thumbnailUrl,
+                    model = videoMessage.thumbnailUrl,
                     contentDescription = null,
                     placeholder = painterResource(R.drawable.ic_image),
                     error = painterResource(R.drawable.ic_image),
@@ -88,7 +89,7 @@ fun VideoMessageItem(
                             width = imageWidth,
                             height = imageHeight
                         )
-                        .clip(RoundedCornerShape(AppDimens.Radius.Xl))
+                        .clip(RoundedCornerShape(AppDimens.Radius.Sm))
                         .border(
                             width = AppDimens.Border.Thin,
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
@@ -123,15 +124,21 @@ fun VideoMessageItem(
                             .clickable {
                                 onReactionClick()
                             }
-                            .padding(
-                                vertical = AppDimens.Space.Es,
-                                horizontal = AppDimens.Space.Xs + AppDimens.Space.Xxs
-                            ),
-                        horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Xs)
+                            .padding(horizontal = AppDimens.Space.Xs + AppDimens.Space.Xxs),
+                        horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Xxs)
                     ) {
+                        var value = 0
                         reactionCounts.forEach { (emoji, count) ->
+                            value += count
                             Text(
-                                text = "$emoji $count",
+                                text = emoji,
+                                fontSize = 12.5.sp,
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                        }
+                        if(value != 0) {
+                            Text(
+                                text = value.toString(),
                                 fontSize = 12.5.sp,
                                 color = MaterialTheme.colorScheme.outline
                             )

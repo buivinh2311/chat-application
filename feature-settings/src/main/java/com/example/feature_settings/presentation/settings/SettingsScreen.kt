@@ -6,19 +6,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.enum.DarkModeState
+import com.example.core_model.enum.SettingOptionAction
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import com.example.core_ui.component.AppBottomBar
@@ -34,10 +32,6 @@ import com.example.feature_settings.presentation.settings.component.SettingsInte
 import com.example.feature_settings.presentation.settings.component.SettingsNotificationAndSound
 import com.example.feature_settings.presentation.settings.component.SettingsPersonalAndSecurity
 import com.example.feature_settings.presentation.settings.component.SettingsStorageAndData
-import com.example.feature_settings.presentation.settings.SettingsEvent
-import com.example.core_model.enum.SettingOptionAction
-import com.example.core_utils.isAtBottom
-import com.example.core_utils.isScrolled
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
@@ -64,25 +58,15 @@ fun SettingsScreen(
         }
     }
 
-    val listState = rememberLazyListState()
-    val isScrolled by remember {
-        derivedStateOf { listState.isScrolled }
-    }
-    val isAtBottom by remember {
-        derivedStateOf { listState.isAtBottom }
-    }
-
     Scaffold(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.title_individual),
-                isScrolled = isScrolled
             )
         },
         bottomBar = {
             AppBottomBar(
                 selectedAction = AppBottomBarAction.PERSON,
-                showDivider = !isAtBottom,
                 onBottomActionClick = onBottomActionClick
             )
         }
@@ -110,8 +94,7 @@ fun SettingsScreen(
                 }
                 LazyColumn(
                     modifier = Modifier.padding(innerPadding),
-                    contentPadding = PaddingValues(AppDimens.Space.Md),
-                    state = listState
+                    contentPadding = PaddingValues(AppDimens.Space.Md)
                 ) {
                     item {
                         SettingsAccount(

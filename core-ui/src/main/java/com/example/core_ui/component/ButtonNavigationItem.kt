@@ -85,7 +85,7 @@ fun ButtonNavigateItem(
 
             Text(
                 text = text,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodySmall,
                 color = textColor ?: MaterialTheme.colorScheme.onSurface
             )
         }
