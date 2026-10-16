@@ -52,8 +52,7 @@ import com.example.feature_profile.presentation.profile.component.ProfileInfo
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    onBack: () -> Unit,
-    onBottomActionClick: (AppBottomBarAction) -> Unit
+    onBack: () -> Unit
 ) {
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
@@ -135,7 +134,8 @@ fun ProfileScreen(
                                 .padding(
                                     start = AppDimens.Space.Lg,
                                     end = AppDimens.Space.Md,
-                                    bottom = AppDimens.Space.Sm
+                                    top = AppDimens.Space.Xs,
+                                    bottom = AppDimens.Space.Xs
                                 ),
                             verticalAlignment = Alignment.CenterVertically
                         ) {

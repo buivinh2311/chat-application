@@ -191,7 +191,7 @@ fun ProfileInfo(
                 ) {
                     Text(
                         text = selectedDate?.toDisplayString() ?: "dd/MM/yyyy",
-                        style = typography.titleLarge,
+                        style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSecondary,
                         modifier = Modifier.weight(1f)
                     )
@@ -223,7 +223,7 @@ fun ProfileInfo(
                     },
                     minLines = 6,
                     maxLines = 6,
-                    textStyle = typography.bodyLarge.copy(
+                    textStyle = typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSecondary
                     ),
                     modifier = Modifier
@@ -246,7 +246,7 @@ fun ProfileInfo(
                             if (bio.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.hint_bio),
-                                    style = typography.bodyLarge,
+                                    style = typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSecondary.copy(
                                         alpha = 0.7f
                                     )

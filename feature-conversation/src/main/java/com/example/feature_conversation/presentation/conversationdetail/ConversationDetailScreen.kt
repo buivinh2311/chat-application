@@ -1,6 +1,9 @@
 package com.example.feature_conversation.presentation.conversationdetail
 
+import android.R.id.message
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipData.newPlainText
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -8,11 +11,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.Message
@@ -31,6 +39,8 @@ import com.example.feature_conversation.presentation.conversationdetail.componen
 import com.example.feature_conversation.presentation.conversationdetail.component.ConversationDetailTopBar
 import com.example.feature_conversation.presentation.conversationdetail.component.ImagePreviewDialog
 import com.example.feature_conversation.presentation.conversationdetail.component.VideoPreviewDialog
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
@@ -47,6 +57,8 @@ fun ConversationDetailScreen(
     }
 
     val context = LocalContext.current
+    val clipboard = LocalClipboard.current
+    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         conversationDetailViewModel.event.collect { event ->
             when (event) {
@@ -220,6 +232,16 @@ fun ConversationDetailScreen(
                 replyPreview = null
             }
 
+            is ConversationDetailAction.Copy -> {
+                coroutineScope.launch {
+                    clipboard.setClipEntry(
+                        ClipEntry(
+                            newPlainText("message", action.text)
+                        )
+                    )
+                }
+            }
+
             // Request
             is ConversationDetailAction.SendFriendRequest -> {
 
@@ -232,16 +254,6 @@ fun ConversationDetailScreen(
             is ConversationDetailAction.StickerSelected -> {
 
             }
-        }
-    }
-
-    val onMessageAction: (MessageAction, Message, String) -> Unit = { action, message, senderName ->
-        when (action) {
-            MessageAction.REPLY -> {
-
-            }
-
-            else -> {}
         }
     }
 

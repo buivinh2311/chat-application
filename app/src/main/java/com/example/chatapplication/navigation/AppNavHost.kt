@@ -220,8 +220,7 @@ fun AppNavHost(
 
         composable(route = AppRoute.PROFILE) {
             ProfileRoute(
-                onBack = onBack,
-                onBottomActionClick = onBottomActionClick
+                onBack = onBack
             )
         }
 

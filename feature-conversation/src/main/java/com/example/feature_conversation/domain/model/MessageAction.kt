@@ -4,6 +4,7 @@ enum class MessageAction {
     REPLY,
     FORWARD,
     COPY,
+    DOWNLOAD,
     RECALL,
     PIN,
     DELETE

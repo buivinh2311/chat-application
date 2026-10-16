@@ -154,21 +154,21 @@ val AppTypography = Typography(
 
     labelLarge = TextStyle(
         fontFamily = Inter,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
         lineHeight = 20.sp
     ),
 
     labelMedium = TextStyle(
         fontFamily = Inter,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Normal,
         fontSize = 12.5.sp,
         lineHeight = 16.sp
     ),
 
     labelSmall = TextStyle(
         fontFamily = Inter,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Normal,
         fontSize = 11.sp,
         lineHeight = 14.sp
     )

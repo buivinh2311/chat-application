@@ -89,11 +89,15 @@ fun ImageMessageItem(
                             width = imageWidth,
                             height = imageHeight
                         )
-                        .clip(RoundedCornerShape(AppDimens.Radius.Sm))
+                        .clip(RoundedCornerShape(
+                            AppDimens.Radius.Sm + AppDimens.Radius.Xxs
+                        ))
                         .border(
                             width = AppDimens.Border.Thin,
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                            shape = RoundedCornerShape(AppDimens.Radius.Sm)
+                            shape = RoundedCornerShape(
+                                AppDimens.Radius.Sm + AppDimens.Radius.Xxs
+                            )
                         )
                         .combinedClickable(
                             onClick = onClick,

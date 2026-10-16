@@ -65,7 +65,7 @@ fun AppTextField(
             onValueChange = onValueChange,
             singleLine = true,
             enabled = enable,
-            textStyle = typography.bodyLarge.copy(
+            textStyle = typography.bodyMedium.copy(
                 color = MaterialTheme.colorScheme.onSecondary
             ),
             modifier = Modifier
@@ -91,7 +91,7 @@ fun AppTextField(
                     if (value.isEmpty()) {
                         Text(
                             text = hint,
-                            style = typography.bodyLarge,
+                            style = typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSecondary.copy(
                                 alpha = 0.7f
                             )

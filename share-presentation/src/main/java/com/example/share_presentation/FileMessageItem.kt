@@ -68,11 +68,15 @@ fun FileMessageItem(
             ) {
                 Row(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(AppDimens.Radius.Sm))
+                        .clip(RoundedCornerShape(
+                            AppDimens.Radius.Sm + AppDimens.Radius.Xxs
+                        ))
                         .border(
                             width = AppDimens.Border.Thin,
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                            shape = RoundedCornerShape(AppDimens.Radius.Sm)
+                            shape = RoundedCornerShape(
+                                AppDimens.Radius.Sm + AppDimens.Radius.Xxs
+                            )
                         )
                         .align(
                             alignment = if (isMine) Alignment.CenterEnd
@@ -133,24 +137,6 @@ fun FileMessageItem(
 
                         }
                     }
-//                    Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
-//
-//                    Box(
-//                        modifier = Modifier
-//                            .clip(CircleShape)
-//                            .size(AppDimens.Ripple.Lg)
-//                            .background(Color.Gray.copy(alpha = 0.3f))
-//                            .clickable {
-//                                onDownloadClick()
-//                            },
-//                        contentAlignment = Alignment.Center
-//                    ) {
-//                        Icon(
-//                            painter = AppIcons.Down,
-//                            contentDescription = "Download file",
-//                            modifier = Modifier.size(AppDimens.Icon.Sm)
-//                        )
-//                    }
                 }
 
                 if(reactionCounts.isNotEmpty()) {

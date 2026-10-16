@@ -182,12 +182,21 @@ fun ActionBar(
             title = "chia se",
             action = MessageAction.REPLY
         ),
-        MessageActionItem(
-            icon = AppIcons.Report,
-            tint = MaterialTheme.colorScheme.primary,
-            title = "chia se",
-            action = MessageAction.REPLY
-        ),
+        if(message is Message.Text) {
+            MessageActionItem(
+                icon = AppIcons.Report,
+                tint = MaterialTheme.colorScheme.primary,
+                title = stringResource(R.string.label_copy),
+                action = MessageAction.COPY
+            )
+        } else {
+            MessageActionItem(
+                icon = AppIcons.Download,
+                tint = MaterialTheme.colorScheme.primary,
+                title = stringResource(R.string.label_download),
+                action = MessageAction.DOWNLOAD
+            )
+        },
         MessageActionItem(
             icon = AppIcons.Report,
             tint = MaterialTheme.colorScheme.primary,
@@ -239,9 +248,21 @@ fun ActionBar(
                             }
 
                             MessageAction.COPY -> {
-                                onAction(
-                                    ConversationDetailAction.Reply(message, senderName)
-                                )
+                                if(message is Message.Text) {
+                                    onAction(
+                                        ConversationDetailAction.Copy(message.text)
+                                    )
+                                }
+                            }
+
+                            MessageAction.DOWNLOAD -> {
+                                if(message is Message.Image) {
+                                    ConversationDetailAction.DownloadImage(message)
+                                } else if(message is Message.Video) {
+                                    ConversationDetailAction.DownloadVideo(message)
+                                } else if(message is Message.File) {
+                                    ConversationDetailAction.DownloadFile(message)
+                                }
                             }
 
                             MessageAction.RECALL -> {
@@ -266,7 +287,7 @@ fun ActionBar(
                     painter = item.icon,
                     contentDescription = null,
                     tint = item.tint,
-                    modifier = Modifier.size(AppDimens.Icon.Sm)
+                    modifier = Modifier.size(AppDimens.Icon.Md)
                 )
 
                 Text(

@@ -218,4 +218,6 @@
     <string name="text_video">[Video]</string>
     <string name="label_reply">Trả lời</string>
     <string name="text_file">[File] %s</string>
+    <string name="label_copy">Sao chép</string>
+    <string name="label_download">Tải xuống</string>
 </resources>

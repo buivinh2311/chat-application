@@ -78,4 +78,8 @@ sealed class ConversationDetailAction {
         val message: Message,
         val senderName: String
     ): ConversationDetailAction()
+
+    data class Copy(
+        val text: String
+    ): ConversationDetailAction()
 }

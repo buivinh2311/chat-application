@@ -48,6 +48,7 @@ data class Dimens(
     )
 
     data class RadiusDimen(
+        val Xxs: Dp,
         val Xs: Dp,
         val Sm: Dp,
         val Md: Dp,
@@ -133,6 +134,7 @@ fun dimens(): Dimens {
         ),
 
         Radius = Dimens.RadiusDimen(
+            Xxs = (2 * scale).dp,
             Xs = (4 * scale).dp,
             Sm = (8 * scale).dp,
             Md = (12 * scale).dp,

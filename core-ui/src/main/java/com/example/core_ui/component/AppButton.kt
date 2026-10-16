@@ -42,7 +42,7 @@ fun AppButton(
         ) {
             Text(
                 text = label,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.labelLarge,
                 color = labelColor
             )
         }

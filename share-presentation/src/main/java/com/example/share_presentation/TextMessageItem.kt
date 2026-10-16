@@ -76,7 +76,9 @@ fun TextMessageItem(
                             else Alignment.CenterStart
                         )
                         .widthIn(min = AppDimens.Layout.MinTextMessageWidth)
-                        .clip(RoundedCornerShape(AppDimens.Radius.Sm))
+                        .clip(RoundedCornerShape(
+                            AppDimens.Radius.Sm + AppDimens.Radius.Xxs
+                        ))
                         .then(
                             if (isMine) {
                                 Modifier.background(
@@ -94,7 +96,9 @@ fun TextMessageItem(
                         .border(
                             width = AppDimens.Border.Thin,
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                            shape = RoundedCornerShape(AppDimens.Radius.Sm)
+                            shape = RoundedCornerShape(
+                                AppDimens.Radius.Sm + AppDimens.Radius.Xxs
+                            )
                         )
                         .pointerInput(Unit) {
                             detectTapGestures(
