@@ -6,14 +6,16 @@ import com.example.feature_conversation.presentation.conversationdetail.Conversa
 @Composable
 fun ConversationDetailRoute(
     conversationId: String,
-    onOption: () -> Unit,
+    onOption: (String) -> Unit,
     onOpenCamera: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onForward: (String, String) -> Unit
 ) {
     ConversationDetailScreen(
         conversationId = conversationId,
         onBack = onBack,
         onOption = onOption,
-        onOpenCamera = onOpenCamera
+        onOpenCamera = onOpenCamera,
+        onForward = onForward
     )
 }

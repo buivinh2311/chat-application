@@ -3,7 +3,6 @@ package com.example.feature_conversation.presentation.creategroup
 import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -24,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.User
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
+import com.example.core_ui.component.AppSearchBar
 import com.example.core_ui.component.AppTopBar
 import com.example.core_ui.component.ErrorScreen
 import com.example.core_ui.component.LoadingScreen
@@ -31,9 +31,8 @@ import com.example.core_ui.component.showToast
 import com.example.core_ui.state.UiState
 import com.example.core_utils.uriToFile
 import com.example.feature_conversation.presentation.creategroup.component.CreateGroupInfo
-import com.example.feature_conversation.presentation.creategroup.component.PickGroupMemberBottomBar
-import com.example.feature_conversation.presentation.creategroup.component.PickGroupMemberItem
-import com.example.feature_conversation.presentation.creategroup.component.PickGroupMemberSearchBar
+import com.example.feature_conversation.presentation.creategroup.component.CreateGroupMemberBottomBar
+import com.example.share_presentation.PickContactItem
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
@@ -117,13 +116,8 @@ fun CreateGroupScreen(
                         .padding(innerPadding)
                         .fillMaxSize()
                 ) {
-                    LazyColumn(
-                        modifier = Modifier.weight(1f),
-                        contentPadding = PaddingValues(
-                            vertical = AppDimens.Space.Lg
-                        )
-                    ) {
-                        item {
+                    LazyColumn(modifier = Modifier.weight(1f)) {
+                        stickyHeader {
                             CreateGroupInfo(
                                 selectedAvatarUri = selectedAvatarUri?.toString(),
                                 groupName = groupName,
@@ -131,17 +125,17 @@ fun CreateGroupScreen(
                                 onSelectAvatar = { uri ->
                                     selectedAvatarUri = uri
                                 },
-                                onGroupNameChange =  { name ->
+                                onGroupNameChange = { name ->
                                     groupName = name
                                 }
                             )
 
-                            PickGroupMemberSearchBar(
+                            AppSearchBar(
                                 onSearch = { keyword ->
                                     createGroupViewModel.searchFriend(keyword, friends)
                                 }
                             )
-                            Spacer(modifier = Modifier.height(AppDimens.Space.Sm))
+                            Spacer(modifier = Modifier.height(AppDimens.Space.Md))
                         }
 
                         items(
@@ -150,11 +144,11 @@ fun CreateGroupScreen(
                         ) { index ->
                             val friend = friends[index]
                             val isChecked = groupMember.any { it.id == friend.id }
-                            PickGroupMemberItem(
+                            PickContactItem(
                                 name = friend.fullName,
                                 avatarUrl = friend.avatarUrl,
                                 onCheckedChange = {
-                                    if(isChecked) {
+                                    if (isChecked) {
                                         createGroupViewModel.removeGroupMember(friend)
                                     } else {
                                         createGroupViewModel.addGroupMember(friend)
@@ -162,22 +156,29 @@ fun CreateGroupScreen(
                                 },
                                 checked = isChecked
                             )
+                            Spacer(
+                                modifier = Modifier.height(
+                                    AppDimens.Space.Xs + AppDimens.Space.Xxs
+                                )
+                            )
                         }
                     }
 
-                    PickGroupMemberBottomBar(
-                        groupMember = groupMember,
-                        onRemoveMember = { member ->
-                            createGroupViewModel.removeGroupMember(member)
-                        },
-                        onCreateGroup = {
-                            createGroupViewModel.createGroup(
-                                name = groupName,
-                                avatar = selectedAvatarUri?.let { uriToFile(context, it) },
-                                otherUser = groupMember
-                            )
-                        }
-                    )
+                    if(groupMember.isNotEmpty()) {
+                        CreateGroupMemberBottomBar(
+                            groupMember = groupMember,
+                            onRemoveMember = { member ->
+                                createGroupViewModel.removeGroupMember(member)
+                            },
+                            onCreateGroup = {
+                                createGroupViewModel.createGroup(
+                                    name = groupName,
+                                    avatar = selectedAvatarUri?.let { uriToFile(context, it) },
+                                    otherUser = groupMember
+                                )
+                            }
+                        )
+                    }
                 }
             }
         }

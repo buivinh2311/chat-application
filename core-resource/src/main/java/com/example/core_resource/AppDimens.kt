@@ -120,13 +120,13 @@ fun dimens(): Dimens {
 
         ButtonSize = Dimens.ButtonSizeDimen(
             Xs = (16 * scale).dp,
-            Sm = (32 * scale).dp,
+            Sm = (40 * scale).dp,
             Md = (48 * scale).dp
         ),
 
         ImageSize = Dimens.ImageSizeDimen(
             Xs = (40 * scale).dp,
-            Sm = (48 * scale).dp,
+            Sm = (52 * scale).dp,
             Md = (56 * scale).dp,
             Lg = (64 * scale).dp,
             Xl = (72 * scale).dp,
@@ -154,7 +154,7 @@ fun dimens(): Dimens {
             TopBarHeight = (48 * scale).dp,
             BottomBarHeight = (56 * scale).dp,
             SearchBarHeight = (48 * scale).dp,
-            ChatItemHeight = (72 * scale).dp,
+            ChatItemHeight = (64 * scale).dp,
             ButtonHeight = (56 * scale).dp,
             StatusWidth = (80 * scale).dp,
             IconButtonSize = (36 * scale).dp,

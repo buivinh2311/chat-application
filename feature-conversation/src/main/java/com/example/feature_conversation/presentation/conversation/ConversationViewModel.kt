@@ -30,7 +30,6 @@ class ConversationViewModel @Inject constructor(
         viewModelScope.launch {
             observeConversationsWithInfoUseCase()
                 .catch {
-                    Log.d("ConversationLoad", it.toString())
                     _uiState.value = UiState.Error
                 }
                 .collect { state ->

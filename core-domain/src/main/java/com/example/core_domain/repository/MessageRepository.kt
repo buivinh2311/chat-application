@@ -12,6 +12,11 @@ interface MessageRepository {
         pageSize: Int = 30
     ): Flow<List<Message>>
 
+    suspend fun getMessageById(
+        conversationId: String,
+        messageId: String
+    ): Result<Message?>
+
     suspend fun loadMoreMessagesByConversationId(
         conversationId: String,
         lastVisibleTimestamp: Timestamp,

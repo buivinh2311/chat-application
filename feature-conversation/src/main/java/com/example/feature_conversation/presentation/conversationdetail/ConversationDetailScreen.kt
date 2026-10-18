@@ -47,8 +47,9 @@ import kotlinx.coroutines.launch
 fun ConversationDetailScreen(
     conversationId: String,
     onBack: () -> Unit,
-    onOption: () -> Unit,
-    onOpenCamera: () -> Unit
+    onOption: (String) -> Unit,
+    onOpenCamera: () -> Unit,
+    onForward: (String, String) -> Unit
 ) {
     val conversationDetailViewModel: ConversationDetailViewModel = hiltViewModel()
     val uiState by conversationDetailViewModel.uiState.collectAsStateWithLifecycle()
@@ -228,6 +229,10 @@ fun ConversationDetailScreen(
                 )
             }
 
+            is ConversationDetailAction.Forward -> {
+                onForward(conversationId, action.messageId)
+            }
+
             is ConversationDetailAction.CloseReplyPreview -> {
                 replyPreview = null
             }
@@ -293,7 +298,9 @@ fun ConversationDetailScreen(
                                 -> conversationDetailData.group.name
                         },
                         onBack = onBack,
-                        onOption = onOption
+                        onOption = {
+                            onOption(conversationId)
+                        }
                     )
                 },
                 bottomBar = {

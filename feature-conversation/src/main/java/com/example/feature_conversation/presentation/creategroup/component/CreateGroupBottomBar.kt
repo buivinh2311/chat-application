@@ -23,6 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -35,17 +37,28 @@ import com.example.core_resource.AppIcons
 import com.example.core_resource.R
 
 @Composable
-fun PickGroupMemberBottomBar(
+fun CreateGroupMemberBottomBar(
     groupMember: List<User>,
     onRemoveMember: (User) -> Unit,
     onCreateGroup: () -> Unit
 ) {
+    val gradientColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)
+    val strokeWidth = AppDimens.Divider.Normal
+
     Box {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(end = AppDimens.Space.Lg),
+                .background(MaterialTheme.colorScheme.surface)
+                .drawBehind {
+                    drawLine(
+                        color = gradientColor,
+                        start = Offset(0f, 0f),
+                        end = Offset(size.width, 0f),
+                        strokeWidth = strokeWidth.toPx()
+                    )
+                }
+                .padding(end = AppDimens.Space.Md),
             verticalAlignment = Alignment.CenterVertically
         ) {
             LazyRow(
@@ -53,7 +66,7 @@ fun PickGroupMemberBottomBar(
                 verticalAlignment = Alignment.CenterVertically,
                 contentPadding = PaddingValues(
                     vertical = AppDimens.Space.Sm,
-                    horizontal = AppDimens.Space.Lg
+                    horizontal = AppDimens.Space.Md
                 ),
                 horizontalArrangement = Arrangement.spacedBy(AppDimens.Space.Md)
             ) {
@@ -107,8 +120,8 @@ fun PickGroupMemberBottomBar(
                 modifier = Modifier
                     .padding(
                         start = AppDimens.Space.Lg,
-                        top = AppDimens.Space.Sm,
-                        bottom = AppDimens.Space.Sm
+                        top = AppDimens.Space.Md,
+                        bottom = AppDimens.Space.Md
                     )
                     .size(AppDimens.ButtonSize.Md)
                     .aspectRatio(1f)
@@ -127,21 +140,5 @@ fun PickGroupMemberBottomBar(
                 )
             }
         }
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(AppDimens.Space.Sm)
-                .align(Alignment.TopCenter)
-                .offset(y = -AppDimens.Space.Sm)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color.Black.copy(alpha = 0.08f)
-                        )
-                    )
-                )
-        )
     }
 }

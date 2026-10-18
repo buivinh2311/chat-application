@@ -16,6 +16,7 @@ import com.example.chatapplication.navigation.route.ConversationOptionRoute
 import com.example.chatapplication.navigation.route.ConversationRoute
 import com.example.chatapplication.navigation.route.CreateGroupRoute
 import com.example.chatapplication.navigation.route.ForgotPasswordRoute
+import com.example.chatapplication.navigation.route.ForwardRoute
 import com.example.chatapplication.navigation.route.FriendRequestRoute
 import com.example.chatapplication.navigation.route.FriendSuggestionRoute
 import com.example.chatapplication.navigation.route.LanguageRoute
@@ -27,6 +28,7 @@ import com.example.chatapplication.navigation.route.SettingsRoute
 import com.example.chatapplication.navigation.route.ViewMemberRoute
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_model.enum.SettingOptionAction
+import com.example.feature_conversation.presentation.forward.ForwardScreen
 
 @Composable
 fun AppNavHost(
@@ -147,7 +149,10 @@ fun AppNavHost(
                 onOpenCamera = {
                     navController.navigate(AppRoute.CAMERA)
                 },
-                onBack = onBack
+                onBack = onBack,
+                onForward = { conversationId, messageId ->
+                    navController.navigate("${AppRoute.FORWARD}/$conversationId/$messageId")
+                }
             )
         }
 
@@ -284,6 +289,18 @@ fun AppNavHost(
                 onImageCaptured = { uri ->
                     // xử lý ảnh
                 },
+                onBack = onBack
+            )
+        }
+
+        composable(route = AppRoute.FORWARD_WITH_ARG) { backStackEntry ->
+            val conversationId = backStackEntry.arguments?.getString("conversationId")
+                ?: return@composable
+            val messageId = backStackEntry.arguments?.getString("messageId")
+                ?: return@composable
+            ForwardRoute(
+                conversationId = conversationId,
+                messageId = messageId,
                 onBack = onBack
             )
         }

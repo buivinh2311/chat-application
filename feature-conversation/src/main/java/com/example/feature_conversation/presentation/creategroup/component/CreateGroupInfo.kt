@@ -57,7 +57,12 @@ fun CreateGroupInfo(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = AppDimens.Space.Lg),
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(
+                top = AppDimens.Space.Md,
+                start = AppDimens.Space.Md,
+                end = AppDimens.Space.Md
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box {
@@ -67,11 +72,11 @@ fun CreateGroupInfo(
                 placeholder = painterResource(R.drawable.group),
                 error = painterResource(R.drawable.group),
                 modifier = Modifier
-                    .size(AppDimens.ImageSize.Xl)
+                    .size(AppDimens.ImageSize.Md)
                     .aspectRatio(1f)
                     .clip(shape = CircleShape)
                     .border(
-                        width = AppDimens.Border.Thick,
+                        width = AppDimens.Border.Thick - AppDimens.Border.Normal,
                         color = MaterialTheme.colorScheme.primary,
                         shape = CircleShape
                     )
@@ -88,7 +93,7 @@ fun CreateGroupInfo(
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .size(AppDimens.Layout.IconButtonSize)
+                    .size(AppDimens.Icon.Xxs + AppDimens.Space.Xs)
                     .background(
                         MaterialTheme.colorScheme.primary,
                         shape = CircleShape
@@ -98,7 +103,7 @@ fun CreateGroupInfo(
                     painter = AppIcons.Camera,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(AppDimens.Icon.Xs)
+                        .size(AppDimens.Icon.Xxs)
                         .align(Alignment.Center),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
@@ -114,13 +119,13 @@ fun CreateGroupInfo(
                 onValueChange = { onGroupNameChange(it) },
                 singleLine = true,
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onSecondary
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(AppDimens.Space.Xxl)
                     .clip(RoundedCornerShape(AppDimens.Radius.Sm))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .background(MaterialTheme.colorScheme.secondary)
                     .padding(horizontal = AppDimens.Space.Lg),
                 decorationBox = { innerTextField ->
                     Box(
@@ -130,9 +135,9 @@ fun CreateGroupInfo(
                         if (groupName.isEmpty()) {
                             Text(
                                 text = stringResource(R.string.hint_group_name),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onBackground.copy(
-                                    alpha = 0.5f
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSecondary.copy(
+                                    alpha = 0.7f
                                 )
                             )
                         }
@@ -146,7 +151,7 @@ fun CreateGroupInfo(
             ) {
                 Text(
                     text = stringResource(R.string.text_group_name_can_not_blank),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier
                         .padding(

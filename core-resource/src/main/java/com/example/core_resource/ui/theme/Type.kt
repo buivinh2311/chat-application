@@ -16,29 +16,29 @@ val provider = GoogleFont.Provider(
     certificates = R.array.com_google_android_gms_fonts_certs
 )
 
-val Inter = FontFamily(
+val Roboto = FontFamily(
     Font(
-        googleFont = GoogleFont("Inter"),
+        googleFont = GoogleFont("Roboto Regular"),
         fontProvider = provider,
         weight = FontWeight.Normal
     ),
     Font(
-        googleFont = GoogleFont("Inter"),
+        googleFont = GoogleFont("Roboto Regular"),
         fontProvider = provider,
         weight = FontWeight.Medium
     ),
     Font(
-        googleFont = GoogleFont("Inter"),
+        googleFont = GoogleFont("Roboto Regular"),
         fontProvider = provider,
         weight = FontWeight.SemiBold
     ),
     Font(
-        googleFont = GoogleFont("Inter"),
+        googleFont = GoogleFont("Roboto Regular"),
         fontProvider = provider,
         weight = FontWeight.Bold
     ),
     Font(
-        googleFont = GoogleFont("Inter"),
+        googleFont = GoogleFont("Roboto Regular"),
         fontProvider = provider,
         weight = FontWeight.Black
     )
@@ -52,7 +52,7 @@ val AppTypography = Typography(
     // =========================
 
     displayLarge = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Bold,
         fontSize = 48.sp,
         lineHeight = 56.sp,
@@ -60,14 +60,14 @@ val AppTypography = Typography(
     ),
 
     displayMedium = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Bold,
         fontSize = 40.sp,
         lineHeight = 48.sp
     ),
 
     displaySmall = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
         lineHeight = 40.sp
@@ -78,21 +78,21 @@ val AppTypography = Typography(
     // =========================
 
     headlineLarge = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
         lineHeight = 32.sp
     ),
 
     headlineMedium = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
         lineHeight = 30.sp
     ),
 
     headlineSmall = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,
         lineHeight = 28.sp
@@ -103,21 +103,21 @@ val AppTypography = Typography(
     // =========================
 
     titleLarge = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 20.sp
     ),
 
     titleMedium = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Medium,
         fontSize = 15.sp,
         lineHeight = 18.sp
     ),
 
     titleSmall = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Medium,
         fontSize = 13.sp,
         lineHeight = 16.sp
@@ -128,21 +128,21 @@ val AppTypography = Typography(
     // =========================
 
     bodyLarge = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
-        fontSize = 18.sp,
+        fontSize = 20.sp,
         lineHeight = 22.sp
     ),
 
     bodyMedium = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
+        fontSize = 17.sp,
         lineHeight = 20.sp
     ),
 
     bodySmall = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 18.sp
@@ -153,21 +153,21 @@ val AppTypography = Typography(
     // =========================
 
     labelLarge = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 20.sp
     ),
 
     labelMedium = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
         fontSize = 12.5.sp,
         lineHeight = 16.sp
     ),
 
     labelSmall = TextStyle(
-        fontFamily = Inter,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
         fontSize = 11.sp,
         lineHeight = 14.sp

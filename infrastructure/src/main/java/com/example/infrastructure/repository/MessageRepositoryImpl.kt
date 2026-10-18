@@ -1,5 +1,6 @@
 package com.example.infrastructure.repository
 
+import android.content.Context
 import androidx.compose.ui.res.stringResource
 import com.example.core_domain.repository.MessageRepository
 import com.example.core_model.Message
@@ -12,6 +13,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -21,6 +23,7 @@ import kotlin.collections.emptyList
 import kotlin.collections.mutableMapOf
 
 class MessageRepositoryImpl @Inject constructor(
+    @param:ApplicationContext private val context: Context,
     private val firestore: FirebaseFirestore
 ) : MessageRepository {
 
@@ -54,6 +57,23 @@ class MessageRepositoryImpl @Inject constructor(
                 trySend(messages.reversed())
             }
         awaitClose { listener.remove() }
+    }
+
+    override suspend fun getMessageById(
+        conversationId: String,
+        messageId: String
+    ): Result<Message?> {
+        return try {
+            val message = messagesRef(conversationId)
+                .document(messageId)
+                .get()
+                .await()
+                ?.toObject(MessageDto::class.java)
+                ?.toDomain()
+            Result.success(message)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun loadMoreMessagesByConversationId(
@@ -96,8 +116,8 @@ class MessageRepositoryImpl @Inject constructor(
                     mapOf(
                         "lastMessage" to when(message) {
                             is Message.Text -> message.text
-                            is Message.Image -> R.string.text_image
-                            is Message.Video -> R.string.text_video
+                            is Message.Image -> context.getString(R.string.text_image)
+                            is Message.Video -> context.getString(R.string.text_video)
                             is Message.File -> message.fileName
                         },
                         "lastMessageTime" to message.createdAt

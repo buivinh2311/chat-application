@@ -85,13 +85,13 @@ fun AppTopBar(
                 else MaterialTheme.typography.titleLarge,
                 color = titleColor ?: MaterialTheme.colorScheme.onBackground
             )
-            Spacer(modifier = Modifier.width(AppDimens.Space.Xxs))
+            Spacer(modifier = Modifier.width(AppDimens.Space.Xs))
 
             subTitle?.let {
                 Text(
                     text = subTitle,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
             }
         }

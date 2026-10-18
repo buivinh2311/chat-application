@@ -79,6 +79,10 @@ sealed class ConversationDetailAction {
         val senderName: String
     ): ConversationDetailAction()
 
+    data class Forward(
+        val messageId: String
+    ): ConversationDetailAction()
+
     data class Copy(
         val text: String
     ): ConversationDetailAction()

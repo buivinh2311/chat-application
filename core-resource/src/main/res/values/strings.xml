@@ -220,4 +220,9 @@
     <string name="text_file">[File] %s</string>
     <string name="label_copy">Sao chép</string>
     <string name="label_download">Tải xuống</string>
+    <string name="title_forward">Chuyển tiếp</string>
+    <string name="text_image_forward">Hình ảnh</string>
+    <string name="text_video_forward">Video</string>
+    <string name="label_forward">Chuyển tiếp</string>
+    <string name="text_forward_success">Đã chuyển tiếp tin nhắn</string>
 </resources>

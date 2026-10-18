@@ -179,8 +179,8 @@ fun ActionBar(
         MessageActionItem(
             icon = AppIcons.Report,
             tint = MaterialTheme.colorScheme.primary,
-            title = "chia se",
-            action = MessageAction.REPLY
+            title = stringResource(R.string.label_forward),
+            action = MessageAction.FORWARD
         ),
         if(message is Message.Text) {
             MessageActionItem(
@@ -243,7 +243,7 @@ fun ActionBar(
 
                             MessageAction.FORWARD -> {
                                 onAction(
-                                    ConversationDetailAction.Reply(message, senderName)
+                                    ConversationDetailAction.Forward(message.id)
                                 )
                             }
 
@@ -279,7 +279,10 @@ fun ActionBar(
                         }
                         onDismiss()
                     }
-                    .padding(AppDimens.Space.Md),
+                    .padding(
+                        vertical = AppDimens.Space.Md,
+                        horizontal = AppDimens.Space.Sm
+                    ),
                 verticalArrangement = Arrangement.spacedBy(AppDimens.Space.Xs),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

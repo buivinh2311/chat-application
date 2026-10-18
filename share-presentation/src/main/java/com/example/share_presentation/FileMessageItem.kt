@@ -120,14 +120,14 @@ fun FileMessageItem(
                             text = fileMessage.fileName,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                         Spacer(modifier = Modifier.height(AppDimens.Space.Xxs))
 
                         Text(
                             text = formatFileSize(fileMessage.fileSize),
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                         Spacer(modifier = Modifier.height(AppDimens.Space.Xxs))

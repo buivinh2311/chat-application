@@ -13,5 +13,5 @@ data class UserDto(
     val gender: String? = null,
     val status: String = "OFFLINE",
     val fcmTokens: List<String> = emptyList(),
-    val createdAt: Timestamp? = null
+    val createdAt: Timestamp? = Timestamp.now()
 )

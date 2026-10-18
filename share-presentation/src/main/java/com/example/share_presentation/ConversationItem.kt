@@ -80,7 +80,7 @@ fun ConversationItem(
                     placeholder = painterResource(R.drawable.account),
                     error = painterResource(R.drawable.account),
                     modifier = Modifier
-                        .size(AppDimens.ImageSize.Md)
+                        .size(AppDimens.ImageSize.Sm)
                         .clip(shape = CircleShape),
                     contentScale = ContentScale.Crop
                 )
@@ -118,7 +118,7 @@ fun ConversationItem(
 
                             is ConversationDisplayInfo.Group -> displayInfo.group.name
                         },
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.weight(1f)
                     )
 
@@ -126,8 +126,8 @@ fun ConversationItem(
                         Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
                         Text(
                             text = it,
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSecondary
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.outline
                         )
                     }
                 }
@@ -140,6 +140,7 @@ fun ConversationItem(
                         Text(
                             text = it,
                             style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.outline,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f)
@@ -148,7 +149,7 @@ fun ConversationItem(
                         Spacer(modifier = Modifier.width(AppDimens.Space.Lg))
                         Text(
                             text = "3",
-                            style = MaterialTheme.typography.titleSmall,
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onError,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(AppDimens.Radius.Lg))

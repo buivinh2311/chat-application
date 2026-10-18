@@ -157,7 +157,6 @@ class CreateGroupViewModel @Inject constructor(
                     )
                 }
                 .onFailure {
-                    Log.d("CREATE_GROUP", it.toString())
                     _event.emit(CreateGroupEvent.ShowError)
                 }
         }
