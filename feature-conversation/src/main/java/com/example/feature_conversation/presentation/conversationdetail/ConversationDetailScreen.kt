@@ -213,18 +213,21 @@ fun ConversationDetailScreen(
                         is Message.File -> MessageType.FILE
                         is Message.Video -> MessageType.VIDEO
                         is Message.Image -> MessageType.IMAGE
+                        is Message.System -> MessageType.SYSTEM
                     },
                     mimeType = when(message) {
                         is Message.Text -> null
                         is Message.File -> message.mimeType
                         is Message.Image -> message.mimeType
                         is Message.Video -> message.mimeType
+                        is Message.System -> null
                     },
                     contentPreview = when (message) {
                         is Message.Text -> message.text
                         is Message.File -> message.fileName
                         is Message.Video -> message.thumbnailUrl
                         is Message.Image -> message.fileUrl
+                        is Message.System -> message.senderId
                     }
                 )
             }
@@ -319,6 +322,7 @@ fun ConversationDetailScreen(
                     isConnected = false,
                     isSentRequest = true,
                     messages = messages,
+                    pinnedMessage = emptyList(),
                     innerPadding = innerPadding,
                     onAction = onAction
                 )

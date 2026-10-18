@@ -2,6 +2,7 @@ package com.example.feature_conversation.domain.usecase
 
 import com.example.core_domain.repository.AuthRepository
 import com.example.core_domain.repository.MessageRepository
+import com.example.core_domain.repository.UserRepository
 import com.example.core_model.Message
 import com.example.core_model.composite.ConversationWithInfo
 import com.example.core_model.enum.MessageStatus
@@ -10,6 +11,7 @@ import javax.inject.Inject
 
 class ForwardMessageUseCase @Inject constructor(
     private val authRepository: AuthRepository,
+    private val userRepository: UserRepository,
     private val messageRepository: MessageRepository
 ) {
     suspend operator fun invoke(
@@ -17,8 +19,17 @@ class ForwardMessageUseCase @Inject constructor(
         message: Message,
         accompanyingText: String
     ): Result<Unit> {
+        if(message is Message.System) {
+            return Result.failure(IllegalStateException("Invalid message"))
+        }
+
         val currentUserId = authRepository.getCurrentUserId()
             ?: return Result.failure(IllegalStateException("User not logged in"))
+
+        val sender = userRepository
+            .getUserById(currentUserId)
+            .getOrElse { return Result.failure(it) }
+            ?: return Result.failure(IllegalStateException("User not found"))
 
         return runCatching {
             conversationWithInfos.forEach { conversationWithInfo ->
@@ -28,7 +39,10 @@ class ForwardMessageUseCase @Inject constructor(
                     conversationId = conversation.id,
                     currentUserId = currentUserId
                 )
-                messageRepository.sendMessage(forwardedMessage).getOrThrow()
+                messageRepository.sendMessage(
+                    senderName = sender.fullName,
+                    message = forwardedMessage
+                ).getOrThrow()
                 val accompanyingMessage = Message.Text(
                     id = "",
                     conversationId = conversation.id,
@@ -39,7 +53,10 @@ class ForwardMessageUseCase @Inject constructor(
                     text = accompanyingText
                 )
                 if(accompanyingText.isNotBlank()) {
-                    messageRepository.sendMessage(accompanyingMessage).getOrThrow()
+                    messageRepository.sendMessage(
+                        senderName = sender.fullName,
+                        message = accompanyingMessage
+                    ).getOrThrow()
                 }
             }
         }
@@ -91,5 +108,7 @@ private fun createForwardedMessage(
             replyPreview = null,
             createdAt = Timestamp.now()
         )
+
+        is Message.System -> message
     }
 }

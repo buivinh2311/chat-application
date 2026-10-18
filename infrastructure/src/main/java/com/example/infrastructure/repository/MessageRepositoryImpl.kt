@@ -100,7 +100,10 @@ class MessageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun sendMessage(message: Message): Result<Unit> {
+    override suspend fun sendMessage(
+        senderName: String,
+        message: Message
+    ): Result<Unit> {
         return try {
             val conversationRef = firestore
                 .collection(CONVERSATIONS)
@@ -118,11 +121,14 @@ class MessageRepositoryImpl @Inject constructor(
                 batch.update(
                     conversationRef,
                     mapOf(
+                        "lastMessageActorId" to message.senderId,
+                        "lastMessageActorName" to senderName,
                         "lastMessage" to when(message) {
                             is Message.Text -> message.text
                             is Message.Image -> context.getString(R.string.text_image)
                             is Message.Video -> context.getString(R.string.text_video)
                             is Message.File -> message.fileName
+                            is Message.System -> "system"
                         },
                         "lastMessageTime" to message.createdAt
                     )

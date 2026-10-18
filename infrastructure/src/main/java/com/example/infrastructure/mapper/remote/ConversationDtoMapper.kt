@@ -12,8 +12,12 @@ import com.example.core_utils.toRelativeString
 fun ConversationDto.toDomain(): Conversation {
     return Conversation(
         id = id,
-        type = ConversationType.valueOf(type),
+        type = runCatching {
+            ConversationType.valueOf(type)
+        }.getOrDefault(ConversationType.DIRECT),
         participants = participants,
+        lastMessageActorId = lastMessageActorId,
+        lastMessageActorName = lastMessageActorName,
         lastMessage = lastMessage,
         lastMessageTime = lastMessageTime?.toRelativeString(),
         createdAt = createdAt.toRelativeString()

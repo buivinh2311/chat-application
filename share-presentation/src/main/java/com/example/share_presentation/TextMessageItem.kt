@@ -64,7 +64,7 @@ fun TextMessageItem(
                     horizontal = AppDimens.Space.Md
                 )
         ) {
-            if(isMine) {
+            if (isMine) {
                 Spacer(modifier = Modifier.weight(1f))
             }
 
@@ -76,9 +76,11 @@ fun TextMessageItem(
                             else Alignment.CenterStart
                         )
                         .widthIn(min = AppDimens.Layout.MinTextMessageWidth)
-                        .clip(RoundedCornerShape(
-                            AppDimens.Radius.Sm + AppDimens.Radius.Xxs
-                        ))
+                        .clip(
+                            RoundedCornerShape(
+                                AppDimens.Radius.Sm + AppDimens.Radius.Xxs
+                            )
+                        )
                         .then(
                             if (isMine) {
                                 Modifier.background(
@@ -167,11 +169,19 @@ fun TextMessageItem(
                                             replyPreview.contentPreview
                                         )
 
-                                        MessageType.IMAGE -> stringResource(R.string.text_image)
-                                        MessageType.VIDEO -> stringResource(R.string.text_video)
+                                        MessageType.IMAGE
+                                            -> stringResource(R.string.text_image)
+
+                                        MessageType.VIDEO
+                                            -> stringResource(R.string.text_video)
+
+                                        MessageType.SYSTEM
+                                            -> stringResource(R.string.text_system)
                                     },
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = if (isMine) MaterialTheme.colorScheme.onPrimary.copy(0.7f)
+                                    color = if (isMine) MaterialTheme.colorScheme.onPrimary.copy(
+                                        0.7f
+                                    )
                                     else MaterialTheme.colorScheme.outlineVariant,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis

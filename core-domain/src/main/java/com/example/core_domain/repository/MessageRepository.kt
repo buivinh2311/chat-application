@@ -23,7 +23,10 @@ interface MessageRepository {
         pageSize: Int = 30
     ): Result<List<Message>>
 
-    suspend fun sendMessage(message: Message): Result<Unit>
+    suspend fun sendMessage(
+        senderName: String,
+        message: Message
+    ): Result<Unit>
 
     suspend fun markAsRead(
         conversationId: String,

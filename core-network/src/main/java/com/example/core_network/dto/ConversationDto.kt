@@ -8,6 +8,8 @@ data class ConversationDto(
     val type: String = "",
     val memberAvatars: List<String> = emptyList(),
     val participants: List<String> = emptyList(),
+    val lastMessageActorId: String? = null,
+    val lastMessageActorName: String? = null,
     val lastMessage: String? = null,
     val lastMessageTime: Timestamp? = null,
     val createdAt: Timestamp = Timestamp.now()

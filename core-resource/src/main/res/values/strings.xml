@@ -225,4 +225,6 @@
     <string name="text_video_forward">Video</string>
     <string name="label_forward">Chuyển tiếp</string>
     <string name="text_forward_success">Đã chuyển tiếp tin nhắn</string>
+    <string name="text_my_last_message">Bạn: %s</string>
+    <string name="text_system">System</string>
 </resources>

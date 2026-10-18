@@ -286,6 +286,10 @@ fun ForwardBottomBar(
                             }
                         }
                     }
+
+                    is Message.System -> {
+
+                    }
                 }
             }
 

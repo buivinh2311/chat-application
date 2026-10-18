@@ -237,6 +237,7 @@ fun ConversationScreen(
                         key = { index -> conversations[index].conversation.id }
                     ) { index ->
                         ConversationItem(
+                            currentUserId = data.currentUserId,
                             conversationWithInfo = conversations[index],
                             onClick = { conversationId ->
                                 onNavigationToConversationDetail(conversationId)

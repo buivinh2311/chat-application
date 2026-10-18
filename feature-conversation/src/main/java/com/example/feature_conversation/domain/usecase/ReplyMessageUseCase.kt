@@ -2,6 +2,7 @@ package com.example.feature_conversation.domain.usecase
 
 import com.example.core_domain.repository.AuthRepository
 import com.example.core_domain.repository.MessageRepository
+import com.example.core_domain.repository.UserRepository
 import com.example.core_model.Message
 import com.example.core_model.ReplyPreview
 import com.example.core_model.enum.MessageStatus
@@ -10,6 +11,7 @@ import javax.inject.Inject
 
 class ReplyMessageUseCase @Inject constructor(
     private val authRepository: AuthRepository,
+    private val userRepository: UserRepository,
     private val messageRepository: MessageRepository
 ) {
     suspend operator fun invoke(
@@ -23,6 +25,11 @@ class ReplyMessageUseCase @Inject constructor(
         val senderId = authRepository.getCurrentUserId()
             ?: return Result.failure(IllegalStateException("User not logged in"))
 
+        val sender = userRepository
+            .getUserById(senderId)
+            .getOrElse { return Result.failure(it) }
+            ?: return Result.failure(IllegalStateException("User not found"))
+
         val message = Message.Text(
             id = "",
             conversationId = conversationId,
@@ -34,6 +41,6 @@ class ReplyMessageUseCase @Inject constructor(
             text = text
         )
 
-        return messageRepository.sendMessage(message)
+        return messageRepository.sendMessage(sender.fullName, message)
     }
 }

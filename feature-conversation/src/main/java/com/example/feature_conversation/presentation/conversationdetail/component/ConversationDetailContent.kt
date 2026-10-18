@@ -45,6 +45,7 @@ fun ConversationDetailContent(
     isConnected: Boolean,
     isSentRequest: Boolean,
     messages: List<Message>,
+    pinnedMessage: List<Message>,
     innerPadding: PaddingValues,
     onAction: (ConversationDetailAction) -> Unit
 ) {
@@ -72,6 +73,10 @@ fun ConversationDetailContent(
                 bottom = AppDimens.Space.Lg
             )
         ) {
+            stickyHeader {
+
+            }
+
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -215,6 +220,10 @@ fun ConversationDetailContent(
                                 reactionMessage = message
                             }
                         )
+                    }
+
+                    is Message.System -> {
+
                     }
                 }
             }

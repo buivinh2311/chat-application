@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import com.example.core_model.Conversation
@@ -44,6 +45,7 @@ import com.example.core_resource.R
 @Composable
 fun ConversationItem(
     modifier: Modifier = Modifier,
+    currentUserId: String,
     conversationWithInfo: ConversationWithInfo,
     onClick: (String) -> Unit
 ) {
@@ -138,7 +140,15 @@ fun ConversationItem(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = it,
+                            text = if (conversation.lastMessageActorId == currentUserId) {
+                                stringResource(R.string.text_my_last_message, it)
+                            } else {
+                                when (conversation.type) {
+                                    ConversationType.DIRECT -> it
+                                    ConversationType.GROUP
+                                        -> "${conversation.lastMessageActorName}: $it"
+                                }
+                            },
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.outline,
                             maxLines = 1,

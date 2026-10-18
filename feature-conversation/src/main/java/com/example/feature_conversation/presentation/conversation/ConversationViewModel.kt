@@ -3,7 +3,9 @@ package com.example.feature_conversation.presentation.conversation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core_domain.usecase.GetCurrentUserIdUseCase
 import com.example.core_ui.state.UiState
+import com.example.feature_conversation.domain.usecase.GetCurrentUserUseCase
 import com.example.feature_conversation.domain.usecase.ObserveConversationsWithInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,6 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ConversationViewModel @Inject constructor(
+    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
     private val observeConversationsWithInfoUseCase: ObserveConversationsWithInfoUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow<UiState<ConversationUiState>>(
@@ -28,16 +31,22 @@ class ConversationViewModel @Inject constructor(
 
     fun loadConversations() {
         viewModelScope.launch {
+            val currentUserId = getCurrentUserIdUseCase()
+                .getOrElse { return@launch }
+
             observeConversationsWithInfoUseCase()
                 .catch {
                     _uiState.value = UiState.Error
                 }
-                .collect { state ->
-                    _uiState.value = if(state.isEmpty()) {
+                .collect { conversationWithInfos ->
+                    _uiState.value = if(conversationWithInfos.isEmpty()) {
                         UiState.Empty
                     } else {
                         UiState.Success(
-                            ConversationUiState(state)
+                            ConversationUiState(
+                                currentUserId = currentUserId,
+                                conversationWithInfos = conversationWithInfos
+                            )
                         )
                     }
                 }

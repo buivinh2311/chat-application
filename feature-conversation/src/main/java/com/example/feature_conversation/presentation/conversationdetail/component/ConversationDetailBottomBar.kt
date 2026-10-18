@@ -181,6 +181,7 @@ fun ConversationDetailBottomBar(
                             )
                             MessageType.IMAGE -> stringResource(R.string.text_image)
                             MessageType.VIDEO -> stringResource(R.string.text_video)
+                            MessageType.SYSTEM -> stringResource(R.string.text_system)
                         },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outlineVariant,

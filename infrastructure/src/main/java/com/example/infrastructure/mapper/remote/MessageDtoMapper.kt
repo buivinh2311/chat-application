@@ -3,6 +3,7 @@ package com.example.infrastructure.mapper.remote
 import com.example.core_model.Message
 import com.example.core_model.enum.MessageStatus
 import com.example.core_model.enum.MessageType
+import com.example.core_model.enum.SystemMessageType
 import com.example.core_network.dto.MessageDto
 import com.google.firebase.Timestamp
 
@@ -11,7 +12,11 @@ fun MessageDto.toDomain(): Message {
     val timestamp = createdAt ?: Timestamp.now()
     val imageWidth = imageWidth ?: 0
     val imageHeight = imageHeight ?: 0
-    return when (MessageType.valueOf(type)) {
+    return when (
+        runCatching {
+            MessageType.valueOf(type)
+        }.getOrDefault(MessageType.TEXT)
+    ) {
         MessageType.TEXT -> Message.Text(
             id = id,
             conversationId = conversationId,
@@ -53,7 +58,7 @@ fun MessageDto.toDomain(): Message {
             fileSize = fileSize ?: 0,
             duration = duration ?: 0,
             width = imageWidth,
-            height =  imageHeight,
+            height = imageHeight,
             mimeType = mimeType.orEmpty()
         )
 
@@ -72,6 +77,20 @@ fun MessageDto.toDomain(): Message {
             width = imageWidth,
             height = imageHeight,
             mimeType = mimeType.orEmpty()
+        )
+
+        MessageType.SYSTEM -> Message.System(
+            id = id,
+            conversationId = conversationId,
+            senderId = senderId,
+            createdAt = timestamp,
+            status = status,
+            reactions = reactions,
+            systemMessageType = runCatching {
+                SystemMessageType.valueOf(systemMessageType.orEmpty())
+            }.getOrDefault(SystemMessageType.PIN_MESSAGE),
+            actorId = actorId.orEmpty(),
+            targetMessageId = targetMessageId
         )
     }
 }
@@ -124,7 +143,7 @@ fun Message.toDto(messageId: String): MessageDto {
             fileSize = fileSize,
             duration = duration,
             imageWidth = width,
-            imageHeight =  height,
+            imageHeight = height,
             mimeType = mimeType
         )
 
@@ -143,6 +162,19 @@ fun Message.toDto(messageId: String): MessageDto {
             imageWidth = width,
             imageHeight = height,
             mimeType = mimeType
+        )
+
+        is Message.System -> MessageDto(
+            id = messageId,
+            conversationId = conversationId,
+            senderId = senderId,
+            createdAt = timestamp,
+            status = status,
+            reactions = reactions,
+            type = MessageType.SYSTEM.name,
+            systemMessageType = systemMessageType.name,
+            actorId = actorId,
+            targetMessageId = targetMessageId
         )
     }
 }
