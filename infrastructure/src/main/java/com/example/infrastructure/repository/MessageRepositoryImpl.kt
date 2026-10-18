@@ -9,6 +9,7 @@ import com.example.core_network.dto.MessageDto
 import com.example.core_resource.R
 import com.example.infrastructure.mapper.remote.toDomain
 import com.example.infrastructure.mapper.remote.toDto
+import com.example.infrastructure.mapper.remote.toFirestoreMap
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -110,7 +111,10 @@ class MessageRepositoryImpl @Inject constructor(
                 .document()
 
             firestore.runBatch { batch ->
-                batch.set(messageRef, message.toDto(messageRef.id))
+                batch.set(
+                    messageRef,
+                    message.toDto(messageRef.id).toFirestoreMap()
+                )
                 batch.update(
                     conversationRef,
                     mapOf(

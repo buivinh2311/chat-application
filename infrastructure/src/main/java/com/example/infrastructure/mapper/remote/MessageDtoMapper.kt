@@ -147,3 +147,26 @@ fun Message.toDto(messageId: String): MessageDto {
     }
 }
 
+fun MessageDto.toFirestoreMap(): Map<String, Any> {
+    return mapOf(
+        "id" to id,
+        "conversationId" to conversationId,
+        "senderId" to senderId,
+        "type" to type,
+        "text" to text,
+        "imageWidth" to imageWidth,
+        "imageHeight" to imageHeight,
+        "thumbnailUrl" to thumbnailUrl,
+        "duration" to duration,
+        "fileUrl" to fileUrl,
+        "fileName" to fileName,
+        "fileSize" to fileSize,
+        "mimeType" to mimeType,
+        "status" to status,
+        "reactions" to reactions,
+        "replyPreview" to replyPreview,
+        "createdAt" to createdAt,
+        "readBy" to readBy
+    ).filterValues { it != null }
+        .mapValues { (_, value) -> value!! }
+}
