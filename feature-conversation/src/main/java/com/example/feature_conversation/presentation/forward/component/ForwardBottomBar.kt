@@ -1,6 +1,5 @@
 package com.example.feature_conversation.presentation.forward.component
 
-import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,12 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -57,7 +53,7 @@ import com.example.core_resource.AppIcons
 import com.example.core_resource.R
 import com.example.core_utils.formatFileSize
 import com.example.feature_conversation.presentation.conversationdetail.component.formatDuration
-import com.example.share_presentation.getFileImage
+import com.example.feature_conversation.presentation.conversationdetail.component.getFileImage
 import kotlin.text.isEmpty
 
 @Composable

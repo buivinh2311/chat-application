@@ -23,7 +23,7 @@ fun FriendSuggestionScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                title = stringResource(R.string.title_friend_suggetion),
+                title = stringResource(R.string.title_friend_suggestion),
                 onBack = onBack
             )
         },

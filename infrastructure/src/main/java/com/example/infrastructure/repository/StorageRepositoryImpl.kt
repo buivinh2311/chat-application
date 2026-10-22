@@ -17,10 +17,6 @@ class StorageRepositoryImpl @Inject constructor(
 ) : StorageRepository {
     override suspend fun upload(file: File): Result<CloudinaryUploadResult> {
         return try {
-            Log.e(
-                "CloudinaryUpload",
-                file.toString()
-            )
             val resourceType = when (file.extension.lowercase()) {
                 "jpg", "jpeg", "png", "webp", "gif" -> "image"
                 "mp4", "mov", "avi", "mkv" -> "video"
@@ -69,11 +65,6 @@ class StorageRepositoryImpl @Inject constructor(
 //                            continuation.resumeWithException(
 //                                Exception(error.description)
 //                            )
-                            Log.e(
-                                "CloudinaryUpload",
-                                "requestId=$requestId, code=${error.code}, description=${error.description}"
-                            )
-
                             continuation.resumeWithException(
                                 Exception(
                                     "Cloudinary upload failed: " +

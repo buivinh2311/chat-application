@@ -21,6 +21,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.chatapplication.navigation.AppNavHost
 import com.example.chatapplication.navigation.AppRoute
+import com.example.core_model.enum.DarkModeState
 import com.example.core_resource.LocalAppDimens
 import com.example.core_resource.dimens
 import com.example.core_resource.ui.theme.ChatApplicationTheme
@@ -51,6 +52,10 @@ class MainActivity : ComponentActivity() {
             }
             when (val state = themeState) {
                 is UiState.Success -> {
+                    val darkTheme = when (state.data) {
+                        DarkModeState.OFF -> false
+                        DarkModeState.ON -> true
+                    }
                     ChatApplicationTheme(
                         themeState = state.data
                     ) {
@@ -66,13 +71,15 @@ class MainActivity : ComponentActivity() {
 
                                     StartupState.Login -> {
                                         AppNavHost(
-                                            startDestination = "login?showDialog=false"
+                                            startDestination = "login?showDialog=false",
+                                            darkTheme = darkTheme
                                         )
                                     }
 
                                     StartupState.Chat -> {
                                         AppNavHost(
-                                            startDestination = AppRoute.CONVERSATION
+                                            startDestination = AppRoute.CONVERSATION,
+                                            darkTheme = darkTheme
                                         )
                                     }
                                 }

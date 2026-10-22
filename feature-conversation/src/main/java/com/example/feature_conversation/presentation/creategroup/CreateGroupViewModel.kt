@@ -144,8 +144,6 @@ class CreateGroupViewModel @Inject constructor(
                 return@launch
             }
 
-            Log.d("CREATE_GROUP", name + avatar + otherUser.toString())
-
             createGroupUseCase(
                 name = name,
                 avatar = avatar,

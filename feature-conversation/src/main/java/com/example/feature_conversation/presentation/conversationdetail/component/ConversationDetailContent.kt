@@ -1,5 +1,6 @@
 package com.example.feature_conversation.presentation.conversationdetail.component
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,17 +12,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.example.core_model.Message
 import com.example.core_model.User
@@ -31,10 +35,7 @@ import com.example.core_resource.R
 import com.example.core_utils.getReactionCount
 import com.example.feature_conversation.domain.model.ConversationDetailAction
 import com.example.feature_conversation.presentation.conversationdetail.ConversationDetailData
-import com.example.share_presentation.FileMessageItem
-import com.example.share_presentation.ImageMessageItem
-import com.example.share_presentation.TextMessageItem
-import com.example.share_presentation.VideoMessageItem
+import kotlinx.coroutines.launch
 import kotlin.collections.component1
 import kotlin.collections.component2
 
@@ -42,10 +43,13 @@ import kotlin.collections.component2
 fun ConversationDetailContent(
     data: ConversationDetailData,
     currentUser: User,
+    users: List<User>,
     isConnected: Boolean,
     isSentRequest: Boolean,
     messages: List<Message>,
-    pinnedMessage: List<Message>,
+    pinnedMessageCount: Int,
+    targetMessageId: String?,
+    scrollRequest: Int,
     innerPadding: PaddingValues,
     onAction: (ConversationDetailAction) -> Unit
 ) {
@@ -56,28 +60,44 @@ fun ConversationDetailContent(
         mutableStateOf<Message?>(null)
     }
 
-    val users = when (data) {
-        is ConversationDetailData.Direct -> listOf(data.user, currentUser)
-        is ConversationDetailData.Group -> data.users.values.toList()
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(scrollRequest) {
+        val targetId = targetMessageId ?: return@LaunchedEffect
+        val index = messages.indexOfFirst { it.id == targetId }
+
+        if (index != -1) {
+            listState.animateScrollToItem(
+                index = index + 1,
+                scrollOffset = -600
+            )
+        }
+    }
+    fun scrollToMessage(messageId: String) {
+        val index = messages.indexOfFirst {
+            it.id == messageId
+        }
+
+        coroutineScope.launch {
+            listState.animateScrollToItem(
+                index = index + 1,
+                scrollOffset = -600
+            )
+        }
     }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            contentPadding = PaddingValues(
-                top = AppDimens.Space.Xxl,
-                bottom = AppDimens.Space.Lg
-            )
+            contentPadding = PaddingValues(bottom = AppDimens.Space.Lg)
         ) {
-            stickyHeader {
-
-            }
-
             item {
+                Spacer(modifier = Modifier.height(AppDimens.Space.Xxl + AppDimens.Space.Xl))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
@@ -223,7 +243,17 @@ fun ConversationDetailContent(
                     }
 
                     is Message.System -> {
-
+                        SystemMessageItem(
+                            isMine = message.senderId == currentUser.id,
+                            senderName = sender?.fullName
+                                ?: stringResource(R.string.text_unknown_user),
+                            systemMessage = message,
+                            onView = {
+                                message.targetMessageId?.let { targetId ->
+                                    scrollToMessage(targetId)
+                                }
+                            }
+                        )
                     }
                 }
             }
@@ -233,6 +263,7 @@ fun ConversationDetailContent(
             val sender = users.find { it.id == message.senderId }
             MessagePopup(
                 message = message,
+                pinnedMessageCount = pinnedMessageCount,
                 senderName = sender?.fullName.orEmpty(),
                 isMine = message.senderId == currentUser.id,
                 onDismiss = {

@@ -277,6 +277,10 @@ object AppIcons {
         @Composable
         get() = painterResource(R.drawable.ic_ui)
 
+    val Unpin
+        @Composable
+        get() = painterResource(R.drawable.ic_unpin)
+
     val VideoCall
         @Composable
         get() = painterResource(R.drawable.ic_video_call)

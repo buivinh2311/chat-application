@@ -26,7 +26,7 @@ fun TurnOffNotificationBottomSheet(
     ) {
         Column {
             Text(
-                text = stringResource(R.string.title_turn_off_message_notifiaction),
+                text = stringResource(R.string.title_turn_off_message_notification),
                 style = MaterialTheme.typography.titleMedium
             )
             HorizontalDivider(
@@ -52,7 +52,7 @@ fun TurnOffNotificationBottomSheet(
             }
 
             Text(
-                text = stringResource(R.string.text_turn_off_ultil_turned_back_on),
+                text = stringResource(R.string.text_turn_off_until_turned_back_on),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()

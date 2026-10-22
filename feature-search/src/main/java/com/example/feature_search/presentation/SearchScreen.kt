@@ -27,7 +27,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
 import com.example.core_resource.R
-import com.example.core_ui.component.AppBottomBar
 import com.example.core_ui.component.EmptyScreen
 import com.example.core_ui.component.ErrorScreen
 import com.example.core_ui.component.LoadingScreen
@@ -35,7 +34,6 @@ import com.example.core_ui.component.showToast
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_search.presentation.component.SearchTopBar
-import com.example.share_presentation.ConversationItem
 import com.example.share_presentation.SearchItem
 
 @SuppressLint("LocalContextGetResourceValueCall")

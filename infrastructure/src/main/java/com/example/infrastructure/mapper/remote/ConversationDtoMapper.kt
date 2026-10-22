@@ -20,6 +20,7 @@ fun ConversationDto.toDomain(): Conversation {
         lastMessageActorName = lastMessageActorName,
         lastMessage = lastMessage,
         lastMessageTime = lastMessageTime?.toRelativeString(),
+        systemMessage = systemMessage,
         createdAt = createdAt.toRelativeString()
     )
 }

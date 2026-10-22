@@ -18,7 +18,9 @@ import com.example.feature_conversation.domain.usecase.MarkMessageAsReadUseCase
 import com.example.feature_conversation.domain.usecase.ObserveFriendRequestUseCase
 import com.example.feature_conversation.domain.usecase.ObserveFriendshipUseCase
 import com.example.feature_conversation.domain.usecase.ObserveMessagesByConversationIdUseCase
+import com.example.feature_conversation.domain.usecase.ObservePinnedMessageUseCase
 import com.example.feature_conversation.domain.usecase.OpenFileUseCase
+import com.example.feature_conversation.domain.usecase.PinMessageUseCase
 import com.example.feature_conversation.domain.usecase.ReactToMessageUseCase
 import com.example.feature_conversation.domain.usecase.RecallFriendRequestUseCase
 import com.example.feature_conversation.domain.usecase.RemoveReactionUseCase
@@ -61,7 +63,9 @@ class ConversationDetailViewModel @Inject constructor(
     private val openFileUseCase: OpenFileUseCase,
     private val reactToMessageUseCase: ReactToMessageUseCase,
     private val removeReactionUseCase: RemoveReactionUseCase,
-    private val replyMessageUseCase: ReplyMessageUseCase
+    private val replyMessageUseCase: ReplyMessageUseCase,
+    private val pinMessageUseCase: PinMessageUseCase,
+    private val observePinnedMessageUseCase: ObservePinnedMessageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState<ConversationDetailUiState>>(
         UiState.Loading
@@ -103,14 +107,16 @@ class ConversationDetailViewModel @Inject constructor(
         combine(
             observeFriendshipUseCase(data.user.id),
             observeFriendRequestUseCase(data.user.id),
-            observeMessagesByConversationIdUseCase(data.conversation.id)
-        ) { isFriend, isSentRequest, messages ->
+            observeMessagesByConversationIdUseCase(data.conversation.id),
+            observePinnedMessageUseCase(data.conversation.id)
+        ) { isFriend, isSentRequest, messages, pinnedMessages ->
             ConversationDetailUiState(
                 conversationDetailData = data,
                 currentUser = currentUser,
                 isConnected = isFriend,
                 isSentRequest = isSentRequest,
-                messages = messages
+                messages = messages,
+                pinnedMessages = pinnedMessages
             )
         }
             .catch {
@@ -128,14 +134,16 @@ class ConversationDetailViewModel @Inject constructor(
         combine(
 //            observeFriendshipUseCase(data.group.id),
 //            observeFriendRequestUseCase(data.group.id),
-            observeMessagesByConversationIdUseCase(data.conversation.id)
-        ) { messages ->
+            observeMessagesByConversationIdUseCase(data.conversation.id),
+            observePinnedMessageUseCase(data.conversation.id)
+        ) { messages, pinnedMessages ->
             ConversationDetailUiState(
                 conversationDetailData = data,
                 currentUser = currentUser,
                 isConnected = false,
                 isSentRequest = false,
-                messages = messages[0]
+                messages = messages,
+                pinnedMessages = pinnedMessages
             )
         }
             .catch {
@@ -218,7 +226,6 @@ class ConversationDetailViewModel @Inject constructor(
             fileInfos.forEach { fileInfo ->
                 sendFileMessageUseCase(conversationId, fileInfo)
                     .onFailure {
-                        Log.d("SENDFILE", it.toString())
                         _event.emit(ConversationDetailEvent.ShowError)
                     }
             }
@@ -360,6 +367,24 @@ class ConversationDetailViewModel @Inject constructor(
                 text = text,
                 replyPreview = replyPreview
             )
+                .onFailure {
+                    _event.emit(ConversationDetailEvent.ShowError)
+                }
+        }
+    }
+
+    fun pinMessage(
+        conversationId: String,
+        messageId: String,
+        isMaximum: Boolean
+    ) {
+        viewModelScope.launch {
+            if(isMaximum) {
+                _event.emit(ConversationDetailEvent.PinnedMessageMaximum)
+                return@launch
+            }
+
+            pinMessageUseCase(conversationId, messageId)
                 .onFailure {
                     _event.emit(ConversationDetailEvent.ShowError)
                 }

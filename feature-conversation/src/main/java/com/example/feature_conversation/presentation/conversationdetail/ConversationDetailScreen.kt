@@ -1,51 +1,61 @@
 package com.example.feature_conversation.presentation.conversationdetail
 
-import android.R.id.message
 import android.annotation.SuppressLint
-import android.content.ClipData
+import android.app.Activity
 import android.content.ClipData.newPlainText
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core_model.Message
 import com.example.core_model.ReplyPreview
 import com.example.core_model.composite.MediaPreview
 import com.example.core_model.enum.MessageType
+import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import com.example.core_ui.component.ErrorScreen
 import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.component.showToast
 import com.example.core_ui.state.UiState
 import com.example.feature_conversation.domain.model.ConversationDetailAction
-import com.example.feature_conversation.domain.model.MessageAction
 import com.example.feature_conversation.presentation.conversationdetail.component.ConversationDetailBottomBar
 import com.example.feature_conversation.presentation.conversationdetail.component.ConversationDetailContent
 import com.example.feature_conversation.presentation.conversationdetail.component.ConversationDetailTopBar
 import com.example.feature_conversation.presentation.conversationdetail.component.ImagePreviewDialog
+import com.example.feature_conversation.presentation.conversationdetail.component.PinnedMessagesPreview
 import com.example.feature_conversation.presentation.conversationdetail.component.VideoPreviewDialog
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun ConversationDetailScreen(
     conversationId: String,
+    darkTheme: Boolean,
     onBack: () -> Unit,
     onOption: (String) -> Unit,
     onOpenCamera: () -> Unit,
@@ -55,6 +65,24 @@ fun ConversationDetailScreen(
     val uiState by conversationDetailViewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(conversationId) {
         conversationDetailViewModel.loadConversation(conversationId)
+    }
+
+    var expanded by remember { mutableStateOf(false) }
+    val view = LocalView.current
+    val window = (view.context as Activity).window
+    val systemBarColor = if (expanded) {
+        MaterialTheme.colorScheme.scrim
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
+    SideEffect {
+        window.statusBarColor = systemBarColor.toArgb()
+        window.navigationBarColor = systemBarColor.toArgb()
+
+        WindowCompat.getInsetsController(window, view).apply {
+            isAppearanceLightStatusBars = !expanded && !darkTheme
+            isAppearanceLightNavigationBars = !expanded && !darkTheme
+        }
     }
 
     val context = LocalContext.current
@@ -90,6 +118,14 @@ fun ConversationDetailScreen(
                         message = context.getString(R.string.open_file_failed)
                     )
                 }
+
+                ConversationDetailEvent.PinnedMessageMaximum -> {
+                    expanded = true
+                    showToast(
+                        context,
+                        message = context.getString(R.string.text_pinned_message_maximum)
+                    )
+                }
             }
         }
     }
@@ -112,7 +148,7 @@ fun ConversationDetailScreen(
     }
 
     val onAction: (ConversationDetailAction) -> Unit = { action ->
-        when(action) {
+        when (action) {
             // Media
             is ConversationDetailAction.DownloadImage -> {
                 val imageMessage = action.imageMessage
@@ -202,6 +238,7 @@ fun ConversationDetailScreen(
                     messageId = action.messageId
                 )
             }
+
             is ConversationDetailAction.Reply -> {
                 val message = action.message
                 replyPreview = ReplyPreview(
@@ -215,7 +252,7 @@ fun ConversationDetailScreen(
                         is Message.Image -> MessageType.IMAGE
                         is Message.System -> MessageType.SYSTEM
                     },
-                    mimeType = when(message) {
+                    mimeType = when (message) {
                         is Message.Text -> null
                         is Message.File -> message.mimeType
                         is Message.Image -> message.mimeType
@@ -250,6 +287,14 @@ fun ConversationDetailScreen(
                 }
             }
 
+            is ConversationDetailAction.Pin -> {
+                conversationDetailViewModel.pinMessage(
+                    conversationId = conversationId,
+                    messageId = action.messageId,
+                    isMaximum = action.pinnedMessageCount >= 5
+                )
+            }
+
             // Request
             is ConversationDetailAction.SendFriendRequest -> {
 
@@ -263,6 +308,18 @@ fun ConversationDetailScreen(
 
             }
         }
+    }
+
+    var scrollRequest by remember {
+        mutableIntStateOf(0)
+    }
+    var targetMessageId by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    fun onPinnedMessageClick(messageId: String) {
+        targetMessageId = messageId
+        scrollRequest++
     }
 
     when (val state = uiState) {
@@ -282,6 +339,13 @@ fun ConversationDetailScreen(
             val conversationUiState = state.data
             val messages = conversationUiState.messages
             val conversationDetailData = conversationUiState.conversationDetailData
+            val users = when (conversationDetailData) {
+                is ConversationDetailData.Direct
+                    -> listOf(conversationDetailData.user, conversationUiState.currentUser)
+
+                is ConversationDetailData.Group -> conversationDetailData.users.values.toList()
+            }
+            val pinnedMessages = conversationUiState.pinnedMessages
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 topBar = {
@@ -319,12 +383,48 @@ fun ConversationDetailScreen(
                 ConversationDetailContent(
                     data = conversationDetailData,
                     currentUser = conversationUiState.currentUser,
+                    users = users,
                     isConnected = false,
                     isSentRequest = true,
                     messages = messages,
-                    pinnedMessage = emptyList(),
+                    pinnedMessageCount = pinnedMessages.size,
+                    targetMessageId = targetMessageId,
+                    scrollRequest = scrollRequest,
                     innerPadding = innerPadding,
                     onAction = onAction
+                )
+            }
+
+            if (expanded) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.7f))
+                        .clickable(
+                            interactionSource = remember {
+                                MutableInteractionSource()
+                            },
+                            indication = null
+                        ) {
+                            expanded = false
+                        }
+                )
+            }
+
+            if (pinnedMessages.isNotEmpty()) {
+                PinnedMessagesPreview(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(
+                            top = AppDimens.Layout.TopBarHeight + AppDimens.Space.Sm
+                        ),
+                    expanded = expanded,
+                    users = users,
+                    pinnedMessages = pinnedMessages,
+                    onExpandedChange = { expanded = it },
+                    onMessageClick = { messageId ->
+                        onPinnedMessageClick(messageId)
+                    }
                 )
             }
 

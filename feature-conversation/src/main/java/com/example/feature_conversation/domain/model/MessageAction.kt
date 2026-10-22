@@ -7,5 +7,6 @@ enum class MessageAction {
     DOWNLOAD,
     RECALL,
     PIN,
+    DETAIL,
     DELETE
 }

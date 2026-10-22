@@ -45,4 +45,15 @@ interface MessageRepository {
         messageId: String,
         userId: String
     ): Result<Unit>
+
+    suspend fun pinMessage(
+        conversationId: String,
+        messageId: String,
+        pinnedByUserId: String,
+        pinnedAt: Timestamp
+    ): Result<Unit>
+
+    fun observePinnedMessage(
+        conversationId: String
+    ): Flow<List<Message>>
 }

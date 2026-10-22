@@ -11,10 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -27,29 +25,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.core_model.Message
-import com.example.core_model.User
 import com.example.core_resource.AppDimens
 import com.example.core_resource.AppIcons
 import com.example.core_resource.R
-import com.example.core_utils.getReactionCount
 import com.example.feature_conversation.domain.model.ConversationDetailAction
 import com.example.feature_conversation.domain.model.MessageAction
 import com.example.feature_conversation.domain.model.MessageActionItem
-import com.example.share_presentation.TextMessageItem
 
 @Composable
 fun MessagePopup(
     message: Message,
+    pinnedMessageCount: Int,
     senderName: String,
     isMine: Boolean,
     onDismiss: () -> Unit,
@@ -101,8 +92,10 @@ fun MessagePopup(
 
             ActionBar(
                 message = message,
+                pinnedMessageCount = pinnedMessageCount,
                 onAction = onAction,
                 senderName = senderName,
+                isMine = isMine,
                 onDismiss = onDismiss
             )
         }
@@ -124,7 +117,7 @@ private fun SelectedMessage(
             )
         }
 
-        else  -> {}
+        else -> {}
     }
 }
 
@@ -165,11 +158,20 @@ fun ReactionBar(
 fun ActionBar(
     modifier: Modifier = Modifier,
     message: Message,
+    pinnedMessageCount: Int,
     senderName: String,
+    isMine: Boolean,
     onDismiss: () -> Unit,
     onAction: (ConversationDetailAction) -> Unit
 ) {
-    val actions = listOf(
+    val isPinnedMessage = when(message) {
+        is Message.Text -> message.pinnedByUserId != null
+        is Message.Image -> message.pinnedByUserId != null
+        is Message.Video -> message.pinnedByUserId != null
+        is Message.File -> message.pinnedByUserId != null
+        else -> false
+    }
+    val actions = listOfNotNull(
         MessageActionItem(
             icon = AppIcons.Reply,
             tint = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -182,7 +184,7 @@ fun ActionBar(
             title = stringResource(R.string.label_forward),
             action = MessageAction.FORWARD
         ),
-        if(message is Message.Text) {
+        if (message is Message.Text) {
             MessageActionItem(
                 icon = AppIcons.Report,
                 tint = MaterialTheme.colorScheme.primary,
@@ -200,20 +202,35 @@ fun ActionBar(
         MessageActionItem(
             icon = AppIcons.Report,
             tint = MaterialTheme.colorScheme.primary,
-            title = "chia se",
-            action = MessageAction.REPLY
-        ),
+            title = stringResource(R.string.label_recall),
+            action = MessageAction.RECALL
+        ).takeIf { isMine },
+        if(isPinnedMessage) {
+            MessageActionItem(
+                icon = AppIcons.Unpin,
+                tint = MaterialTheme.colorScheme.primary,
+                title = stringResource(R.string.label_unpin),
+                action = MessageAction.PIN
+            )
+        } else {
+            MessageActionItem(
+                icon = AppIcons.Pin,
+                tint = MaterialTheme.colorScheme.primary,
+                title = stringResource(R.string.label_pin),
+                action = MessageAction.PIN
+            )
+        },
         MessageActionItem(
             icon = AppIcons.Report,
             tint = MaterialTheme.colorScheme.primary,
-            title = "chia se",
-            action = MessageAction.REPLY
+            title = stringResource(R.string.label_detail),
+            action = MessageAction.DETAIL
         ),
         MessageActionItem(
-            icon = AppIcons.Report,
+            icon = AppIcons.Delete,
             tint = MaterialTheme.colorScheme.primary,
-            title = "chia se",
-            action = MessageAction.REPLY
+            title = stringResource(R.string.label_delete),
+            action = MessageAction.DELETE
         )
     )
 
@@ -234,7 +251,7 @@ fun ActionBar(
                 modifier = modifier
                     .clip(RoundedCornerShape(AppDimens.Space.Sm))
                     .clickable {
-                        when(item.action) {
+                        when (item.action) {
                             MessageAction.REPLY -> {
                                 onAction(
                                     ConversationDetailAction.Reply(message, senderName)
@@ -248,7 +265,7 @@ fun ActionBar(
                             }
 
                             MessageAction.COPY -> {
-                                if(message is Message.Text) {
+                                if (message is Message.Text) {
                                     onAction(
                                         ConversationDetailAction.Copy(message.text)
                                     )
@@ -256,12 +273,29 @@ fun ActionBar(
                             }
 
                             MessageAction.DOWNLOAD -> {
-                                if(message is Message.Image) {
-                                    ConversationDetailAction.DownloadImage(message)
-                                } else if(message is Message.Video) {
-                                    ConversationDetailAction.DownloadVideo(message)
-                                } else if(message is Message.File) {
-                                    ConversationDetailAction.DownloadFile(message)
+                                when (message) {
+                                    is Message.Image -> {
+                                        onAction(
+                                            ConversationDetailAction
+                                                .DownloadImage(message)
+                                        )
+                                    }
+
+                                    is Message.Video -> {
+                                        onAction(
+                                            ConversationDetailAction
+                                                .DownloadVideo(message)
+                                        )
+                                    }
+
+                                    is Message.File -> {
+                                        onAction(
+                                            ConversationDetailAction
+                                                .DownloadFile(message)
+                                        )
+                                    }
+
+                                    else -> {}
                                 }
                             }
 
@@ -270,6 +304,15 @@ fun ActionBar(
                             }
 
                             MessageAction.PIN -> {
+                                onAction(
+                                    ConversationDetailAction.Pin(
+                                        messageId = message.id,
+                                        pinnedMessageCount = pinnedMessageCount
+                                    )
+                                )
+                            }
+
+                            MessageAction.DETAIL -> {
 
                             }
 

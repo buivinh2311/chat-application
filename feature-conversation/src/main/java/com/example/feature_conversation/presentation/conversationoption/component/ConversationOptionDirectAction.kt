@@ -57,7 +57,7 @@ fun ConversationOptionDirectAction(
 
             ButtonNavigateItem(
                 title = stringResource(R.string.title_create_group),
-                text = stringResource(R.string.description_creat_group),
+                text = stringResource(R.string.description_create_group),
                 icon = AppIcons.CreateGroup,
                 iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                 onNavigate = onCreateGroup

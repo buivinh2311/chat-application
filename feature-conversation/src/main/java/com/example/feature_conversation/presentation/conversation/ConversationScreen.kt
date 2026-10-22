@@ -42,7 +42,7 @@ import com.example.core_ui.component.LoadingScreen
 import com.example.core_ui.menu.AppBottomBarAction
 import com.example.core_ui.state.UiState
 import com.example.feature_conversation.presentation.conversation.component.ConversationSearchBar
-import com.example.share_presentation.ConversationItem
+import com.example.feature_conversation.presentation.conversation.component.ConversationItem
 
 @Composable
 fun ConversationScreen(

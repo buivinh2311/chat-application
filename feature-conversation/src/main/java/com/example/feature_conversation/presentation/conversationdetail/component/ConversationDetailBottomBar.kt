@@ -39,14 +39,11 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
-import com.example.core_model.Message
 import com.example.core_model.ReplyPreview
 import com.example.core_model.enum.MessageType
 import com.example.core_resource.AppDimens
@@ -56,8 +53,6 @@ import com.example.core_ui.component.AppIconButton
 import com.example.core_utils.uriToFile
 import com.example.feature_conversation.domain.model.ConversationDetailAction
 import com.example.feature_conversation.domain.model.FileInfo
-import com.example.share_presentation.getFileImage
-import kotlin.math.max
 
 @Composable
 fun ConversationDetailBottomBar(

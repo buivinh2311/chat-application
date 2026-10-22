@@ -9,7 +9,7 @@
     <string name="label_delete">Xóa</string>
     <string name="label_confirm">Xác nhận</string>
     <string name="title_friend_request">Lời mời kết bạn</string>
-    <string name="title_friend_suggetion">Những người bạn có thể biết</string>
+    <string name="title_friend_suggestion">Những người bạn có thể biết</string>
     <string name="label_remove">Gỡ</string>
     <string name="title_profile">Hồ sơ</string>
     <string name="title_password">Mật khẩu</string>
@@ -61,7 +61,7 @@
     <string name="text_unknown_error">Có lỗi xảy ra. Vui lòng thử lại sau</string>
     <string name="text_weak_password">Mật khẩu quá yếu. Hãy thử với mật khẩu mạnh hơn</string>
     <string name="text_too_many_requests">Bạn đã yêu cầu quá nhiều lần. Vui lòng thử lại sau</string>
-    <string name="text_email_not_verifierd">Tài khoản chưa được kích hoạt</string>
+    <string name="text_email_not_verified">Tài khoản chưa được kích hoạt</string>
     <string name="text_invalid_credential">Sai email hoặc mật khẩu</string>
     <string name="text_user_disabled">Tài khoản này đã bị khóa</string>
     <string name="label_ok">OK</string>
@@ -94,7 +94,7 @@
     <string name="title_media">Ảnh, video, file</string>
     <string name="title_turn_on_notification">Bật thông báo</string>
     <string name="title_turn_off_notification">Tắt thông báo</string>
-    <string name="title_change_backgroud_image">Đổi hình nền</string>
+    <string name="title_change_background_image">Đổi hình nền</string>
     <string name="title_group_link">Link nhóm</string>
     <string name="title_member">Thành viên (%d)</string>
     <string name="title_create_vote">Tạo bình chọn</string>
@@ -106,9 +106,9 @@
     <string name="title_quantity_choose">Đã chọn %d</string>
     <string name="title_pick_group_member">Chọn thành viên</string>
     <string name="title_friend_sent">Lời mời đã gửi</string>
-    <string name="title_turn_off_message_notifiaction">Tắt thông báo tin nhắn</string>
+    <string name="title_turn_off_message_notification">Tắt thông báo tin nhắn</string>
     <string name="text_turn_off_in">Trong %d giờ</string>
-    <string name="text_turn_off_ultil_turned_back_on">Cho đến khi bật lại</string>
+    <string name="text_turn_off_until_turned_back_on">Cho đến khi bật lại</string>
     <string name="text_group_name_can_not_blank">Tên nhóm không được trống</string>
     <string name="text_not_enough_member">Tạo nhóm cần ít nhất 3 thành viên</string>
     <string name="title_group_member">Thành viên</string>
@@ -181,7 +181,7 @@
     <string name="title_personalization">Cá nhân hóa</string>
     <string name="title_nick_name">Đặt biệt danh</string>
     <string name="description_nick_name">Đặt tên riêng giúp gợi nhớ tốt hơn</string>
-    <string name="description_creat_group">Tạo nhóm chat với %s</string>
+    <string name="description_create_group">Tạo nhóm chat với %s</string>
     <string name="title_pin_conversation">Ghim đoạn chat</string>
     <string name="description_pin_conversation">Đưa đoạn chat lên đầu danh sách</string>
     <string name="title_hidden_conversation">Ẩn đoạn chat</string>
@@ -227,4 +227,18 @@
     <string name="text_forward_success">Đã chuyển tiếp tin nhắn</string>
     <string name="text_my_last_message">Bạn: %s</string>
     <string name="text_system">System</string>
+    <string name="text_sent_by">Tin nhắn của %s</string>
+    <string name="label_recall">Thu hồi</string>
+    <string name="label_pin">Ghim</string>
+    <string name="label_detail">Chi tiết</string>
+    <string name="text">Người dùng không xác định</string>
+    <string name="text_unknown_user">Người dùng không xác định</string>
+    <string name="text_system_pin_message">đã ghim một tin nhắn</string>
+    <string name="text_system_unpin_message">đã bỏ ghim một tin nhắn</string>
+    <string name="text_my_last_system_message">Bạn %s</string>
+    <string name="title_pin_list">Danh sách ghim</string>
+    <string name="text_more_pin_message">+%d</string>
+    <string name="label_unpin">Bỏ ghim</string>
+    <string name="text_pinned_message_maximum">Danh sách tối đa 5 ghim. Bạn cần bỏ bớt ghim cũ</string>
+    <string name="text_view">Xem</string>
 </resources>

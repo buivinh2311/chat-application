@@ -25,6 +25,8 @@ fun MessageDto.toDomain(): Message {
             status = status,
             reactions = reactions,
             replyPreview = replyPreview?.toDomain(),
+            pinnedByUserId = pinnedByUserId,
+            pinnedAt = pinnedAt,
             text = text.orEmpty()
         )
 
@@ -36,6 +38,8 @@ fun MessageDto.toDomain(): Message {
             status = status,
             reactions = reactions,
             replyPreview = replyPreview?.toDomain(),
+            pinnedByUserId = pinnedByUserId,
+            pinnedAt = pinnedAt,
             fileUrl = fileUrl.orEmpty(),
             fileName = fileName.orEmpty(),
             fileSize = fileSize ?: 0,
@@ -52,6 +56,8 @@ fun MessageDto.toDomain(): Message {
             status = status,
             reactions = reactions,
             replyPreview = replyPreview?.toDomain(),
+            pinnedByUserId = pinnedByUserId,
+            pinnedAt = pinnedAt,
             fileUrl = fileUrl.orEmpty(),
             thumbnailUrl = thumbnailUrl.orEmpty(),
             fileName = fileName.orEmpty(),
@@ -70,6 +76,8 @@ fun MessageDto.toDomain(): Message {
             status = status,
             reactions = reactions,
             replyPreview = replyPreview?.toDomain(),
+            pinnedByUserId = pinnedByUserId,
+            pinnedAt = pinnedAt,
             fileUrl = fileUrl.orEmpty(),
             thumbnailUrl = thumbnailUrl.orEmpty(),
             fileName = fileName.orEmpty(),
@@ -85,11 +93,9 @@ fun MessageDto.toDomain(): Message {
             senderId = senderId,
             createdAt = timestamp,
             status = status,
-            reactions = reactions,
             systemMessageType = runCatching {
                 SystemMessageType.valueOf(systemMessageType.orEmpty())
             }.getOrDefault(SystemMessageType.PIN_MESSAGE),
-            actorId = actorId.orEmpty(),
             targetMessageId = targetMessageId
         )
     }
@@ -107,6 +113,8 @@ fun Message.toDto(messageId: String): MessageDto {
             status = status,
             reactions = reactions,
             replyPreview = replyPreview?.toDto(),
+            pinnedByUserId = pinnedByUserId,
+            pinnedAt = pinnedAt,
             type = MessageType.TEXT.name,
             text = text
         )
@@ -119,6 +127,8 @@ fun Message.toDto(messageId: String): MessageDto {
             status = status,
             reactions = reactions,
             replyPreview = replyPreview?.toDto(),
+            pinnedByUserId = pinnedByUserId,
+            pinnedAt = pinnedAt,
             type = MessageType.IMAGE.name,
             fileUrl = fileUrl,
             fileName = fileName,
@@ -136,6 +146,8 @@ fun Message.toDto(messageId: String): MessageDto {
             status = status,
             reactions = reactions,
             replyPreview = replyPreview?.toDto(),
+            pinnedByUserId = pinnedByUserId,
+            pinnedAt = pinnedAt,
             type = MessageType.VIDEO.name,
             fileUrl = fileUrl,
             thumbnailUrl = thumbnailUrl,
@@ -155,6 +167,8 @@ fun Message.toDto(messageId: String): MessageDto {
             status = status,
             reactions = reactions,
             replyPreview = replyPreview?.toDto(),
+            pinnedByUserId = pinnedByUserId,
+            pinnedAt = pinnedAt,
             type = MessageType.FILE.name,
             fileUrl = fileUrl,
             fileName = fileName,
@@ -170,10 +184,8 @@ fun Message.toDto(messageId: String): MessageDto {
             senderId = senderId,
             createdAt = timestamp,
             status = status,
-            reactions = reactions,
             type = MessageType.SYSTEM.name,
             systemMessageType = systemMessageType.name,
-            actorId = actorId,
             targetMessageId = targetMessageId
         )
     }
@@ -197,8 +209,12 @@ fun MessageDto.toFirestoreMap(): Map<String, Any> {
         "status" to status,
         "reactions" to reactions,
         "replyPreview" to replyPreview,
+        "pinnedByUserId" to pinnedByUserId,
+        "pinnedAt" to pinnedAt,
         "createdAt" to createdAt,
-        "readBy" to readBy
+        "readBy" to readBy,
+        "systemMessageType" to systemMessageType,
+        "targetMessageId" to targetMessageId
     ).filterValues { it != null }
         .mapValues { (_, value) -> value!! }
 }

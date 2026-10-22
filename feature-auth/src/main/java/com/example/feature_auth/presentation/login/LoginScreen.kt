@@ -302,7 +302,7 @@ fun LoginScreen(
                             .zIndex(1f),
                         title = when (uiState.loginResult) {
                             LoginResult.Failure.EmailNotVerified -> {
-                                stringResource(R.string.text_email_not_verifierd)
+                                stringResource(R.string.text_email_not_verified)
                             }
 
                             LoginResult.Failure.InvalidCredentials -> {

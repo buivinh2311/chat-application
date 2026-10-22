@@ -56,7 +56,7 @@ fun ConversationOptionGroupAction(
 
             ButtonNavigateItem(
                 title = stringResource(R.string.title_create_vote),
-                text = stringResource(R.string.description_creat_group),
+                text = stringResource(R.string.description_create_group),
                 icon = AppIcons.CreateVote,
                 iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                 onNavigate = { }

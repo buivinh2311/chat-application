@@ -24,8 +24,9 @@ data class MessageDto(
     val mimeType: String? = null,
     val reactions: Map<String, String> = emptyMap(),
     val replyPreview: ReplyPreviewDto? = null,
+    val pinnedByUserId: String? = null,
+    val pinnedAt: Timestamp? = null,
     val readBy: List<String> = emptyList(),
     val systemMessageType: String? = null,
-    val actorId: String? = null,
     val targetMessageId: String? = null
 )

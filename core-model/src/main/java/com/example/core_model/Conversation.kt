@@ -1,6 +1,7 @@
 package com.example.core_model
 
 import com.example.core_model.enum.ConversationType
+import com.example.core_model.enum.MessageType
 
 data class Conversation(
     val id: String,
@@ -10,5 +11,6 @@ data class Conversation(
     val lastMessageActorName: String?,
     val lastMessage: String?,
     val lastMessageTime: String?,
+    val systemMessage: Boolean,
     val createdAt: String
 )

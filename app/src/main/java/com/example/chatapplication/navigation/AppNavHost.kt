@@ -32,7 +32,8 @@ import com.example.feature_conversation.presentation.forward.ForwardScreen
 
 @Composable
 fun AppNavHost(
-    startDestination: String
+    startDestination: String,
+    darkTheme: Boolean
 ) {
     val navController = rememberNavController()
 
@@ -143,6 +144,7 @@ fun AppNavHost(
                     ?: return@composable
             ConversationDetailRoute(
                 conversationId = conversationId,
+                darkTheme = darkTheme,
                 onOption = {
                     navController.navigate("${AppRoute.CONVERSATION_OPTION}/$conversationId")
                 },

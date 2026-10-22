@@ -86,4 +86,9 @@ sealed class ConversationDetailAction {
     data class Copy(
         val text: String
     ): ConversationDetailAction()
+
+    data class Pin(
+        val messageId: String,
+        val pinnedMessageCount: Int
+    ): ConversationDetailAction()
 }

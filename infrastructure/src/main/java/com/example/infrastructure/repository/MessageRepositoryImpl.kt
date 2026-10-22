@@ -1,10 +1,12 @@
 package com.example.infrastructure.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.res.stringResource
 import com.example.core_domain.repository.MessageRepository
 import com.example.core_model.Message
 import com.example.core_model.ReplyPreview
+import com.example.core_model.enum.SystemMessageType
 import com.example.core_network.dto.MessageDto
 import com.example.core_resource.R
 import com.example.infrastructure.mapper.remote.toDomain
@@ -14,6 +16,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.SetOptions
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +24,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.collections.emptyList
+import kotlin.collections.mapOf
 import kotlin.collections.mutableMapOf
 
 class MessageRepositoryImpl @Inject constructor(
@@ -123,14 +127,21 @@ class MessageRepositoryImpl @Inject constructor(
                     mapOf(
                         "lastMessageActorId" to message.senderId,
                         "lastMessageActorName" to senderName,
-                        "lastMessage" to when(message) {
+                        "lastMessage" to when (message) {
                             is Message.Text -> message.text
                             is Message.Image -> context.getString(R.string.text_image)
                             is Message.Video -> context.getString(R.string.text_video)
                             is Message.File -> message.fileName
-                            is Message.System -> "system"
+                            is Message.System -> when (message.systemMessageType) {
+                                SystemMessageType.PIN_MESSAGE
+                                    -> context.getString(R.string.text_system_pin_message)
+
+                                SystemMessageType.UNPIN_MESSAGE
+                                    -> context.getString(R.string.text_system_unpin_message)
+                            }
                         },
-                        "lastMessageTime" to message.createdAt
+                        "lastMessageTime" to message.createdAt,
+                        "systemMessage" to (message is Message.System)
                     )
                 )
             }.await()
@@ -222,5 +233,50 @@ class MessageRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    override suspend fun pinMessage(
+        conversationId: String,
+        messageId: String,
+        pinnedByUserId: String,
+        pinnedAt: Timestamp
+    ): Result<Unit> {
+        return try {
+            messagesRef(conversationId)
+                .document(messageId)
+                .set(
+                    mapOf(
+                        "pinnedByUserId" to pinnedByUserId,
+                        "pinnedAt" to pinnedAt
+                    ),
+                    SetOptions.merge()
+                )
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override fun observePinnedMessage(
+        conversationId: String
+    ): Flow<List<Message>> = callbackFlow {
+        val listener = messagesRef(conversationId)
+            .whereNotEqualTo("pinnedByUserId", null)
+            .orderBy("pinnedAt", Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val messages = snapshot?.documents
+                    ?.mapNotNull {
+                        it.toObject(MessageDto::class.java)?.copy(id = it.id)?.toDomain()
+                    }
+                    ?: emptyList()
+                trySend(messages)
+            }
+
+        awaitClose { listener.remove() }
     }
 }

@@ -50,6 +50,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -250,7 +251,8 @@ fun VideoPreviewDialog (
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
-                            text = sender?.fullName.orEmpty(),
+                            text = sender?.fullName
+                                ?: stringResource(R.string.text_unknown_user),
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.White,
                             maxLines = 1,
