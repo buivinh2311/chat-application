@@ -48,6 +48,7 @@ import com.example.feature_conversation.presentation.conversationdetail.componen
 import com.example.feature_conversation.presentation.conversationdetail.component.ConversationDetailTopBar
 import com.example.feature_conversation.presentation.conversationdetail.component.ImagePreviewDialog
 import com.example.feature_conversation.presentation.conversationdetail.component.PinnedMessagesPreview
+import com.example.feature_conversation.presentation.conversationdetail.component.UnpinMessageDialog
 import com.example.feature_conversation.presentation.conversationdetail.component.VideoPreviewDialog
 import kotlinx.coroutines.launch
 
@@ -145,6 +146,22 @@ fun ConversationDetailScreen(
             focusRequester.requestFocus()
             keyboardController?.show()
         }
+    }
+
+    var scrollRequest by remember {
+        mutableIntStateOf(0)
+    }
+    var targetMessageId by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    fun onPinnedMessageClick(messageId: String) {
+        targetMessageId = messageId
+        scrollRequest++
+    }
+
+    var unpinMessage by remember {
+        mutableStateOf<Message?>(null)
     }
 
     val onAction: (ConversationDetailAction) -> Unit = { action ->
@@ -295,6 +312,13 @@ fun ConversationDetailScreen(
                 )
             }
 
+            is ConversationDetailAction.Unpin -> {
+                conversationDetailViewModel.unpinMessage(
+                    conversationId = conversationId,
+                    messageId = action.messageId
+                )
+            }
+
             // Request
             is ConversationDetailAction.SendFriendRequest -> {
 
@@ -308,18 +332,6 @@ fun ConversationDetailScreen(
 
             }
         }
-    }
-
-    var scrollRequest by remember {
-        mutableIntStateOf(0)
-    }
-    var targetMessageId by remember {
-        mutableStateOf<String?>(null)
-    }
-
-    fun onPinnedMessageClick(messageId: String) {
-        targetMessageId = messageId
-        scrollRequest++
     }
 
     when (val state = uiState) {
@@ -424,6 +436,25 @@ fun ConversationDetailScreen(
                     onExpandedChange = { expanded = it },
                     onMessageClick = { messageId ->
                         onPinnedMessageClick(messageId)
+                    },
+                    onRemove = { message ->
+                        unpinMessage = message
+                    }
+                )
+            }
+
+            unpinMessage?.let { message ->
+                UnpinMessageDialog(
+                    message = message,
+                    onDismiss = { unpinMessage = null },
+                    onConfirm = {
+                        if(pinnedMessages.size == 1) {
+                            expanded = false
+                        }
+                        conversationDetailViewModel.unpinMessage(
+                            conversationId = conversationId,
+                            messageId = message.id
+                        )
                     }
                 )
             }

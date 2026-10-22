@@ -56,4 +56,9 @@ interface MessageRepository {
     fun observePinnedMessage(
         conversationId: String
     ): Flow<List<Message>>
+
+    suspend fun unpinMessage(
+        conversationId: String,
+        messageId: String
+    ): Result<Unit>
 }

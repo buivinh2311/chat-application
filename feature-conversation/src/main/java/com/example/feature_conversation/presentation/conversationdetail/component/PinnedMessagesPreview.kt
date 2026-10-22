@@ -62,7 +62,8 @@ fun PinnedMessagesPreview(
     pinnedMessages: List<Message>,
     modifier: Modifier = Modifier,
     onExpandedChange: (Boolean) -> Unit,
-    onMessageClick: (String) -> Unit
+    onMessageClick: (String) -> Unit,
+    onRemove: (Message) -> Unit
 ) {
 
     if (pinnedMessages.isEmpty()) return
@@ -142,10 +143,8 @@ fun PinnedMessagesPreview(
                                         latestSender?.fullName
                                             ?: stringResource(R.string.text_unknown_user)
                                     ),
-                                    style = MaterialTheme.typography
-                                        .bodySmall,
-                                    color = MaterialTheme.colorScheme
-                                        .onSurfaceVariant
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.outlineVariant
                                 )
                             }
 
@@ -220,9 +219,9 @@ fun PinnedMessagesPreview(
                             Icon(
                                 painter = AppIcons.Down,
                                 contentDescription = stringResource(R.string.title_pin_list),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                tint = MaterialTheme.colorScheme.outlineVariant,
                                 modifier = Modifier
-                                    .size(AppDimens.Icon.Md)
+                                    .size(AppDimens.Icon.Lg)
                                     .graphicsLayer { rotationZ = 180f }
                             )
                             Spacer(modifier = Modifier.width(AppDimens.Space.Xs))
@@ -309,7 +308,9 @@ fun PinnedMessagesPreview(
                                         icon = AppIcons.NotDisturb,
                                         iconSize = AppDimens.Icon.Xs,
                                         color = MaterialTheme.colorScheme.outlineVariant,
-                                        onClick = { }
+                                        onClick = {
+                                            onRemove(message)
+                                        }
                                     )
                                 }
                             }
@@ -322,7 +323,7 @@ fun PinnedMessagesPreview(
 }
 
 @Composable
-private fun messagePreviewText(message: Message): String {
+fun messagePreviewText(message: Message): String {
     return when (message) {
         is Message.Text -> message.text
         is Message.Image -> stringResource(R.string.text_image)

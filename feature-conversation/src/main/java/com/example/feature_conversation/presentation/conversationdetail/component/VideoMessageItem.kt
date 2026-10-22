@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,7 @@ fun VideoMessageItem(
     videoMessage: Message.Video,
     reactionCounts: Map<String, Int>,
     isMine: Boolean,
+    isHighlighted: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     onReactionClick: () -> Unit
@@ -91,8 +93,16 @@ fun VideoMessageItem(
                             AppDimens.Radius.Sm + AppDimens.Radius.Xxs
                         ))
                         .border(
-                            width = AppDimens.Border.Thin,
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                            width = if(isHighlighted) {
+                                AppDimens.Border.Thick - AppDimens.Border.Normal
+                            } else {
+                                AppDimens.Border.Thin
+                            },
+                            color = if(isHighlighted) {
+                                Color(0xFFE9A23B)
+                            } else {
+                                MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)
+                            },
                             shape = RoundedCornerShape(
                                 AppDimens.Radius.Sm + AppDimens.Radius.Xxs
                             )

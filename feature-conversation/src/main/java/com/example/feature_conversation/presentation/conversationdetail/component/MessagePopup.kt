@@ -112,6 +112,7 @@ private fun SelectedMessage(
             TextMessageItem(
                 textMessage = message,
                 isMine = isMine,
+                isHighlighted = false,
                 onLongClick = {},
                 onReactionClick = {}
             )
@@ -210,7 +211,7 @@ fun ActionBar(
                 icon = AppIcons.Unpin,
                 tint = MaterialTheme.colorScheme.primary,
                 title = stringResource(R.string.label_unpin),
-                action = MessageAction.PIN
+                action = MessageAction.UNPIN
             )
         } else {
             MessageActionItem(
@@ -309,6 +310,12 @@ fun ActionBar(
                                         messageId = message.id,
                                         pinnedMessageCount = pinnedMessageCount
                                     )
+                                )
+                            }
+
+                            MessageAction.UNPIN -> {
+                                onAction(
+                                    ConversationDetailAction.Unpin(message.id)
                                 )
                             }
 

@@ -91,4 +91,8 @@ sealed class ConversationDetailAction {
         val messageId: String,
         val pinnedMessageCount: Int
     ): ConversationDetailAction()
+
+    data class Unpin(
+        val messageId: String
+    ): ConversationDetailAction()
 }

@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -30,11 +31,13 @@ import coil.compose.AsyncImage
 import com.example.core_model.Message
 import com.example.core_model.User
 import com.example.core_model.composite.MediaPreview
+import com.example.core_model.enum.SystemMessageType
 import com.example.core_resource.AppDimens
 import com.example.core_resource.R
 import com.example.core_utils.getReactionCount
 import com.example.feature_conversation.domain.model.ConversationDetailAction
 import com.example.feature_conversation.presentation.conversationdetail.ConversationDetailData
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -62,6 +65,9 @@ fun ConversationDetailContent(
 
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    var highlightedMessageId by remember {
+        mutableStateOf<String?>(null)
+    }
     LaunchedEffect(scrollRequest) {
         val targetId = targetMessageId ?: return@LaunchedEffect
         val index = messages.indexOfFirst { it.id == targetId }
@@ -71,8 +77,20 @@ fun ConversationDetailContent(
                 index = index + 1,
                 scrollOffset = -600
             )
+            highlightedMessageId = targetId
         }
     }
+
+    LaunchedEffect(highlightedMessageId) {
+        if (highlightedMessageId == null) return@LaunchedEffect
+        snapshotFlow {
+            listState.isScrollInProgress
+        }.first { isScrolling ->
+            isScrolling
+        }
+        highlightedMessageId = null
+    }
+
     fun scrollToMessage(messageId: String) {
         val index = messages.indexOfFirst {
             it.id == messageId
@@ -83,6 +101,7 @@ fun ConversationDetailContent(
                 index = index + 1,
                 scrollOffset = -600
             )
+            highlightedMessageId = messageId
         }
     }
 
@@ -160,6 +179,7 @@ fun ConversationDetailContent(
                         TextMessageItem(
                             textMessage = message,
                             isMine = isMine,
+                            isHighlighted = message.id == highlightedMessageId,
                             onLongClick = {
                                 selectedMessage = message
                             },
@@ -173,6 +193,7 @@ fun ConversationDetailContent(
                         ImageMessageItem(
                             imageMessage = message,
                             isMine = isMine,
+                            isHighlighted = message.id == highlightedMessageId,
                             onClick = {
                                 val mediaPreview = MediaPreview(
                                     messageId = message.id,
@@ -198,6 +219,7 @@ fun ConversationDetailContent(
                             videoMessage = message,
                             reactionCounts = message.getReactionCount(),
                             isMine = isMine,
+                            isHighlighted = message.id == highlightedMessageId,
                             onClick = {
                                 val mediaPreview = MediaPreview(
                                     messageId = message.id,
@@ -223,6 +245,7 @@ fun ConversationDetailContent(
                             fileMessage = message,
                             reactionCounts = message.getReactionCount(),
                             isMine = true,
+                            isHighlighted = message.id == highlightedMessageId,
                             onDownloadClick = {
                                 onAction(
                                     ConversationDetailAction.DownloadFile(message)
@@ -249,8 +272,13 @@ fun ConversationDetailContent(
                                 ?: stringResource(R.string.text_unknown_user),
                             systemMessage = message,
                             onView = {
-                                message.targetMessageId?.let { targetId ->
-                                    scrollToMessage(targetId)
+                                when(message.systemMessageType) {
+                                    SystemMessageType.PIN_MESSAGE,
+                                    SystemMessageType.UNPIN_MESSAGE-> {
+                                        message.targetMessageId?.let { targetId ->
+                                            scrollToMessage(targetId)
+                                        }
+                                    }
                                 }
                             }
                         )

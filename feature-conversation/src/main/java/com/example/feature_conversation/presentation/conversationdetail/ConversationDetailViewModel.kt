@@ -30,6 +30,7 @@ import com.example.feature_conversation.domain.usecase.SendFriendRequestUseCase
 import com.example.feature_conversation.domain.usecase.SendImageMessageUseCase
 import com.example.feature_conversation.domain.usecase.SendTextMessageUseCase
 import com.example.feature_conversation.domain.usecase.SendVideoMessageUseCase
+import com.example.feature_conversation.domain.usecase.UnpinMessageUseCase
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -65,7 +66,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val removeReactionUseCase: RemoveReactionUseCase,
     private val replyMessageUseCase: ReplyMessageUseCase,
     private val pinMessageUseCase: PinMessageUseCase,
-    private val observePinnedMessageUseCase: ObservePinnedMessageUseCase
+    private val observePinnedMessageUseCase: ObservePinnedMessageUseCase,
+    private val unpinMessageUseCase: UnpinMessageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState<ConversationDetailUiState>>(
         UiState.Loading
@@ -385,6 +387,18 @@ class ConversationDetailViewModel @Inject constructor(
             }
 
             pinMessageUseCase(conversationId, messageId)
+                .onFailure {
+                    _event.emit(ConversationDetailEvent.ShowError)
+                }
+        }
+    }
+
+    fun unpinMessage(
+        conversationId: String,
+        messageId: String
+    ) {
+        viewModelScope.launch {
+            unpinMessageUseCase(conversationId, messageId)
                 .onFailure {
                     _event.emit(ConversationDetailEvent.ShowError)
                 }

@@ -12,6 +12,7 @@ import com.example.core_resource.R
 import com.example.infrastructure.mapper.remote.toDomain
 import com.example.infrastructure.mapper.remote.toDto
 import com.example.infrastructure.mapper.remote.toFirestoreMap
+import com.google.android.gms.common.util.CollectionUtils.mapOf
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -278,5 +279,26 @@ class MessageRepositoryImpl @Inject constructor(
             }
 
         awaitClose { listener.remove() }
+    }
+
+    override suspend fun unpinMessage(
+        conversationId: String,
+        messageId: String
+    ): Result<Unit> {
+        return try {
+            messagesRef(conversationId)
+                .document(messageId)
+                .set(
+                    mapOf(
+                        "pinnedByUserId" to FieldValue.delete(),
+                        "pinnedAt" to FieldValue.delete()
+                    ),
+                    SetOptions.merge()
+                )
+                .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

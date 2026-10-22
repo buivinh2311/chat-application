@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.core_model.Message
 import com.example.core_model.enum.SystemMessageType
@@ -37,7 +38,9 @@ fun SystemMessageItem(
     onView: (() -> Unit)? = null
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = AppDimens.Space.Xl),
         horizontalArrangement = Arrangement.Center
     ) {
         Row(
@@ -56,7 +59,10 @@ fun SystemMessageItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                painter = AppIcons.Pin,
+                painter = when(systemMessage.systemMessageType) {
+                    SystemMessageType.PIN_MESSAGE -> AppIcons.Pin
+                    SystemMessageType.UNPIN_MESSAGE -> AppIcons.Unpin
+                },
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(AppDimens.Icon.Xxs)
@@ -72,21 +78,24 @@ fun SystemMessageItem(
                             stringResource(R.string.text_system_pin_message)
                         )
 
-                        SystemMessageType.UNPIN_MESSAGE -> {
-                            ""
-                        }
+                        SystemMessageType.UNPIN_MESSAGE
+                            -> stringResource(
+                            R.string.text_my_last_system_message,
+                            stringResource(R.string.text_system_unpin_message)
+                        )
                     }
                 } else {
                     when (systemMessage.systemMessageType) {
-                        SystemMessageType.PIN_MESSAGE
-                            -> senderName + stringResource(R.string.text_system_pin_message)
+                        SystemMessageType.PIN_MESSAGE -> senderName +
+                                " " + stringResource(R.string.text_system_pin_message)
 
-                        SystemMessageType.UNPIN_MESSAGE -> {
-                            ""
-                        }
+                        SystemMessageType.UNPIN_MESSAGE -> senderName +
+                                " " + stringResource(R.string.text_system_unpin_message)
                     }
                 },
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.width(AppDimens.Space.Sm))
 
