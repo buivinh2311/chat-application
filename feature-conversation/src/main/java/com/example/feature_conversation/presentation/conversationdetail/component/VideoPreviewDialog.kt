@@ -262,7 +262,7 @@ fun VideoPreviewDialog (
 
                         Text(
                             text = videoMessage.createdAt.toRelativeString(),
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             color = Color.White
                         )
                     }

@@ -1,6 +1,8 @@
 package com.example.feature_conversation.presentation.conversationdetail.component
 
 import android.util.Log
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,9 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -50,15 +55,12 @@ fun ConversationDetailContent(
     isConnected: Boolean,
     isSentRequest: Boolean,
     messages: List<Message>,
-    pinnedMessageCount: Int,
     targetMessageId: String?,
     scrollRequest: Int,
     innerPadding: PaddingValues,
+    onLongClick: (Message) -> Unit,
     onAction: (ConversationDetailAction) -> Unit
 ) {
-    var selectedMessage by remember {
-        mutableStateOf<Message?>(null)
-    }
     var reactionMessage by remember {
         mutableStateOf<Message?>(null)
     }
@@ -172,16 +174,19 @@ fun ConversationDetailContent(
             ) { index ->
                 val message = messages[index]
                 val prevMessage = if (index != 0) messages[index - 1] else null
+                val firstInGroup = prevMessage == null || (prevMessage.senderId != message.senderId)
                 val isMine = message.senderId == currentUser.id
                 val sender = users.find { it.id == message.senderId }
                 when (message) {
                     is Message.Text -> {
                         TextMessageItem(
+                            sender = sender,
                             textMessage = message,
                             isMine = isMine,
                             isHighlighted = message.id == highlightedMessageId,
+                            firstInGroup = firstInGroup,
                             onLongClick = {
-                                selectedMessage = message
+                                onLongClick(message)
                             },
                             onReactionClick = {
                                 reactionMessage = message
@@ -191,9 +196,11 @@ fun ConversationDetailContent(
 
                     is Message.Image -> {
                         ImageMessageItem(
+                            sender = sender,
                             imageMessage = message,
                             isMine = isMine,
                             isHighlighted = message.id == highlightedMessageId,
+                            firstInGroup = firstInGroup,
                             onClick = {
                                 val mediaPreview = MediaPreview(
                                     messageId = message.id,
@@ -206,7 +213,7 @@ fun ConversationDetailContent(
                                 )
                             },
                             onLongClick = {
-                                selectedMessage = message
+                                onLongClick(message)
                             },
                             onReactionClick = {
                                 reactionMessage = message
@@ -216,10 +223,11 @@ fun ConversationDetailContent(
 
                     is Message.Video -> {
                         VideoMessageItem(
+                            sender = sender,
                             videoMessage = message,
-                            reactionCounts = message.getReactionCount(),
                             isMine = isMine,
                             isHighlighted = message.id == highlightedMessageId,
+                            firstInGroup = firstInGroup,
                             onClick = {
                                 val mediaPreview = MediaPreview(
                                     messageId = message.id,
@@ -232,7 +240,7 @@ fun ConversationDetailContent(
                                 )
                             },
                             onLongClick = {
-                                selectedMessage = message
+                                onLongClick(message)
                             },
                             onReactionClick = {
                                 reactionMessage = message
@@ -242,22 +250,18 @@ fun ConversationDetailContent(
 
                     is Message.File -> {
                         FileMessageItem(
+                            sender = sender,
                             fileMessage = message,
-                            reactionCounts = message.getReactionCount(),
                             isMine = true,
                             isHighlighted = message.id == highlightedMessageId,
-                            onDownloadClick = {
-                                onAction(
-                                    ConversationDetailAction.DownloadFile(message)
-                                )
-                            },
+                            firstInGroup = firstInGroup,
                             onClick = {
                                 onAction(
                                     ConversationDetailAction.OpenFile(message)
                                 )
                             },
                             onLongClick = {
-                                selectedMessage = message
+                                onLongClick(message)
                             },
                             onReactionClick = {
                                 reactionMessage = message
@@ -272,9 +276,9 @@ fun ConversationDetailContent(
                                 ?: stringResource(R.string.text_unknown_user),
                             systemMessage = message,
                             onView = {
-                                when(message.systemMessageType) {
+                                when (message.systemMessageType) {
                                     SystemMessageType.PIN_MESSAGE,
-                                    SystemMessageType.UNPIN_MESSAGE-> {
+                                    SystemMessageType.UNPIN_MESSAGE -> {
                                         message.targetMessageId?.let { targetId ->
                                             scrollToMessage(targetId)
                                         }
@@ -285,20 +289,6 @@ fun ConversationDetailContent(
                     }
                 }
             }
-        }
-
-        selectedMessage?.let { message ->
-            val sender = users.find { it.id == message.senderId }
-            MessagePopup(
-                message = message,
-                pinnedMessageCount = pinnedMessageCount,
-                senderName = sender?.fullName.orEmpty(),
-                isMine = message.senderId == currentUser.id,
-                onDismiss = {
-                    selectedMessage = null
-                },
-                onAction = onAction
-            )
         }
 
         reactionMessage?.let { message ->

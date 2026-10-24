@@ -47,6 +47,7 @@ import com.example.feature_conversation.presentation.conversationdetail.componen
 import com.example.feature_conversation.presentation.conversationdetail.component.ConversationDetailContent
 import com.example.feature_conversation.presentation.conversationdetail.component.ConversationDetailTopBar
 import com.example.feature_conversation.presentation.conversationdetail.component.ImagePreviewDialog
+import com.example.feature_conversation.presentation.conversationdetail.component.MessagePopup
 import com.example.feature_conversation.presentation.conversationdetail.component.PinnedMessagesPreview
 import com.example.feature_conversation.presentation.conversationdetail.component.UnpinMessageDialog
 import com.example.feature_conversation.presentation.conversationdetail.component.VideoPreviewDialog
@@ -161,6 +162,10 @@ fun ConversationDetailScreen(
     }
 
     var unpinMessage by remember {
+        mutableStateOf<Message?>(null)
+    }
+
+    var selectedMessage by remember {
         mutableStateOf<Message?>(null)
     }
 
@@ -348,16 +353,16 @@ fun ConversationDetailScreen(
         }
 
         is UiState.Success -> {
-            val conversationUiState = state.data
-            val messages = conversationUiState.messages
-            val conversationDetailData = conversationUiState.conversationDetailData
+            val conversationDetailUiState = state.data
+            val messages = conversationDetailUiState.messages
+            val conversationDetailData = conversationDetailUiState.conversationDetailData
             val users = when (conversationDetailData) {
                 is ConversationDetailData.Direct
-                    -> listOf(conversationDetailData.user, conversationUiState.currentUser)
+                    -> listOf(conversationDetailData.user, conversationDetailUiState.currentUser)
 
                 is ConversationDetailData.Group -> conversationDetailData.users.values.toList()
             }
-            val pinnedMessages = conversationUiState.pinnedMessages
+            val pinnedMessages = conversationDetailUiState.pinnedMessages
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 topBar = {
@@ -394,15 +399,17 @@ fun ConversationDetailScreen(
             ) { innerPadding ->
                 ConversationDetailContent(
                     data = conversationDetailData,
-                    currentUser = conversationUiState.currentUser,
+                    currentUser = conversationDetailUiState.currentUser,
                     users = users,
                     isConnected = false,
                     isSentRequest = true,
                     messages = messages,
-                    pinnedMessageCount = pinnedMessages.size,
                     targetMessageId = targetMessageId,
                     scrollRequest = scrollRequest,
                     innerPadding = innerPadding,
+                    onLongClick = { message ->
+                        selectedMessage = message
+                    },
                     onAction = onAction
                 )
             }
@@ -411,7 +418,7 @@ fun ConversationDetailScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.7f))
+                        .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.8f))
                         .clickable(
                             interactionSource = remember {
                                 MutableInteractionSource()
@@ -456,6 +463,20 @@ fun ConversationDetailScreen(
                             messageId = message.id
                         )
                     }
+                )
+            }
+
+            selectedMessage?.let { message ->
+                val sender = users.find { it.id == message.senderId }
+                MessagePopup(
+                    message = message,
+                    pinnedMessageCount = pinnedMessages.size,
+                    sender = sender,
+                    isMine = message.senderId == conversationDetailUiState.currentUser.id,
+                    onDismiss = {
+                        selectedMessage = null
+                    },
+                    onAction = onAction
                 )
             }
 

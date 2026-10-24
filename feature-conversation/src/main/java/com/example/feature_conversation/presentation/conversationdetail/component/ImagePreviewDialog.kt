@@ -231,7 +231,7 @@ fun ImagePreviewDialog(
 
                         Text(
                             text = imageMessage.createdAt.toRelativeString(),
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             color = Color.White
                         )
                     }

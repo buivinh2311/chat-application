@@ -40,7 +40,10 @@ fun SystemMessageItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = AppDimens.Space.Xl),
+            .padding(
+                vertical = AppDimens.Space.Sm,
+                horizontal = AppDimens.Space.Xl
+            ),
         horizontalArrangement = Arrangement.Center
     ) {
         Row(

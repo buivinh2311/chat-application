@@ -39,6 +39,7 @@ data class Dimens(
     )
 
     data class ImageSizeDimen(
+        val Xxs: Dp,
         val Xs: Dp,
         val Sm: Dp,
         val Md: Dp,
@@ -125,6 +126,7 @@ fun dimens(): Dimens {
         ),
 
         ImageSize = Dimens.ImageSizeDimen(
+            Xxs = (26 * scale).dp,
             Xs = (40 * scale).dp,
             Sm = (52 * scale).dp,
             Md = (56 * scale).dp,
